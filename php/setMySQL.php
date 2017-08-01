@@ -10,5 +10,5 @@ $dbhost = '127.0.0.1';
 $dbuser = 'root';
 $dbpass = substr($contents,0,-1);
 $dbname = 'air';
-$port = '3307';
+$port = '3306';
 ?>
