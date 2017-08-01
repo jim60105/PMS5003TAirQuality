@@ -37,7 +37,7 @@ char pass[] = "000000000";    // your network password (use for WPA, or use as k
 int keyIndex = 0;            // your network key Index number (needed only for WEP)
 
 int status = WL_IDLE_STATUS;
-char server[] = "jim60105.ddns.net:81";    // name address
+char server[] = "121.254.84.35";    // name address
 
 WiFiClient client;
 
@@ -56,7 +56,7 @@ long sch2o,stemp,shumid;
 
 void setup() {
 //Initialize serial and wait for port to open:
-  Serial.begin(9600);
+  Serial.begin(38400);
   while (!Serial) {
     ;
   }
@@ -102,41 +102,27 @@ void loop() { // run over and over
   Serial.println(PMS5003Value.temp);
   Serial.print("humid:");
   Serial.println(PMS5003Value.humid);
-
+  
 
   //組合資料
-  String jsonStr = (String)"{\"pm1:\":"+PMS5003Value.pm1+",\"pm10\":"+PMS5003Value.pm10+",\"pm25\":"+PMS5003Value.pm25+",\"temp\":"+PMS5003Value.temp+",\"humid\":"+PMS5003Value.humid+"}";
-
-  //送出資料到伺服器
-  Serial.println("\nStarting connection to server...");
-  // if you get a connection, report back via serial:
-  if (client.connect(server, 80)) {
-    Serial.println("connected to server");
-    // Make a HTTP request:
-  client.println("POST /temp HTTP/1.1");
-  client.println("Content-Type: application/json");
-  client.print("Content-Length: ");
-  client.println(jsonStr.length());
-  client.println();
-  client.print(jsonStr);
+  String jsonStr = (String)"pm1="+PMS5003Value.pm1+"&pm10="+PMS5003Value.pm10+"&pm25="+PMS5003Value.pm25+"&temp="+PMS5003Value.temp+"&humid="+PMS5003Value.humid;
+  
+  // if the server's disconnected, stop the client:
+  if (!client.connected()) {
+    Serial.println("disconnecting from server.");
+    client.stop();
+    Serial.println("delay3000");
+    delay(3000);
+    connect2server(jsonStr);
+    
   }
-
-  /*
-  // if there are incoming bytes available
-  // from the server, read them and print them:
   while (client.available()) {
     char c = client.read();
     Serial.write(c);
   }
-
-  // if the server's disconnected, stop the client:
-  if (!client.connected()) {
-    Serial.println();
-    Serial.println("disconnecting from server.");
-    client.stop();
-  }
-  */
+  
   //等2秒
+  Serial.println("delay2000");
   delay(2000);
 }
 
@@ -215,3 +201,31 @@ void printWifiStatus() {
   Serial.print(rssi);
   Serial.println(" dBm");
 }
+
+void connect2server(String jsonStr) {
+  //送出資料到伺服器
+  Serial.println("\nStarting connection to server...");
+  // if you get a connection, report back via serial:
+  if (client.connect(server, 8008)) {
+    sendData(jsonStr);
+  }
+}
+
+void sendData(String jsonStr){
+    client.print("GET /PMS5003TAirQuality/php/addData.php?");
+    client.print(jsonStr);
+    client.println(" HTTP/1.1");
+    //client.println("Host: 121.254.84.35:8008");
+    //client.println("User-Agent: Arduino/1.0");
+    //client.println("Content-Type: application/json;charaset=utf-8");
+    //client.print("Content-Length: ");
+    //Serial.println(jsonStr.length());
+    //client.println(jsonStr.length());
+    //client.println("Connection: close" );
+    //client.println("Accept: */*");
+    client.println();
+    //Serial.println(jsonStr);    
+    //client.println(jsonStr);
+    
+}
+
