@@ -88,42 +88,43 @@ void setup() {
 }
 
 void loop() { // run over and over
-  //硬件初始化
-
-  PMS5003Value = getPMS5003();
-
-  Serial.print("pm1:");
-  Serial.println(PMS5003Value.pm1);
-  Serial.print("pm10:");
-  Serial.println(PMS5003Value.pm10);
-  Serial.print("pm25:");
-  Serial.println(PMS5003Value.pm25);
-  Serial.print("temp:");
-  Serial.println(PMS5003Value.temp);
-  Serial.print("humid:");
-  Serial.println(PMS5003Value.humid);
-  
-
-  //組合資料
-  String jsonStr = (String)"pm1="+PMS5003Value.pm1+"&pm10="+PMS5003Value.pm10+"&pm25="+PMS5003Value.pm25+"&temp="+PMS5003Value.temp+"&humid="+PMS5003Value.humid;
-  
-  // if the server's disconnected, stop the client:
-  if (!client.connected()) {
-    Serial.println("disconnecting from server.");
     client.stop();
+    Serial.println("disconnecting from server.");
     Serial.println("delay3000");
     delay(3000);
+    //硬件初始化
+  
+    PMS5003Value = getPMS5003();
+  
+    Serial.print("pm1:");
+    Serial.println(PMS5003Value.pm1);
+    Serial.print("pm10:");
+    Serial.println(PMS5003Value.pm10);
+    Serial.print("pm25:");
+    Serial.println(PMS5003Value.pm25);
+    Serial.print("temp:");
+    Serial.println(PMS5003Value.temp);
+    Serial.print("humid:");
+    Serial.println(PMS5003Value.humid);
+    
+  
+    //組合資料
+    String jsonStr = (String)"pm1="+PMS5003Value.pm1+"&pm10="+PMS5003Value.pm10+"&pm25="+PMS5003Value.pm25+"&temp="+PMS5003Value.temp+"&humid="+PMS5003Value.humid;
+    
     connect2server(jsonStr);
     
-  }
+  
+  /*
   while (client.available()) {
     char c = client.read();
     Serial.write(c);
   }
-  
+  */
+  /*
   //等2秒
   Serial.println("delay2000");
   delay(2000);
+  */
 }
 
 struct SensorValuesBar getPMS5003(){
@@ -207,25 +208,11 @@ void connect2server(String jsonStr) {
   Serial.println("\nStarting connection to server...");
   // if you get a connection, report back via serial:
   if (client.connect(server, 8008)) {
-    sendData(jsonStr);
-  }
-}
-
-void sendData(String jsonStr){
     client.print("GET /PMS5003TAirQuality/php/addData.php?");
     client.print(jsonStr);
     client.println(" HTTP/1.1");
-    //client.println("Host: 121.254.84.35:8008");
-    //client.println("User-Agent: Arduino/1.0");
-    //client.println("Content-Type: application/json;charaset=utf-8");
-    //client.print("Content-Length: ");
-    //Serial.println(jsonStr.length());
-    //client.println(jsonStr.length());
-    //client.println("Connection: close" );
-    //client.println("Accept: */*");
+    client.println("Host: 121.254.84.35:8008");
+    client.println("User-Agent: Arduino/1.0");
     client.println();
-    //Serial.println(jsonStr);    
-    //client.println(jsonStr);
-    
+  }
 }
-
