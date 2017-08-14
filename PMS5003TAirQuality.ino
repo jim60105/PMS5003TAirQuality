@@ -36,6 +36,9 @@ char ssid[] = "jim60105-MI5S Plus"; //  your network SSID (name)
 char pass[] = "000000000";    // your network password (use for WPA, or use as key for WEP)
 int keyIndex = 0;            // your network key Index number (needed only for WEP)
 
+//終端設定
+int clientNum = 0;
+
 int status = WL_IDLE_STATUS;
 char server[] = "121.254.84.35";    // name address
 
@@ -109,7 +112,7 @@ void loop() { // run over and over
     
   
     //組合資料
-    String jsonStr = (String)"pm1="+PMS5003Value.pm1+"&pm10="+PMS5003Value.pm10+"&pm25="+PMS5003Value.pm25+"&temp="+PMS5003Value.temp+"&humid="+PMS5003Value.humid;
+    String jsonStr = (String)"pm1="+PMS5003Value.pm1+"&pm10="+PMS5003Value.pm10+"&pm25="+PMS5003Value.pm25+"&temp="+PMS5003Value.temp+"&humid="+PMS5003Value.humid+"&clientNum="+clientNum;
     
     connect2server(jsonStr);
     
