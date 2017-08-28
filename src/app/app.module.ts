@@ -1,22 +1,44 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
-import { NavBarComponent } from './nav-bar.component';
-import { SideBarComponent } from './side-bar.component';
 import { MainPageComponent } from './main-page.component';
+import { MapPageComponent } from './map-page.component';
+import { DynamicComponentService } from './dynamic-component.service';
+import { DynamicComponentDirective } from './dynamic-component.directive';
+
+//GoogleMap
+import { AgmCoreModule } from '@agm/core';
+
+//innerHtml Safer
+import { Safe } from './safe-html.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavBarComponent,
-    SideBarComponent,
-    MainPageComponent
+    MainPageComponent,
+    MapPageComponent,
+    Safe,
+    DynamicComponentDirective
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    CommonModule,
+    FormsModule,
+    HttpModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyDZMWcTgVoCqPDHMBGYpjRZ7stYsH7XZ-o'
+    }),
   ],
-  providers: [],
+  entryComponents: [
+    MainPageComponent,
+    MapPageComponent
+  ],
+  providers: [DynamicComponentService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

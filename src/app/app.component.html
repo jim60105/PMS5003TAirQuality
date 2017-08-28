@@ -1,10 +1,64 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<nav-bar></nav-bar>
+<nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
+  <button class="navbar-toggler navbar-toggler-right hidden-lg-up" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand" href="TODO">Dashboard</a>
+
+  <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="#" (click)="displayComponent('MainPageComponent')">總覽<span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" (click)="displayComponent('MapPageComponent')">偵測站地圖</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" (click)="displayComponent('MapPageComponent')">歷史數據</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" (click)="displayComponent('MapPageComponent')">平均數據</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" (click)="displayComponent('MapPageComponent')">即時監測</a>
+      </li>
+    </ul>
+    <form class="form-inline mt-2 mt-md-0">
+      <input class="form-control mr-sm-2" type="text" placeholder="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+  </div>
+</nav>
 
 <div class="container-fluid">
   <div class="row">
-    <side-bar class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar"></side-bar>
-    <main-page class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3"></main-page>
+    <!--sidebar-->
+    <div class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+      <nav>
+        <ul class="nav nav-pills flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-toggle="pill" (click)="displayComponent('MainPageComponent')">總覽<span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-toggle="pill" (click)="displayComponent('MapPageComponent')">偵測站地圖</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-toggle="pill" (click)="displayComponent('MapPageComponent')">歷史數據</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-toggle="pill" (click)="displayComponent('MapPageComponent')">平均數據</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-toggle="pill" (click)="displayComponent('MapPageComponent')">即時監測</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <!--page-->
+    <div class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+      <!--動態page-->
+      <ng-template appDynamicComponent></ng-template>
+    </div>
   </div>
 </div>
 
