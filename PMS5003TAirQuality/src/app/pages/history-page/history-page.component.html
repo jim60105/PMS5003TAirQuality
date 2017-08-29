@@ -1,3 +1,54 @@
-<p>
-  history-page works!
-</p>
+<div>
+  <!--
+      <h1>Dashboard</h1>
+      <section class="row text-center placeholders">
+          <div class="col-6 col-sm-3 placeholder">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
+              <h4>Label</h4>
+              <div class="text-muted">Something else</div>
+          </div>
+          <div class="col-6 col-sm-3 placeholder">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
+              <h4>Label</h4>
+              <span class="text-muted">Something else</span>
+          </div>
+          <div class="col-6 col-sm-3 placeholder">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
+              <h4>Label</h4>
+              <span class="text-muted">Something else</span>
+          </div>
+          <div class="col-6 col-sm-3 placeholder">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
+              <h4>Label</h4>
+              <span class="text-muted">Something else</span>
+          </div>
+      </section>
+  -->
+  <h2>數據顯示</h2>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>time</th>
+        <th>PM1</th>
+        <th>PM2.5</th>
+        <th>PM10</th>
+        <th>temp</th>
+        <th>humid</th>
+        <th>clientNum</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of datas">
+        <td [innerHtml]="data.time"></td>
+        <td [innerHtml]="data.pm1"></td>
+        <td [innerHtml]="data.pm25"></td>
+        <td [innerHtml]="data.pm10"></td>
+        <td [innerHtml]="data.temp"></td>
+        <td [innerHtml]="data.humid"></td>
+        <td [innerHtml]="data.clientNum"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

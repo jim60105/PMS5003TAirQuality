@@ -3,12 +3,21 @@ import { Http, Response, RequestOptions  } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 
+import { DATA } from '../../mock-data';
+
 @Component({
     selector: 'app-main-page',
     templateUrl: './main-page.component.html',
 })
 export class MainPageComponent {
     constructor(private http:Http){}
+
+    datas: any;
+    ngOnInit() {
+        this.datas = DATA;
+    }
+
+    /*
     private dbURL = "http://localhost/php/getDB.php";
 
     getDataHttp():Observable<any>{
@@ -18,9 +27,13 @@ export class MainPageComponent {
         });
     }
 
-    subscription = this.getDataHttp().subscribe((data)=>{
-        console.log(data.toString());
+    subscription = this.getDataHttp().subscribe((dataIn)=>{
+        console.log(dataIn.toString());
+        this.datas = dataIn;
     },(err)=>{
         console.error("Err: " + err);
     });
+    */
+
+
 }

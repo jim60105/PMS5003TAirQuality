@@ -26,9 +26,9 @@ import { HistoryPageComponent } from './pages/history-page/history-page.componen
     AppComponent,
     MainPageComponent,
     MapPageComponent,
+    HistoryPageComponent,
     Safe,
     DynamicComponentDirective,
-    HistoryPageComponent,
   ],
   imports: [
     BrowserModule,

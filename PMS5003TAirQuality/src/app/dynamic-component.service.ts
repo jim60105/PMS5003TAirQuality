@@ -7,7 +7,8 @@ import { HistoryPageComponent } from './pages/history-page/history-page.componen
 export class DynamicComponentService {
     private components = {
         MainPageComponent: MainPageComponent,
-        MapPageComponent: MapPageComponent
+        MapPageComponent: MapPageComponent,
+        HistoryPageComponent: HistoryPageComponent,
     }
     constructor() { }
 
