@@ -123,20 +123,24 @@ var _a, _b, _c;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_http__ = __webpack_require__("../../../http/@angular/http.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_routing_module__ = __webpack_require__("../../../../../src/app/app-routing.module.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ng_bootstrap_ng_bootstrap__ = __webpack_require__("../../../../@ng-bootstrap/ng-bootstrap/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__agm_core__ = __webpack_require__("../../../../@agm/core/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__safe_html_component__ = __webpack_require__("../../../../../src/app/safe-html.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__dynamic_component_service__ = __webpack_require__("../../../../../src/app/dynamic-component.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__dynamic_component_directive__ = __webpack_require__("../../../../../src/app/dynamic-component.directive.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__app_component__ = __webpack_require__("../../../../../src/app/app.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_main_page_main_page_component__ = __webpack_require__("../../../../../src/app/pages/main-page/main-page.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__pages_map_page_map_page_component__ = __webpack_require__("../../../../../src/app/pages/map-page/map-page.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__pages_history_page_history_page_component__ = __webpack_require__("../../../../../src/app/pages/history-page/history-page.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_ngx_bootstrap__ = __webpack_require__("../../../../ngx-bootstrap/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_ngx_bootstrap_datepicker__ = __webpack_require__("../../../../ngx-bootstrap/datepicker/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__agm_core__ = __webpack_require__("../../../../@agm/core/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__safe_html_component__ = __webpack_require__("../../../../../src/app/safe-html.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__dynamic_component_service__ = __webpack_require__("../../../../../src/app/dynamic-component.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__dynamic_component_directive__ = __webpack_require__("../../../../../src/app/dynamic-component.directive.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__app_component__ = __webpack_require__("../../../../../src/app/app.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__pages_main_page_main_page_component__ = __webpack_require__("../../../../../src/app/pages/main-page/main-page.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__pages_map_page_map_page_component__ = __webpack_require__("../../../../../src/app/pages/map-page/map-page.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__pages_history_page_history_page_component__ = __webpack_require__("../../../../../src/app/pages/history-page/history-page.component.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
+
 
 
 
@@ -163,12 +167,12 @@ var AppModule = (function () {
 AppModule = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["M" /* NgModule */])({
         declarations: [
-            __WEBPACK_IMPORTED_MODULE_11__app_component__["a" /* AppComponent */],
-            __WEBPACK_IMPORTED_MODULE_12__pages_main_page_main_page_component__["a" /* MainPageComponent */],
-            __WEBPACK_IMPORTED_MODULE_13__pages_map_page_map_page_component__["a" /* MapPageComponent */],
-            __WEBPACK_IMPORTED_MODULE_14__pages_history_page_history_page_component__["a" /* HistoryPageComponent */],
-            __WEBPACK_IMPORTED_MODULE_8__safe_html_component__["a" /* Safe */],
-            __WEBPACK_IMPORTED_MODULE_10__dynamic_component_directive__["a" /* DynamicComponentDirective */],
+            __WEBPACK_IMPORTED_MODULE_13__app_component__["a" /* AppComponent */],
+            __WEBPACK_IMPORTED_MODULE_14__pages_main_page_main_page_component__["a" /* MainPageComponent */],
+            __WEBPACK_IMPORTED_MODULE_15__pages_map_page_map_page_component__["a" /* MapPageComponent */],
+            __WEBPACK_IMPORTED_MODULE_16__pages_history_page_history_page_component__["a" /* HistoryPageComponent */],
+            __WEBPACK_IMPORTED_MODULE_10__safe_html_component__["a" /* Safe */],
+            __WEBPACK_IMPORTED_MODULE_12__dynamic_component_directive__["a" /* DynamicComponentDirective */],
         ],
         imports: [
             __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
@@ -177,17 +181,19 @@ AppModule = __decorate([
             __WEBPACK_IMPORTED_MODULE_3__angular_forms__["a" /* FormsModule */],
             __WEBPACK_IMPORTED_MODULE_4__angular_http__["b" /* HttpModule */],
             __WEBPACK_IMPORTED_MODULE_6__ng_bootstrap_ng_bootstrap__["a" /* NgbModule */].forRoot(),
-            __WEBPACK_IMPORTED_MODULE_7__agm_core__["a" /* AgmCoreModule */].forRoot({
+            __WEBPACK_IMPORTED_MODULE_9__agm_core__["a" /* AgmCoreModule */].forRoot({
                 apiKey: 'AIzaSyDZMWcTgVoCqPDHMBGYpjRZ7stYsH7XZ-o'
             }),
+            __WEBPACK_IMPORTED_MODULE_7_ngx_bootstrap__["a" /* DatepickerModule */].forRoot(),
+            __WEBPACK_IMPORTED_MODULE_8_ngx_bootstrap_datepicker__["a" /* BsDatepickerModule */].forRoot(),
         ],
         entryComponents: [
-            __WEBPACK_IMPORTED_MODULE_12__pages_main_page_main_page_component__["a" /* MainPageComponent */],
-            __WEBPACK_IMPORTED_MODULE_13__pages_map_page_map_page_component__["a" /* MapPageComponent */],
-            __WEBPACK_IMPORTED_MODULE_14__pages_history_page_history_page_component__["a" /* HistoryPageComponent */],
+            __WEBPACK_IMPORTED_MODULE_14__pages_main_page_main_page_component__["a" /* MainPageComponent */],
+            __WEBPACK_IMPORTED_MODULE_15__pages_map_page_map_page_component__["a" /* MapPageComponent */],
+            __WEBPACK_IMPORTED_MODULE_16__pages_history_page_history_page_component__["a" /* HistoryPageComponent */],
         ],
-        providers: [__WEBPACK_IMPORTED_MODULE_9__dynamic_component_service__["a" /* DynamicComponentService */]],
-        bootstrap: [__WEBPACK_IMPORTED_MODULE_11__app_component__["a" /* AppComponent */]]
+        providers: [__WEBPACK_IMPORTED_MODULE_11__dynamic_component_service__["a" /* DynamicComponentService */]],
+        bootstrap: [__WEBPACK_IMPORTED_MODULE_13__app_component__["a" /* AppComponent */]]
     })
 ], AppModule);
 
@@ -273,16 +279,6 @@ DynamicComponentService = __decorate([
 
 /***/ }),
 
-/***/ "../../../../../src/app/mock-data.ts":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DATA; });
-var DATA = [{ "no": "1", "0": "1", "time": "2017-08-14 07:03:02", "1": "2017-08-14 07:03:02", "pm1": "9", "2": "9", "pm10": "13", "3": "13", "pm25": "13", "4": "13", "temp": "25.4", "5": "25.4", "humid": "82.6", "6": "82.6", "clientNum": "1", "7": "1" }, { "no": "2", "0": "2", "time": "2017-08-14 07:03:05", "1": "2017-08-14 07:03:05", "pm1": "9", "2": "9", "pm10": "13", "3": "13", "pm25": "13", "4": "13", "temp": "25.4", "5": "25.4", "humid": "82.2", "6": "82.2", "clientNum": "1", "7": "1" }, { "no": "3", "0": "3", "time": "2017-08-14 07:03:08", "1": "2017-08-14 07:03:08", "pm1": "9", "2": "9", "pm10": "13", "3": "13", "pm25": "13", "4": "13", "temp": "25.5", "5": "25.5", "humid": "81.9", "6": "81.9", "clientNum": "1", "7": "1" }, { "no": "4", "0": "4", "time": "2017-08-14 07:03:11", "1": "2017-08-14 07:03:11", "pm1": "8", "2": "8", "pm10": "12", "3": "12", "pm25": "12", "4": "12", "temp": "25.6", "5": "25.6", "humid": "81.6", "6": "81.6", "clientNum": "1", "7": "1" }, { "no": "5", "0": "5", "time": "2017-08-14 07:03:14", "1": "2017-08-14 07:03:14", "pm1": "7", "2": "7", "pm10": "10", "3": "10", "pm25": "10", "4": "10", "temp": "25.6", "5": "25.6", "humid": "81.4", "6": "81.4", "clientNum": "1", "7": "1" }, { "no": "6", "0": "6", "time": "2017-08-14 07:03:17", "1": "2017-08-14 07:03:17", "pm1": "7", "2": "7", "pm10": "10", "3": "10", "pm25": "10", "4": "10", "temp": "25.7", "5": "25.7", "humid": "81.1", "6": "81.1", "clientNum": "1", "7": "1" }, { "no": "7", "0": "7", "time": "2017-08-14 07:03:20", "1": "2017-08-14 07:03:20", "pm1": "7", "2": "7", "pm10": "10", "3": "10", "pm25": "10", "4": "10", "temp": "25.8", "5": "25.8", "humid": "80.8", "6": "80.8", "clientNum": "1", "7": "1" }, { "no": "8", "0": "8", "time": "2017-08-14 07:03:23", "1": "2017-08-14 07:03:23", "pm1": "7", "2": "7", "pm10": "10", "3": "10", "pm25": "10", "4": "10", "temp": "25.8", "5": "25.8", "humid": "80.5", "6": "80.5", "clientNum": "1", "7": "1" }, { "no": "9", "0": "9", "time": "2017-08-14 07:03:27", "1": "2017-08-14 07:03:27", "pm1": "7", "2": "7", "pm10": "10", "3": "10", "pm25": "10", "4": "10", "temp": "25.8", "5": "25.8", "humid": "80.2", "6": "80.2", "clientNum": "1", "7": "1" }, { "no": "10", "0": "10", "time": "2017-08-14 07:03:30", "1": "2017-08-14 07:03:30", "pm1": "7", "2": "7", "pm10": "0", "3": "0", "pm25": "10", "4": "10", "temp": "25.8", "5": "25.8", "humid": "80.2", "6": "80.2", "clientNum": "1", "7": "1" }, { "no": "11", "0": "11", "time": "2017-08-14 07:03:33", "1": "2017-08-14 07:03:33", "pm1": "7", "2": "7", "pm10": "10", "3": "10", "pm25": "10", "4": "10", "temp": "25.9", "5": "25.9", "humid": "80", "6": "80", "clientNum": "1", "7": "1" }, { "no": "12", "0": "12", "time": "2017-08-14 07:03:36", "1": "2017-08-14 07:03:36", "pm1": "8", "2": "8", "pm10": "11", "3": "11", "pm25": "11", "4": "11", "temp": "26", "5": "26", "humid": "79.9", "6": "79.9", "clientNum": "1", "7": "1" }, { "no": "13", "0": "13", "time": "2017-08-14 07:03:39", "1": "2017-08-14 07:03:39", "pm1": "8", "2": "8", "pm10": "11", "3": "11", "pm25": "11", "4": "11", "temp": "26", "5": "26", "humid": "79.7", "6": "79.7", "clientNum": "1", "7": "1" }, { "no": "14", "0": "14", "time": "2017-08-14 07:03:42", "1": "2017-08-14 07:03:42", "pm1": "9", "2": "9", "pm10": "12", "3": "12", "pm25": "12", "4": "12", "temp": "26.1", "5": "26.1", "humid": "79.7", "6": "79.7", "clientNum": "1", "7": "1" }, { "no": "15", "0": "15", "time": "2017-08-14 07:03:45", "1": "2017-08-14 07:03:45", "pm1": "8", "2": "8", "pm10": "11", "3": "11", "pm25": "11", "4": "11", "temp": "26.1", "5": "26.1", "humid": "79.5", "6": "79.5", "clientNum": "1", "7": "1" }, { "no": "16", "0": "16", "time": "2017-08-14 07:03:49", "1": "2017-08-14 07:03:49", "pm1": "8", "2": "8", "pm10": "12", "3": "12", "pm25": "11", "4": "11", "temp": "26.1", "5": "26.1", "humid": "79.3", "6": "79.3", "clientNum": "1", "7": "1" }, { "no": "17", "0": "17", "time": "2017-08-14 07:03:52", "1": "2017-08-14 07:03:52", "pm1": "9", "2": "9", "pm10": "12", "3": "12", "pm25": "11", "4": "11", "temp": "26.2", "5": "26.2", "humid": "79.1", "6": "79.1", "clientNum": "1", "7": "1" }, { "no": "18", "0": "18", "time": "2017-08-14 07:03:55", "1": "2017-08-14 07:03:55", "pm1": "9", "2": "9", "pm10": "13", "3": "13", "pm25": "12", "4": "12", "temp": "26.2", "5": "26.2", "humid": "78.9", "6": "78.9", "clientNum": "1", "7": "1" }, { "no": "19", "0": "19", "time": "2017-08-14 07:03:58", "1": "2017-08-14 07:03:58", "pm1": "8", "2": "8", "pm10": "11", "3": "11", "pm25": "11", "4": "11", "temp": "26.3", "5": "26.3", "humid": "78.7", "6": "78.7", "clientNum": "1", "7": "1" }, { "no": "20", "0": "20", "time": "2017-08-14 07:04:01", "1": "2017-08-14 07:04:01", "pm1": "9", "2": "9", "pm10": "12", "3": "12", "pm25": "11", "4": "11", "temp": "26.3", "5": "26.3", "humid": "78.4", "6": "78.4", "clientNum": "1", "7": "1" }, { "no": "21", "0": "21", "time": "2017-08-14 07:04:04", "1": "2017-08-14 07:04:04", "pm1": "9", "2": "9", "pm10": "12", "3": "12", "pm25": "11", "4": "11", "temp": "26.4", "5": "26.4", "humid": "78.3", "6": "78.3", "clientNum": "1", "7": "1" }, { "no": "22", "0": "22", "time": "2017-08-14 07:04:07", "1": "2017-08-14 07:04:07", "pm1": "9", "2": "9", "pm10": "12", "3": "12", "pm25": "11", "4": "11", "temp": "26.4", "5": "26.4", "humid": "78.2", "6": "78.2", "clientNum": "1", "7": "1" }, { "no": "23", "0": "23", "time": "2017-08-14 07:04:10", "1": "2017-08-14 07:04:10", "pm1": "9", "2": "9", "pm10": "12", "3": "12", "pm25": "11", "4": "11", "temp": "26.5", "5": "26.5", "humid": "79.2", "6": "79.2", "clientNum": "1", "7": "1" }, { "no": "24", "0": "24", "time": "2017-08-14 07:04:13", "1": "2017-08-14 07:04:13", "pm1": "9", "2": "9", "pm10": "11", "3": "11", "pm25": "11", "4": "11", "temp": "26.5", "5": "26.5", "humid": "79.2", "6": "79.2", "clientNum": "1", "7": "1" }, { "no": "25", "0": "25", "time": "2017-08-14 07:04:17", "1": "2017-08-14 07:04:17", "pm1": "8", "2": "8", "pm10": "11", "3": "11", "pm25": "11", "4": "11", "temp": "26.5", "5": "26.5", "humid": "78.7", "6": "78.7", "clientNum": "1", "7": "1" }, { "no": "26", "0": "26", "time": "2017-08-14 07:04:20", "1": "2017-08-14 07:04:20", "pm1": "9", "2": "9", "pm10": "11", "3": "11", "pm25": "11", "4": "11", "temp": "26.6", "5": "26.6", "humid": "78.3", "6": "78.3", "clientNum": "1", "7": "1" }, { "no": "27", "0": "27", "time": "2017-08-14 07:04:23", "1": "2017-08-14 07:04:23", "pm1": "9", "2": "9", "pm10": "11", "3": "11", "pm25": "11", "4": "11", "temp": "26.6", "5": "26.6", "humid": "78.1", "6": "78.1", "clientNum": "1", "7": "1" }, { "no": "28", "0": "28", "time": "2017-08-14 07:04:26", "1": "2017-08-14 07:04:26", "pm1": "9", "2": "9", "pm10": "11", "3": "11", "pm25": "11", "4": "11", "temp": "26.7", "5": "26.7", "humid": "77.8", "6": "77.8", "clientNum": "1", "7": "1" }, { "no": "29", "0": "29", "time": "2017-08-14 07:04:29", "1": "2017-08-14 07:04:29", "pm1": "9", "2": "9", "pm10": "11", "3": "11", "pm25": "11", "4": "11", "temp": "26.7", "5": "26.7", "humid": "77.5", "6": "77.5", "clientNum": "1", "7": "1" }, { "no": "30", "0": "30", "time": "2017-08-14 07:04:32", "1": "2017-08-14 07:04:32", "pm1": "9", "2": "9", "pm10": "11", "3": "11", "pm25": "11", "4": "11", "temp": "26.8", "5": "26.8", "humid": "77.3", "6": "77.3", "clientNum": "1", "7": "1" }, { "no": "31", "0": "31", "time": "2017-08-14 07:04:35", "1": "2017-08-14 07:04:35", "pm1": "9", "2": "9", "pm10": "11", "3": "11", "pm25": "11", "4": "11", "temp": "26.8", "5": "26.8", "humid": "77.1", "6": "77.1", "clientNum": "1", "7": "1" }, { "no": "32", "0": "32", "time": "2017-08-14 07:04:39", "1": "2017-08-14 07:04:39", "pm1": "9", "2": "9", "pm10": "11", "3": "11", "pm25": "11", "4": "11", "temp": "26.8", "5": "26.8", "humid": "76.8", "6": "76.8", "clientNum": "1", "7": "1" }, { "no": "33", "0": "33", "time": "2017-08-14 07:04:42", "1": "2017-08-14 07:04:42", "pm1": "9", "2": "9", "pm10": "11", "3": "11", "pm25": "11", "4": "11", "temp": "26.9", "5": "26.9", "humid": "76.6", "6": "76.6", "clientNum": "1", "7": "1" }, { "no": "34", "0": "34", "time": "2017-08-14 07:04:45", "1": "2017-08-14 07:04:45", "pm1": "10", "2": "10", "pm10": "12", "3": "12", "pm25": "12", "4": "12", "temp": "26.9", "5": "26.9", "humid": "76.5", "6": "76.5", "clientNum": "1", "7": "1" }, { "no": "35", "0": "35", "time": "2017-08-14 07:04:48", "1": "2017-08-14 07:04:48", "pm1": "9", "2": "9", "pm10": "11", "3": "11", "pm25": "11", "4": "11", "temp": "26.9", "5": "26.9", "humid": "77.6", "6": "77.6", "clientNum": "1", "7": "1" }, { "no": "36", "0": "36", "time": "2017-08-14 07:04:51", "1": "2017-08-14 07:04:51", "pm1": "9", "2": "9", "pm10": "12", "3": "12", "pm25": "12", "4": "12", "temp": "26.9", "5": "26.9", "humid": "77.9", "6": "77.9", "clientNum": "1", "7": "1" }, { "no": "37", "0": "37", "time": "2017-08-14 07:04:55", "1": "2017-08-14 07:04:55", "pm1": "8", "2": "8", "pm10": "11", "3": "11", "pm25": "11", "4": "11", "temp": "27", "5": "27", "humid": "77.4", "6": "77.4", "clientNum": "1", "7": "1" }, { "no": "38", "0": "38", "time": "2017-08-14 07:04:58", "1": "2017-08-14 07:04:58", "pm1": "8", "2": "8", "pm10": "10", "3": "10", "pm25": "10", "4": "10", "temp": "27", "5": "27", "humid": "76.7", "6": "76.7", "clientNum": "1", "7": "1" }, { "no": "39", "0": "39", "time": "2017-08-14 07:05:01", "1": "2017-08-14 07:05:01", "pm1": "7", "2": "7", "pm10": "10", "3": "10", "pm25": "10", "4": "10", "temp": "27", "5": "27", "humid": "76.3", "6": "76.3", "clientNum": "1", "7": "1" }, { "no": "40", "0": "40", "time": "2017-08-14 07:05:05", "1": "2017-08-14 07:05:05", "pm1": "8", "2": "8", "pm10": "10", "3": "10", "pm25": "10", "4": "10", "temp": "27.1", "5": "27.1", "humid": "76.1", "6": "76.1", "clientNum": "1", "7": "1" }, { "no": "41", "0": "41", "time": "2017-08-14 07:05:09", "1": "2017-08-14 07:05:09", "pm1": "8", "2": "8", "pm10": "10", "3": "10", "pm25": "10", "4": "10", "temp": "27.1", "5": "27.1", "humid": "75.9", "6": "75.9", "clientNum": "1", "7": "1" }, { "no": "42", "0": "42", "time": "2017-08-14 07:05:12", "1": "2017-08-14 07:05:12", "pm1": "8", "2": "8", "pm10": "11", "3": "11", "pm25": "10", "4": "10", "temp": "27.1", "5": "27.1", "humid": "75.7", "6": "75.7", "clientNum": "1", "7": "1" }, { "no": "43", "0": "43", "time": "2017-08-14 07:05:15", "1": "2017-08-14 07:05:15", "pm1": "9", "2": "9", "pm10": "12", "3": "12", "pm25": "12", "4": "12", "temp": "27.2", "5": "27.2", "humid": "75.7", "6": "75.7", "clientNum": "1", "7": "1" }, { "no": "44", "0": "44", "time": "2017-08-14 07:05:18", "1": "2017-08-14 07:05:18", "pm1": "8", "2": "8", "pm10": "11", "3": "11", "pm25": "11", "4": "11", "temp": "27.2", "5": "27.2", "humid": "75.6", "6": "75.6", "clientNum": "1", "7": "1" }];
-//# sourceMappingURL=mock-data.js.map
-
-/***/ }),
-
 /***/ "../../../../../src/app/pages/history-page/history-page.component.css":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -304,7 +300,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/pages/history-page/history-page.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div>\n  <!--\n      <h1>Dashboard</h1>\n      <section class=\"row text-center placeholders\">\n          <div class=\"col-6 col-sm-3 placeholder\">\n              <img src=\"data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=\" width=\"200\" height=\"200\" class=\"img-fluid rounded-circle\" alt=\"Generic placeholder thumbnail\">\n              <h4>Label</h4>\n              <div class=\"text-muted\">Something else</div>\n          </div>\n          <div class=\"col-6 col-sm-3 placeholder\">\n              <img src=\"data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=\" width=\"200\" height=\"200\" class=\"img-fluid rounded-circle\" alt=\"Generic placeholder thumbnail\">\n              <h4>Label</h4>\n              <span class=\"text-muted\">Something else</span>\n          </div>\n          <div class=\"col-6 col-sm-3 placeholder\">\n              <img src=\"data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=\" width=\"200\" height=\"200\" class=\"img-fluid rounded-circle\" alt=\"Generic placeholder thumbnail\">\n              <h4>Label</h4>\n              <span class=\"text-muted\">Something else</span>\n          </div>\n          <div class=\"col-6 col-sm-3 placeholder\">\n              <img src=\"data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=\" width=\"200\" height=\"200\" class=\"img-fluid rounded-circle\" alt=\"Generic placeholder thumbnail\">\n              <h4>Label</h4>\n              <span class=\"text-muted\">Something else</span>\n          </div>\n      </section>\n  -->\n  <h2>數據顯示</h2>\n  <div class=\"table-responsive\">\n    <table class=\"table table-striped\">\n      <thead>\n      <tr>\n        <th>time</th>\n        <th>PM1</th>\n        <th>PM2.5</th>\n        <th>PM10</th>\n        <th>temp</th>\n        <th>humid</th>\n        <th>clientNum</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr *ngFor=\"let data of datas\">\n        <td [innerHtml]=\"data.time\"></td>\n        <td [innerHtml]=\"data.pm1\"></td>\n        <td [innerHtml]=\"data.pm25\"></td>\n        <td [innerHtml]=\"data.pm10\"></td>\n        <td [innerHtml]=\"data.temp\"></td>\n        <td [innerHtml]=\"data.humid\"></td>\n        <td [innerHtml]=\"data.clientNum\"></td>\n      </tr>\n      </tbody>\n    </table>\n  </div>\n</div>\n"
+module.exports = "<div>\n  <!--\n      <h1>Dashboard</h1>\n      <section class=\"row text-center placeholders\">\n          <div class=\"col-6 col-sm-3 placeholder\">\n              <img src=\"data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=\" width=\"200\" height=\"200\" class=\"img-fluid rounded-circle\" alt=\"Generic placeholder thumbnail\">\n              <h4>Label</h4>\n              <div class=\"text-muted\">Something else</div>\n          </div>\n          <div class=\"col-6 col-sm-3 placeholder\">\n              <img src=\"data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=\" width=\"200\" height=\"200\" class=\"img-fluid rounded-circle\" alt=\"Generic placeholder thumbnail\">\n              <h4>Label</h4>\n              <span class=\"text-muted\">Something else</span>\n          </div>\n          <div class=\"col-6 col-sm-3 placeholder\">\n              <img src=\"data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=\" width=\"200\" height=\"200\" class=\"img-fluid rounded-circle\" alt=\"Generic placeholder thumbnail\">\n              <h4>Label</h4>\n              <span class=\"text-muted\">Something else</span>\n          </div>\n          <div class=\"col-6 col-sm-3 placeholder\">\n              <img src=\"data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=\" width=\"200\" height=\"200\" class=\"img-fluid rounded-circle\" alt=\"Generic placeholder thumbnail\">\n              <h4>Label</h4>\n              <span class=\"text-muted\">Something else</span>\n          </div>\n      </section>\n  -->\n  <h2>歷史查詢</h2>\n  <input type=\"text\"\n         value=\"{{ bsRangeValue[0] | date:'yMd'}} - {{ bsRangeValue[1] | date:'yMd'}}\"\n         bsDaterangepicker [(bsValue)]=\"bsRangeValue\">\n    <span style=\"display: inline-block\">\n      <button class=\"btn btn-success\" (click)=\"drp.toggle()\">Date Range Picker popup</button>\n      <bs-daterangepicker #drp [(bsValue)]=\"bsRangeValue\" placement=\"bottom\" style=\"display: block\"></bs-daterangepicker>\n    </span>\n  <div class=\"table-responsive\">\n    <table class=\"table table-striped\">\n      <thead>\n      <tr>\n        <th>time</th>\n        <th>PM1</th>\n        <th>PM2.5</th>\n        <th>PM10</th>\n        <th>temp</th>\n        <th>humid</th>\n        <th>clientNum</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr *ngFor=\"let data of datas\">\n        <td [innerHtml]=\"data.time\"></td>\n        <td [innerHtml]=\"data.pm1\"></td>\n        <td [innerHtml]=\"data.pm25\"></td>\n        <td [innerHtml]=\"data.pm10\"></td>\n        <td [innerHtml]=\"data.temp\"></td>\n        <td [innerHtml]=\"data.humid\"></td>\n        <td [innerHtml]=\"data.clientNum\"></td>\n      </tr>\n      </tbody>\n    </table>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -317,7 +313,6 @@ module.exports = "<div>\n  <!--\n      <h1>Dashboard</h1>\n      <section class=
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__("../../../http/@angular/http.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/add/operator/map.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__mock_data__ = __webpack_require__("../../../../../src/app/mock-data.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -330,13 +325,35 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-
 var HistoryPageComponent = (function () {
     function HistoryPageComponent(http) {
+        var _this = this;
         this.http = http;
+        this.datas = [];
+        this.maxDate = new Date();
+        this.minDate = new Date();
+        this.bsRangeValue = [this.minDate, this.maxDate];
+        this.dbURL = "php/getDB.php";
+        this.subscription = this.getDataHttp().subscribe(function (dataIn) {
+            console.log(dataIn.toString());
+            _this.datas = dataIn;
+        }, function (err) {
+            console.error("Err: " + err);
+        });
     }
     HistoryPageComponent.prototype.ngOnInit = function () {
-        this.datas = __WEBPACK_IMPORTED_MODULE_3__mock_data__["a" /* DATA */];
+        //this.datas = DATA;
+        this.minDate.setMonth(this.minDate.getMonth() - 2);
+        this.bsRangeValue = [this.minDate, this.maxDate];
+    };
+    HistoryPageComponent.prototype.getDataHttp = function () {
+        var params = new URLSearchParams();
+        params.set('minDate', this.bsRangeValue[0].toISOString().slice(0, 19).replace('T', ' '));
+        params.set('maxDate', this.bsRangeValue[1].toISOString().slice(0, 19).replace('T', ' '));
+        return this.http.get(this.dbURL, { search: params }).map(function (res) {
+            var body = res.json();
+            return body || {};
+        });
     };
     return HistoryPageComponent;
 }());
@@ -357,7 +374,7 @@ var _a;
 /***/ "../../../../../src/app/pages/main-page/main-page.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div>\r\n    <!--\r\n        <h1>Dashboard</h1>\r\n        <section class=\"row text-center placeholders\">\r\n            <div class=\"col-6 col-sm-3 placeholder\">\r\n                <img src=\"data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=\" width=\"200\" height=\"200\" class=\"img-fluid rounded-circle\" alt=\"Generic placeholder thumbnail\">\r\n                <h4>Label</h4>\r\n                <div class=\"text-muted\">Something else</div>\r\n            </div>\r\n            <div class=\"col-6 col-sm-3 placeholder\">\r\n                <img src=\"data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=\" width=\"200\" height=\"200\" class=\"img-fluid rounded-circle\" alt=\"Generic placeholder thumbnail\">\r\n                <h4>Label</h4>\r\n                <span class=\"text-muted\">Something else</span>\r\n            </div>\r\n            <div class=\"col-6 col-sm-3 placeholder\">\r\n                <img src=\"data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=\" width=\"200\" height=\"200\" class=\"img-fluid rounded-circle\" alt=\"Generic placeholder thumbnail\">\r\n                <h4>Label</h4>\r\n                <span class=\"text-muted\">Something else</span>\r\n            </div>\r\n            <div class=\"col-6 col-sm-3 placeholder\">\r\n                <img src=\"data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=\" width=\"200\" height=\"200\" class=\"img-fluid rounded-circle\" alt=\"Generic placeholder thumbnail\">\r\n                <h4>Label</h4>\r\n                <span class=\"text-muted\">Something else</span>\r\n            </div>\r\n        </section>\r\n    -->\r\n    <h2>數據顯示</h2>\r\n    <div class=\"table-responsive\">\r\n        <table class=\"table table-striped\">\r\n            <thead>\r\n            <tr>\r\n                <th>time</th>\r\n                <th>PM1</th>\r\n                <th>PM2.5</th>\r\n                <th>PM10</th>\r\n                <th>temp</th>\r\n                <th>humid</th>\r\n                <th>clientNum</th>\r\n            </tr>\r\n            </thead>\r\n            <tbody>\r\n            <tr *ngFor=\"let data of datas\">\r\n                <td [innerHtml]=\"data.time\"></td>\r\n                <td [innerHtml]=\"data.pm1\"></td>\r\n                <td [innerHtml]=\"data.pm25\"></td>\r\n                <td [innerHtml]=\"data.pm10\"></td>\r\n                <td [innerHtml]=\"data.temp\"></td>\r\n                <td [innerHtml]=\"data.humid\"></td>\r\n                <td [innerHtml]=\"data.clientNum\"></td>\r\n            </tr>\r\n            </tbody>\r\n        </table>\r\n    </div>\r\n</div>"
+module.exports = "<app-history-page></app-history-page>"
 
 /***/ }),
 
@@ -367,41 +384,25 @@ module.exports = "<div>\r\n    <!--\r\n        <h1>Dashboard</h1>\r\n        <se
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MainPageComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__("../../../http/@angular/http.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/add/operator/map.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__mock_data__ = __webpack_require__("../../../../../src/app/mock-data.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
 
 var MainPageComponent = (function () {
-    function MainPageComponent(http) {
-        this.http = http;
+    function MainPageComponent() {
     }
-    MainPageComponent.prototype.ngOnInit = function () {
-        this.datas = __WEBPACK_IMPORTED_MODULE_3__mock_data__["a" /* DATA */];
-    };
     return MainPageComponent;
 }());
 MainPageComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["o" /* Component */])({
         selector: 'app-main-page',
         template: __webpack_require__("../../../../../src/app/pages/main-page/main-page.component.html"),
-    }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Http */]) === "function" && _a || Object])
+    })
 ], MainPageComponent);
 
-var _a;
 //# sourceMappingURL=main-page.component.js.map
 
 /***/ }),
@@ -538,6 +539,259 @@ if (__WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment *
 }
 Object(__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_2__app_app_module__["a" /* AppModule */]);
 //# sourceMappingURL=main.js.map
+
+/***/ }),
+
+/***/ "../../../../moment/locale recursive ^\\.\\/.*$":
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"./af": "../../../../moment/locale/af.js",
+	"./af.js": "../../../../moment/locale/af.js",
+	"./ar": "../../../../moment/locale/ar.js",
+	"./ar-dz": "../../../../moment/locale/ar-dz.js",
+	"./ar-dz.js": "../../../../moment/locale/ar-dz.js",
+	"./ar-kw": "../../../../moment/locale/ar-kw.js",
+	"./ar-kw.js": "../../../../moment/locale/ar-kw.js",
+	"./ar-ly": "../../../../moment/locale/ar-ly.js",
+	"./ar-ly.js": "../../../../moment/locale/ar-ly.js",
+	"./ar-ma": "../../../../moment/locale/ar-ma.js",
+	"./ar-ma.js": "../../../../moment/locale/ar-ma.js",
+	"./ar-sa": "../../../../moment/locale/ar-sa.js",
+	"./ar-sa.js": "../../../../moment/locale/ar-sa.js",
+	"./ar-tn": "../../../../moment/locale/ar-tn.js",
+	"./ar-tn.js": "../../../../moment/locale/ar-tn.js",
+	"./ar.js": "../../../../moment/locale/ar.js",
+	"./az": "../../../../moment/locale/az.js",
+	"./az.js": "../../../../moment/locale/az.js",
+	"./be": "../../../../moment/locale/be.js",
+	"./be.js": "../../../../moment/locale/be.js",
+	"./bg": "../../../../moment/locale/bg.js",
+	"./bg.js": "../../../../moment/locale/bg.js",
+	"./bn": "../../../../moment/locale/bn.js",
+	"./bn.js": "../../../../moment/locale/bn.js",
+	"./bo": "../../../../moment/locale/bo.js",
+	"./bo.js": "../../../../moment/locale/bo.js",
+	"./br": "../../../../moment/locale/br.js",
+	"./br.js": "../../../../moment/locale/br.js",
+	"./bs": "../../../../moment/locale/bs.js",
+	"./bs.js": "../../../../moment/locale/bs.js",
+	"./ca": "../../../../moment/locale/ca.js",
+	"./ca.js": "../../../../moment/locale/ca.js",
+	"./cs": "../../../../moment/locale/cs.js",
+	"./cs.js": "../../../../moment/locale/cs.js",
+	"./cv": "../../../../moment/locale/cv.js",
+	"./cv.js": "../../../../moment/locale/cv.js",
+	"./cy": "../../../../moment/locale/cy.js",
+	"./cy.js": "../../../../moment/locale/cy.js",
+	"./da": "../../../../moment/locale/da.js",
+	"./da.js": "../../../../moment/locale/da.js",
+	"./de": "../../../../moment/locale/de.js",
+	"./de-at": "../../../../moment/locale/de-at.js",
+	"./de-at.js": "../../../../moment/locale/de-at.js",
+	"./de-ch": "../../../../moment/locale/de-ch.js",
+	"./de-ch.js": "../../../../moment/locale/de-ch.js",
+	"./de.js": "../../../../moment/locale/de.js",
+	"./dv": "../../../../moment/locale/dv.js",
+	"./dv.js": "../../../../moment/locale/dv.js",
+	"./el": "../../../../moment/locale/el.js",
+	"./el.js": "../../../../moment/locale/el.js",
+	"./en-au": "../../../../moment/locale/en-au.js",
+	"./en-au.js": "../../../../moment/locale/en-au.js",
+	"./en-ca": "../../../../moment/locale/en-ca.js",
+	"./en-ca.js": "../../../../moment/locale/en-ca.js",
+	"./en-gb": "../../../../moment/locale/en-gb.js",
+	"./en-gb.js": "../../../../moment/locale/en-gb.js",
+	"./en-ie": "../../../../moment/locale/en-ie.js",
+	"./en-ie.js": "../../../../moment/locale/en-ie.js",
+	"./en-nz": "../../../../moment/locale/en-nz.js",
+	"./en-nz.js": "../../../../moment/locale/en-nz.js",
+	"./eo": "../../../../moment/locale/eo.js",
+	"./eo.js": "../../../../moment/locale/eo.js",
+	"./es": "../../../../moment/locale/es.js",
+	"./es-do": "../../../../moment/locale/es-do.js",
+	"./es-do.js": "../../../../moment/locale/es-do.js",
+	"./es.js": "../../../../moment/locale/es.js",
+	"./et": "../../../../moment/locale/et.js",
+	"./et.js": "../../../../moment/locale/et.js",
+	"./eu": "../../../../moment/locale/eu.js",
+	"./eu.js": "../../../../moment/locale/eu.js",
+	"./fa": "../../../../moment/locale/fa.js",
+	"./fa.js": "../../../../moment/locale/fa.js",
+	"./fi": "../../../../moment/locale/fi.js",
+	"./fi.js": "../../../../moment/locale/fi.js",
+	"./fo": "../../../../moment/locale/fo.js",
+	"./fo.js": "../../../../moment/locale/fo.js",
+	"./fr": "../../../../moment/locale/fr.js",
+	"./fr-ca": "../../../../moment/locale/fr-ca.js",
+	"./fr-ca.js": "../../../../moment/locale/fr-ca.js",
+	"./fr-ch": "../../../../moment/locale/fr-ch.js",
+	"./fr-ch.js": "../../../../moment/locale/fr-ch.js",
+	"./fr.js": "../../../../moment/locale/fr.js",
+	"./fy": "../../../../moment/locale/fy.js",
+	"./fy.js": "../../../../moment/locale/fy.js",
+	"./gd": "../../../../moment/locale/gd.js",
+	"./gd.js": "../../../../moment/locale/gd.js",
+	"./gl": "../../../../moment/locale/gl.js",
+	"./gl.js": "../../../../moment/locale/gl.js",
+	"./gom-latn": "../../../../moment/locale/gom-latn.js",
+	"./gom-latn.js": "../../../../moment/locale/gom-latn.js",
+	"./he": "../../../../moment/locale/he.js",
+	"./he.js": "../../../../moment/locale/he.js",
+	"./hi": "../../../../moment/locale/hi.js",
+	"./hi.js": "../../../../moment/locale/hi.js",
+	"./hr": "../../../../moment/locale/hr.js",
+	"./hr.js": "../../../../moment/locale/hr.js",
+	"./hu": "../../../../moment/locale/hu.js",
+	"./hu.js": "../../../../moment/locale/hu.js",
+	"./hy-am": "../../../../moment/locale/hy-am.js",
+	"./hy-am.js": "../../../../moment/locale/hy-am.js",
+	"./id": "../../../../moment/locale/id.js",
+	"./id.js": "../../../../moment/locale/id.js",
+	"./is": "../../../../moment/locale/is.js",
+	"./is.js": "../../../../moment/locale/is.js",
+	"./it": "../../../../moment/locale/it.js",
+	"./it.js": "../../../../moment/locale/it.js",
+	"./ja": "../../../../moment/locale/ja.js",
+	"./ja.js": "../../../../moment/locale/ja.js",
+	"./jv": "../../../../moment/locale/jv.js",
+	"./jv.js": "../../../../moment/locale/jv.js",
+	"./ka": "../../../../moment/locale/ka.js",
+	"./ka.js": "../../../../moment/locale/ka.js",
+	"./kk": "../../../../moment/locale/kk.js",
+	"./kk.js": "../../../../moment/locale/kk.js",
+	"./km": "../../../../moment/locale/km.js",
+	"./km.js": "../../../../moment/locale/km.js",
+	"./kn": "../../../../moment/locale/kn.js",
+	"./kn.js": "../../../../moment/locale/kn.js",
+	"./ko": "../../../../moment/locale/ko.js",
+	"./ko.js": "../../../../moment/locale/ko.js",
+	"./ky": "../../../../moment/locale/ky.js",
+	"./ky.js": "../../../../moment/locale/ky.js",
+	"./lb": "../../../../moment/locale/lb.js",
+	"./lb.js": "../../../../moment/locale/lb.js",
+	"./lo": "../../../../moment/locale/lo.js",
+	"./lo.js": "../../../../moment/locale/lo.js",
+	"./lt": "../../../../moment/locale/lt.js",
+	"./lt.js": "../../../../moment/locale/lt.js",
+	"./lv": "../../../../moment/locale/lv.js",
+	"./lv.js": "../../../../moment/locale/lv.js",
+	"./me": "../../../../moment/locale/me.js",
+	"./me.js": "../../../../moment/locale/me.js",
+	"./mi": "../../../../moment/locale/mi.js",
+	"./mi.js": "../../../../moment/locale/mi.js",
+	"./mk": "../../../../moment/locale/mk.js",
+	"./mk.js": "../../../../moment/locale/mk.js",
+	"./ml": "../../../../moment/locale/ml.js",
+	"./ml.js": "../../../../moment/locale/ml.js",
+	"./mr": "../../../../moment/locale/mr.js",
+	"./mr.js": "../../../../moment/locale/mr.js",
+	"./ms": "../../../../moment/locale/ms.js",
+	"./ms-my": "../../../../moment/locale/ms-my.js",
+	"./ms-my.js": "../../../../moment/locale/ms-my.js",
+	"./ms.js": "../../../../moment/locale/ms.js",
+	"./my": "../../../../moment/locale/my.js",
+	"./my.js": "../../../../moment/locale/my.js",
+	"./nb": "../../../../moment/locale/nb.js",
+	"./nb.js": "../../../../moment/locale/nb.js",
+	"./ne": "../../../../moment/locale/ne.js",
+	"./ne.js": "../../../../moment/locale/ne.js",
+	"./nl": "../../../../moment/locale/nl.js",
+	"./nl-be": "../../../../moment/locale/nl-be.js",
+	"./nl-be.js": "../../../../moment/locale/nl-be.js",
+	"./nl.js": "../../../../moment/locale/nl.js",
+	"./nn": "../../../../moment/locale/nn.js",
+	"./nn.js": "../../../../moment/locale/nn.js",
+	"./pa-in": "../../../../moment/locale/pa-in.js",
+	"./pa-in.js": "../../../../moment/locale/pa-in.js",
+	"./pl": "../../../../moment/locale/pl.js",
+	"./pl.js": "../../../../moment/locale/pl.js",
+	"./pt": "../../../../moment/locale/pt.js",
+	"./pt-br": "../../../../moment/locale/pt-br.js",
+	"./pt-br.js": "../../../../moment/locale/pt-br.js",
+	"./pt.js": "../../../../moment/locale/pt.js",
+	"./ro": "../../../../moment/locale/ro.js",
+	"./ro.js": "../../../../moment/locale/ro.js",
+	"./ru": "../../../../moment/locale/ru.js",
+	"./ru.js": "../../../../moment/locale/ru.js",
+	"./sd": "../../../../moment/locale/sd.js",
+	"./sd.js": "../../../../moment/locale/sd.js",
+	"./se": "../../../../moment/locale/se.js",
+	"./se.js": "../../../../moment/locale/se.js",
+	"./si": "../../../../moment/locale/si.js",
+	"./si.js": "../../../../moment/locale/si.js",
+	"./sk": "../../../../moment/locale/sk.js",
+	"./sk.js": "../../../../moment/locale/sk.js",
+	"./sl": "../../../../moment/locale/sl.js",
+	"./sl.js": "../../../../moment/locale/sl.js",
+	"./sq": "../../../../moment/locale/sq.js",
+	"./sq.js": "../../../../moment/locale/sq.js",
+	"./sr": "../../../../moment/locale/sr.js",
+	"./sr-cyrl": "../../../../moment/locale/sr-cyrl.js",
+	"./sr-cyrl.js": "../../../../moment/locale/sr-cyrl.js",
+	"./sr.js": "../../../../moment/locale/sr.js",
+	"./ss": "../../../../moment/locale/ss.js",
+	"./ss.js": "../../../../moment/locale/ss.js",
+	"./sv": "../../../../moment/locale/sv.js",
+	"./sv.js": "../../../../moment/locale/sv.js",
+	"./sw": "../../../../moment/locale/sw.js",
+	"./sw.js": "../../../../moment/locale/sw.js",
+	"./ta": "../../../../moment/locale/ta.js",
+	"./ta.js": "../../../../moment/locale/ta.js",
+	"./te": "../../../../moment/locale/te.js",
+	"./te.js": "../../../../moment/locale/te.js",
+	"./tet": "../../../../moment/locale/tet.js",
+	"./tet.js": "../../../../moment/locale/tet.js",
+	"./th": "../../../../moment/locale/th.js",
+	"./th.js": "../../../../moment/locale/th.js",
+	"./tl-ph": "../../../../moment/locale/tl-ph.js",
+	"./tl-ph.js": "../../../../moment/locale/tl-ph.js",
+	"./tlh": "../../../../moment/locale/tlh.js",
+	"./tlh.js": "../../../../moment/locale/tlh.js",
+	"./tr": "../../../../moment/locale/tr.js",
+	"./tr.js": "../../../../moment/locale/tr.js",
+	"./tzl": "../../../../moment/locale/tzl.js",
+	"./tzl.js": "../../../../moment/locale/tzl.js",
+	"./tzm": "../../../../moment/locale/tzm.js",
+	"./tzm-latn": "../../../../moment/locale/tzm-latn.js",
+	"./tzm-latn.js": "../../../../moment/locale/tzm-latn.js",
+	"./tzm.js": "../../../../moment/locale/tzm.js",
+	"./uk": "../../../../moment/locale/uk.js",
+	"./uk.js": "../../../../moment/locale/uk.js",
+	"./ur": "../../../../moment/locale/ur.js",
+	"./ur.js": "../../../../moment/locale/ur.js",
+	"./uz": "../../../../moment/locale/uz.js",
+	"./uz-latn": "../../../../moment/locale/uz-latn.js",
+	"./uz-latn.js": "../../../../moment/locale/uz-latn.js",
+	"./uz.js": "../../../../moment/locale/uz.js",
+	"./vi": "../../../../moment/locale/vi.js",
+	"./vi.js": "../../../../moment/locale/vi.js",
+	"./x-pseudo": "../../../../moment/locale/x-pseudo.js",
+	"./x-pseudo.js": "../../../../moment/locale/x-pseudo.js",
+	"./yo": "../../../../moment/locale/yo.js",
+	"./yo.js": "../../../../moment/locale/yo.js",
+	"./zh-cn": "../../../../moment/locale/zh-cn.js",
+	"./zh-cn.js": "../../../../moment/locale/zh-cn.js",
+	"./zh-hk": "../../../../moment/locale/zh-hk.js",
+	"./zh-hk.js": "../../../../moment/locale/zh-hk.js",
+	"./zh-tw": "../../../../moment/locale/zh-tw.js",
+	"./zh-tw.js": "../../../../moment/locale/zh-tw.js"
+};
+function webpackContext(req) {
+	return __webpack_require__(webpackContextResolve(req));
+};
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) // check for number or string
+		throw new Error("Cannot find module '" + req + "'.");
+	return id;
+};
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = "../../../../moment/locale recursive ^\\.\\/.*$";
 
 /***/ }),
 

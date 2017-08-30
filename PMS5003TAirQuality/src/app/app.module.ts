@@ -6,6 +6,8 @@ import { HttpModule } from '@angular/http';
 import { AppRoutingModule } from './app-routing.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
+import { DatepickerModule } from 'ngx-bootstrap';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 //GoogleMap
 import { AgmCoreModule } from '@agm/core';
 
@@ -40,6 +42,8 @@ import { HistoryPageComponent } from './pages/history-page/history-page.componen
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyDZMWcTgVoCqPDHMBGYpjRZ7stYsH7XZ-o'
     }),
+    DatepickerModule.forRoot(),
+    BsDatepickerModule.forRoot(),
   ],
   entryComponents: [
     MainPageComponent,

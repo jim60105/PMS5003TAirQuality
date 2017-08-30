@@ -24,7 +24,14 @@
           </div>
       </section>
   -->
-  <h2>數據顯示</h2>
+  <h2>歷史查詢</h2>
+  <input type="text"
+         value="{{ bsRangeValue[0] | date:'yMd'}} - {{ bsRangeValue[1] | date:'yMd'}}"
+         bsDaterangepicker [(bsValue)]="bsRangeValue">
+    <span style="display: inline-block">
+      <button class="btn btn-success" (click)="drp.toggle()">Date Range Picker popup</button>
+      <bs-daterangepicker #drp [(bsValue)]="bsRangeValue" placement="bottom" style="display: block"></bs-daterangepicker>
+    </span>
   <div class="table-responsive">
     <table class="table table-striped">
       <thead>

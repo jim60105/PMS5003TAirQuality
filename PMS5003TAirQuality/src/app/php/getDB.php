@@ -2,12 +2,14 @@
 include('setMySQL.php');
 //include('encrypt.php');
 
-//$pm1= $_GET["pm1"];
+$minDate= $_GET["minDate"];
+$maxDate= $_GET["maxDate"];
 $arr = array();
 
 $db = new PDO('mysql:host='.$dbhost.';dbname='.$dbname.';port='.$port,$dbuser,$dbpass);
-$stmt = $db->prepare("SELECT * FROM airData");
-//$stmt->bindValue(':clientNum',$clientNum);
+$stmt = $db->prepare("SELECT * FROM airData WHERE time BETWEEN :minDate AND :maxDate");
+$stmt->bindValue(':minDate',$minDate);
+$stmt->bindValue(':maxDate',$maxDate);
 $stmt->execute();
 
 //去除重複
