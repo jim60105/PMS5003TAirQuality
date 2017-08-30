@@ -32,7 +32,7 @@ SoftwareSerial PMS5003Serial(17, 5); // RX, TX
 //#endif
 
 //WIFI設定
-char ssid[] = "jim60105-MI5S Plus"; //  your network SSID (name)
+char ssid[] = "jim60105"; //  your network SSID (name)
 char pass[] = "000000000";    // your network password (use for WPA, or use as key for WEP)
 int keyIndex = 0;            // your network key Index number (needed only for WEP)
 
@@ -211,7 +211,7 @@ void connect2server(String jsonStr) {
   Serial.println("\nStarting connection to server...");
   // if you get a connection, report back via serial:
   if (client.connect(server, 8008)) {
-    client.print("GET /PMS5003TAirQuality/php/addData.php?");
+    client.print("GET /php/addData.php?");
     client.print(jsonStr);
     client.println(" HTTP/1.1");
     client.println("Host: 121.254.84.35:8008");
