@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Http, Response, RequestOptions  } from '@angular/http';
+import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 
