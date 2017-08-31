@@ -27,7 +27,7 @@
   <h2>歷史查詢</h2>
   <input type="text"
          value="{{ bsRangeValue[0] | date:'yMd'}} - {{ bsRangeValue[1] | date:'yMd'}}"
-         bsDaterangepicker [(bsValue)]="bsRangeValue">
+         bsDaterangepicker [(bsValue)]="bsRangeValue"  (change)="getDataHttp()">
     <span style="display: inline-block">
       <button class="btn btn-success" (click)="drp.toggle()">Date Range Picker popup</button>
       <bs-daterangepicker #drp [(bsValue)]="bsRangeValue" placement="bottom" style="display: block"></bs-daterangepicker>
