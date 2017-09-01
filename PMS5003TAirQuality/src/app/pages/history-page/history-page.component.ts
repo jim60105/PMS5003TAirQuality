@@ -25,7 +25,8 @@ export class HistoryPageComponent {
   public bsRangeValue:any = [this.minDate, this.maxDate];
 
   ngOnInit() {
-    //this.datas = DATA;  //Use mock data
+    this.datas = DATA;  //Use mock data
+    this.getDataHttp();
   }
 
   private previousbsRangeValue = this.bsRangeValue;
@@ -33,7 +34,7 @@ export class HistoryPageComponent {
     if(!arrayEqual(this.bsRangeValue,this.previousbsRangeValue)) {
       this.previousbsRangeValue = this.bsRangeValue;
       this.getDataHttp();
-      console.log('bsRangeValue change detect.');
+      //console.log('bsRangeValue change detect.');
     }
   }
 
@@ -47,7 +48,7 @@ export class HistoryPageComponent {
       let body = res.json();
       return body || {};
     }).subscribe((dataIn)=> {
-      console.log(dataIn.toString());
+      //console.log(dataIn.toString());
       this.datas = dataIn;
     }, (err)=> {
       console.error("Err: " + err);

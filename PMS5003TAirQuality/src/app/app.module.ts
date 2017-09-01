@@ -10,6 +10,7 @@ import { DatepickerModule } from 'ngx-bootstrap';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 //GoogleMap
 import { AgmCoreModule } from '@agm/core';
+import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
 
 //innerHtml Safer
 import { Safe } from './safe-html.component';
@@ -22,6 +23,7 @@ import { AppComponent } from './app.component';
 import { MainPageComponent } from './pages/main-page/main-page.component';
 import { MapPageComponent } from './pages/map-page/map-page.component';
 import { HistoryPageComponent } from './pages/history-page/history-page.component';
+import { RealTimePageComponent } from './pages/real-time-page/real-time-page.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +31,7 @@ import { HistoryPageComponent } from './pages/history-page/history-page.componen
     MainPageComponent,
     MapPageComponent,
     HistoryPageComponent,
+    RealTimePageComponent,
     Safe,
     DynamicComponentDirective,
   ],
@@ -39,9 +42,12 @@ import { HistoryPageComponent } from './pages/history-page/history-page.componen
     FormsModule,
     HttpModule,
 	NgbModule.forRoot(),
+
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyDZMWcTgVoCqPDHMBGYpjRZ7stYsH7XZ-o'
     }),
+    AgmSnazzyInfoWindowModule,
+
     DatepickerModule.forRoot(),
     BsDatepickerModule.forRoot(),
   ],
@@ -49,6 +55,7 @@ import { HistoryPageComponent } from './pages/history-page/history-page.componen
     MainPageComponent,
     MapPageComponent,
     HistoryPageComponent,
+    RealTimePageComponent,
   ],
   providers: [DynamicComponentService],
   bootstrap: [AppComponent]
