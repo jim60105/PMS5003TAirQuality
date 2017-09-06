@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/map';
-import { Observable } from 'rxjs/Observable';
+//import { Observable } from 'rxjs/Observable';
 
 import { MapPageComponent } from '../map-page/map-page.component';
 
-import { DATA } from '../../mock-data';
-import { arrayEqual } from '../../array-equal';
+import { realTimeDATA } from '../../mock-realTimeData';
 @Component({
   selector: 'app-real-time-page',
   templateUrl: './real-time-page.component.html',
@@ -16,28 +15,33 @@ export class RealTimePageComponent {
 
   constructor(private http:Http) {}
 
-  realTimeAirData:Object[] = [];
+  realTimeAirData:Object = {};
+
+  getDataInterval: any;
 
   ngOnInit() {
-    this.realTimeAirData = DATA;  //Use mock data
+    this.realTimeAirData = realTimeDATA;  //Use mock data
     this.getRealTimeAirDataHttp();
+    this.getDataInterval = setInterval(() => {
+      this.getRealTimeAirDataHttp();
+    }, 61000);
   }
 
-  private dbURL = "php/getDB.php";
+  ngOnDestroy() {
+    clearInterval(this.getDataInterval);
+  }
+
+  private dbURL = "php/getDBRealTime.php";
 
   getRealTimeAirDataHttp(){
-    let params = new URLSearchParams();
-
-    let toDay:Date = new Date();
-    let toDayString:string = toDay.toISOString().slice(0, 19).replace('T', ' ');
-    params.set('minDate', toDayString);
-    params.set('maxDate', toDayString);
-    return this.http.get(this.dbURL, {search: params}).map((res:Response) => {
+    return this.http.get(this.dbURL).map((res:Response) => {
       let body = res.json();
       return body || {};
     }).subscribe((dataIn)=> {
-      //TODO Get last data
-
+      dataIn.forEach((value,index,array)=>{
+        this.realTimeAirData = {};
+        this.realTimeAirData[value.clientNum] = value;
+      });
     }, (err)=> {
       console.error("Err: " + err);
     });

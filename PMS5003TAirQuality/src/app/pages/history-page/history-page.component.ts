@@ -38,7 +38,7 @@ export class HistoryPageComponent {
     }
   }
 
-  private dbURL = "php/getDB.php";
+  private dbURL = "php/getDBByTime.php";
 
   getDataHttp(){
     let params = new URLSearchParams();

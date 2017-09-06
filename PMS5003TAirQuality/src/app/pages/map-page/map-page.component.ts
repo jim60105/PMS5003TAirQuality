@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
@@ -10,10 +10,11 @@ import { CLIENTINFO } from '../../mock-clientInfo';
     styleUrls: ['./map-page.component.css']
 })
 export class MapPageComponent {
+    @Input() mapMarkerText: Object = {};
+
     lat: number = 24.1814718;
     lng: number = 120.6053346;
     zoom: number = 15;
-
     clientDatas:Object[] = [];
     private dbURL = "php/getClientInfo.php";
 

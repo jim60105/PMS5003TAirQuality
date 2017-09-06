@@ -1,5 +1,4 @@
 /* You can add global styles to this file, and also import other style files */
-@import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 /*
  * Base structure
@@ -70,4 +69,10 @@ h1 {
 .placeholder img {
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
+}
+
+
+/*map css*/
+.si-content-wrapper{
+    padding: 15px;
 }

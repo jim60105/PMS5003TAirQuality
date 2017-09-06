@@ -31,16 +31,23 @@ SoftwareSerial PMS5003Serial(17, 5); // RX, TX
 //SoftwareSerial mySerial(0, 1); // RX, TX
 //#endif
 
+//******************************************************************************************
 //WIFI設定
 char ssid[] = "jim60105"; //  your network SSID (name)
 char pass[] = "000000000";    // your network password (use for WPA, or use as key for WEP)
 int keyIndex = 0;            // your network key Index number (needed only for WEP)
 
-//終端設定
+//終端編號
 int clientNum = 0;
 
+//server設定
 int status = WL_IDLE_STATUS;
-char server[] = "121.254.84.35";    // name address
+char server[] = "121.254.84.35";    // server address
+int port = 8008;                    // server port, use 80 for defult
+
+//間隔時間
+int delayTime = 60000;              // interval for every http request
+//******************************************************************************************
 
 WiFiClient client;
 
@@ -93,10 +100,10 @@ void setup() {
 void loop() { // run over and over
     client.stop();
     Serial.println("disconnecting from server.");
-    Serial.println("delay3000");
-    delay(3000);
+    Serial.println("Interval...");
+    delay(delayTime);
+    
     //硬件初始化
-  
     PMS5003Value = getPMS5003();
   
     Serial.print("pm1:");
@@ -109,25 +116,11 @@ void loop() { // run over and over
     Serial.println(PMS5003Value.temp);
     Serial.print("humid:");
     Serial.println(PMS5003Value.humid);
-    
-  
+      
     //組合資料
     String jsonStr = (String)"pm1="+PMS5003Value.pm1+"&pm10="+PMS5003Value.pm10+"&pm25="+PMS5003Value.pm25+"&temp="+PMS5003Value.temp+"&humid="+PMS5003Value.humid+"&clientNum="+clientNum;
     
     connect2server(jsonStr);
-    
-  
-  /*
-  while (client.available()) {
-    char c = client.read();
-    Serial.write(c);
-  }
-  */
-  /*
-  //等2秒
-  Serial.println("delay2000");
-  delay(2000);
-  */
 }
 
 struct SensorValuesBar getPMS5003(){
@@ -206,15 +199,16 @@ void printWifiStatus() {
   Serial.println(" dBm");
 }
 
+String serverStr = String(server);
 void connect2server(String jsonStr) {
   //送出資料到伺服器
   Serial.println("\nStarting connection to server...");
   // if you get a connection, report back via serial:
-  if (client.connect(server, 8008)) {
+  if (client.connect(server, port)) {
     client.print("GET /php/addData.php?");
     client.print(jsonStr);
     client.println(" HTTP/1.1");
-    client.println("Host: 121.254.84.35:8008");
+    client.println("Host: "+serverStr+":"+port);
     client.println("User-Agent: Arduino/1.0");
     client.println();
   }
