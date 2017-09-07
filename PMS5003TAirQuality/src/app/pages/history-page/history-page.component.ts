@@ -3,10 +3,9 @@ import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 
-
 import { DATA } from '../../mock-data';
 import { arrayEqual } from '../../array-equal';
-import {bsDatepickerReducer} from "ngx-bootstrap/datepicker/reducer/bs-datepicker.reducer";
+import { BsDaterangepickerComponent } from "../../bs-daterangepicker.component"
 
 @Component({
   selector: 'app-history-page',
@@ -18,21 +17,17 @@ export class HistoryPageComponent {
   constructor(private http:Http) {}
 
   datas:Object[] = [];
-  maxDate:Date = new Date();
-  tempDate:Date = new Date();
-  minDate:Date = new Date(this.tempDate.setMonth(this.tempDate.getMonth() - 2));
-  public bsValue:any;
-  public bsRangeValue:any = [this.minDate, this.maxDate];
+  public bsRangeValue = new BsDaterangepickerComponent();
+  public bs:Date[]= this.bsRangeValue.getTimeByDate();
 
   ngOnInit() {
     this.datas = DATA;  //Use mock data
     this.getDataHttp();
   }
 
-  private previousbsRangeValue = this.bsRangeValue;
   ngDoCheck() {
-    if(!arrayEqual(this.bsRangeValue,this.previousbsRangeValue)) {
-      this.previousbsRangeValue = this.bsRangeValue;
+    if(!arrayEqual(this.bs,this.bsRangeValue.getTimeByDate())) {
+      this.bsRangeValue.setTimeByDate(this.bs[0],this.bs[1]);
       this.getDataHttp();
       //console.log('bsRangeValue change detect.');
     }
@@ -42,8 +37,10 @@ export class HistoryPageComponent {
 
   getDataHttp(){
     let params = new URLSearchParams();
-    params.set('minDate', this.bsRangeValue[0].toISOString().slice(0, 19).replace('T', ' '));
-    params.set('maxDate', this.bsRangeValue[1].toISOString().slice(0, 19).replace('T', ' '));
+
+    params.set('minDate', this.bsRangeValue.getSQLString()[0]);
+    params.set('maxDate', this.bsRangeValue.getSQLString()[1]);
+    console.log(params);
     return this.http.get(this.dbURL, {search: params}).map((res:Response) => {
       let body = res.json();
       return body || {};
