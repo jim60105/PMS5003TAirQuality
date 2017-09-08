@@ -40,7 +40,7 @@ export class HistoryPageComponent {
 
     params.set('minDate', this.bsRangeValue.getSQLString()[0]);
     params.set('maxDate', this.bsRangeValue.getSQLString()[1]);
-    console.log(params);
+    //console.log(params);
     return this.http.get(this.dbURL, {search: params}).map((res:Response) => {
       let body = res.json();
       return body || {};
