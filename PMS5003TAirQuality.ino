@@ -42,8 +42,8 @@ int clientNum = 0;
 
 //server設定
 int status = WL_IDLE_STATUS;
-char server[] = "121.254.84.35";    // server address
-int port = 8008;                    // server port, use 80 for defult
+char server[] = "140.128.102.200";    // server address
+int port = 80;                    // server port, use 80 for defult
 
 //間隔時間
 int delayTime = 60000;              // interval for every http request
