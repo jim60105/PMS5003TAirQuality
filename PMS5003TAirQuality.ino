@@ -98,6 +98,7 @@ void setup() {
 }
 
 void loop() { // run over and over
+    Serial.println("v17.09.27.0");
     client.stop();
     Serial.println("disconnecting from server.");
     Serial.println("Interval...");
