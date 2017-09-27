@@ -25,6 +25,9 @@ import { MapPageComponent } from './pages/map-page/map-page.component';
 import { HistoryPageComponent } from './pages/history-page/history-page.component';
 import { RealTimePageComponent } from './pages/real-time-page/real-time-page.component';
 
+//Charts
+import { ChartsModule } from 'ng2-charts';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -50,6 +53,7 @@ import { RealTimePageComponent } from './pages/real-time-page/real-time-page.com
 
     DatepickerModule.forRoot(),
     BsDatepickerModule.forRoot(),
+    ChartsModule,
   ],
   entryComponents: [
     MainPageComponent,

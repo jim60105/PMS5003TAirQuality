@@ -24,6 +24,16 @@
           </div>
       </section>
   -->
+  <div style="display: block;">
+    <canvas baseChart width="400" height="150"
+            [datasets]="lineChartData"
+            [labels]="lineChartLabels"
+            [options]="lineChartOptions"
+            [colors]="lineChartColors"
+            [legend]="lineChartLegend"
+            [chartType]="lineChartType"></canvas>
+  </div>
+
   <h2>歷史查詢</h2>
   <input type="text"
          value="{{ bs[0] | date:'yMd'}} - {{ bs[1] | date:'yMd'}}"
