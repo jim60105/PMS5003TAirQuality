@@ -34,12 +34,13 @@ export class RealTimePageComponent {
   private dbURL = "php/getDBRealTime.php";
 
   getRealTimeAirDataHttp(){
+    //noinspection TypeScriptUnresolvedFunction
     return this.http.get(this.dbURL).map((res:Response) => {
       let body = res.json();
       return body || {};
     }).subscribe((dataIn)=> {
+      this.realTimeAirData = {};
       dataIn.forEach((value,index,array)=>{
-        this.realTimeAirData = {};
         this.realTimeAirData[value.clientNum] = value;
       });
     }, (err)=> {

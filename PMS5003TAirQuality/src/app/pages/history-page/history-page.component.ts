@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { DATA } from '../../mock-data';
 import { arrayEqual } from '../../array-equal';
 import { BsDaterangepickerComponent } from "../../bs-daterangepicker.component"
+//noinspection TypeScriptCheckImport
 import * as _ from "lodash";
 
 @Component({
@@ -43,6 +44,7 @@ export class HistoryPageComponent {
     params.set('minDate', this.bsRangeValue.getSQLString()[0]);
     params.set('maxDate', this.bsRangeValue.getSQLString()[1]);
     //console.log(params);
+    //noinspection TypeScriptValidateTypes,TypeScriptUnresolvedFunction
     return this.http.get(this.dbURL, {search: params}).map((res:Response) => {
       let body = res.json();
       return body || {};
