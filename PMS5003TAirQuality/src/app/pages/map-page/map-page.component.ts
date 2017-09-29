@@ -3,7 +3,7 @@ import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 
-import { CLIENTINFO } from '../../mock-clientInfo';
+import { CLIENTINFO } from '../../../assets/mock-clientInfo';
 @Component({
     selector: 'app-map-page',
     templateUrl: './map-page.component.html',
@@ -16,7 +16,7 @@ export class MapPageComponent {
     lng: number = 120.6053346;
     zoom: number = 15;
     clientDatas:Object[] = [];
-    private dbURL = "php/getClientInfo.php";
+    private dbURL = "assets/php/getClientInfo.php";
 
     constructor(private http:Http) {}
 
@@ -26,6 +26,7 @@ export class MapPageComponent {
     }
 
     getClientDataHttp(){
+        //noinspection TypeScriptUnresolvedFunction
         return this.http.get(this.dbURL).map((res:Response) => {
             let body = res.json();
             return body || {};

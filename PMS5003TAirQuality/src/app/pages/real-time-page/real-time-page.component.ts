@@ -5,7 +5,7 @@ import 'rxjs/add/operator/map';
 
 import { MapPageComponent } from '../map-page/map-page.component';
 
-import { realTimeDATA } from '../../mock-realTimeData';
+import { realTimeDATA } from '../../../assets/mock-realTimeData';
 @Component({
   selector: 'app-real-time-page',
   templateUrl: './real-time-page.component.html',
@@ -31,7 +31,7 @@ export class RealTimePageComponent {
     clearInterval(this.getDataInterval);
   }
 
-  private dbURL = "php/getDBRealTime.php";
+  private dbURL = "assets/php/getDBRealTime.php";
 
   getRealTimeAirDataHttp(){
     //noinspection TypeScriptUnresolvedFunction
