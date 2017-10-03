@@ -98,7 +98,7 @@ void setup() {
 }
 
 void loop() { // run over and over
-    Serial.println("v17.09.27.0");
+    Serial.println("v17.10.03.0");
     client.stop();
     Serial.println("disconnecting from server.");
     Serial.println("Interval...");
@@ -206,7 +206,7 @@ void connect2server(String jsonStr) {
   Serial.println("\nStarting connection to server...");
   // if you get a connection, report back via serial:
   if (client.connect(server, port)) {
-    client.print("GET /php/addData.php?");
+    client.print("GET /assets/php/addData.php?");
     client.print(jsonStr);
     client.println(" HTTP/1.1");
     client.println("Host: "+serverStr+":"+port);

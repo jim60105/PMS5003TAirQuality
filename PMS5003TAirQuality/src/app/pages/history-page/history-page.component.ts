@@ -1,4 +1,4 @@
-import { Component, DoCheck  } from '@angular/core';
+import { Component, DoCheck, ViewChild  } from '@angular/core';
 import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
@@ -12,6 +12,9 @@ import { BsDaterangepickerComponent } from "../../bs-daterangepicker.component"
 import * as _ from "lodash";
 declare var RColor:any;
 
+//https://stackoverflow.com/a/42692601/8706033
+import { BaseChartDirective } from 'ng2-charts/ng2-charts';
+
 @Component({
   selector: 'app-history-page',
   templateUrl: './history-page.component.html',
@@ -20,22 +23,15 @@ declare var RColor:any;
 export class HistoryPageComponent {
 
   constructor(private http:Http) {}
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
-  datas:Object[] = [];
+  public datas:Object[] = [];
   public bsRangeValue = new BsDaterangepickerComponent();
   public bs:Date[]= this.bsRangeValue.getTimeByDate();
 
   ngOnInit() {
     //Generate Radom Color
     this.getClientDataHttp();
-    let color = new RColor;
-    this.colorList = [];
-    for(let i=0;i<this.clientInfo.length;i++){
-      this.colorList.push(color.get());
-    }
-    this.setChartsColor(this.colorList);
-
-    this.datas = DATA;  //Use mock data
     this.getDataHttp();
   }
 
@@ -47,7 +43,7 @@ export class HistoryPageComponent {
     }
   }
 
-  private dbURL = "assets/php/getDBByTime.php";
+  private dbURL = "/assets/php/getDBByTime.php";
 
   getDataHttp(){
     let params = new URLSearchParams();
@@ -62,38 +58,60 @@ export class HistoryPageComponent {
     }).subscribe((dataIn)=> {
       //console.log(dataIn.toString());
       this.datas = dataIn;
-      this.setCharts();
+      if(this.loadedLineChartDataTemplate){
+        this.setCharts();
+      }
     }, (err)=> {
       console.error("Err: " + err);
-      this.setCharts();
-    });
-  }
-
-
-  private clientInfo:Array<any> = [];
-  getClientDataHttp(){
-    //noinspection TypeScriptUnresolvedFunction
-    return this.http.get("assets/php/getClientInfo.php").map((res:Response) => {
-      let body = res.json();
-      return body || {};
-    }).subscribe((dataIn)=> {
-      //console.log(dataIn.toString());
-      this.clientInfo = [];
-      this.clientInfo = dataIn;
-      this.setLineChartDataTemplate();
-    }, (err)=> {
-      console.error("Err: " + err);
-      this.clientInfo = CLIENTINFO;
-      this.setLineChartDataTemplate();
+      this.datas = DATA;  //Use mock data
+      if(this.loadedLineChartDataTemplate) {
+        this.setCharts();
+      }
     });
   }
 
   private colorList:Array<any> = [];
+  private clientInfo:Array<any> = [];
+  getClientDataHttp(){
+    this.lineChartStandby = false;
+    //noinspection TypeScriptUnresolvedFunction
+    return this.http.get("/assets/php/getClientInfo.php").map((res:Response) => {
+      let body = res.json();
+      return body || {};
+    }).subscribe((dataIn)=> {
+      //console.log(dataIn.toString());
+      this.clientInfo = dataIn;
+
+      this.setChartsColor(()=> {
+        let color = new RColor;
+        this.colorList = [];
+        for (let i = 0; i < this.clientInfo.length; i++) {
+          this.colorList.push(color.get());
+        }
+      });
+    }, (err)=> {
+      console.error("Err: " + err);
+      this.clientInfo = CLIENTINFO;
+
+      this.setChartsColor(()=>{
+        let color = new RColor;
+        this.colorList = [];
+        for(let i=0;i<this.clientInfo.length;i++){
+          this.colorList.push(color.get());
+        }
+      });
+    });
+  }
 
 
   // lineChart
-  private lineChartDataTemplate:Array<any> = [{data: [], label: '',fill:false}];
-  public lineChartData = _.cloneDeep(this.lineChartDataTemplate);
+  private loadedLineChartDataTemplate:Boolean = false;
+  private lineChartDataTemplate:Array<any> = [
+    {data: [], label: 'Client 0',fill:false},
+    {data: [], label: 'Client 1',fill:false},
+    {data: [], label: 'Client 2',fill:false}
+  ];
+  public lineChartData:Array<any> = _.cloneDeep(this.lineChartDataTemplate);
   public lineChartLabels:Array<any> = [];
   public lineChartOptions:any = {
     type: 'line',
@@ -105,9 +123,36 @@ export class HistoryPageComponent {
       }]
     },
   };
-  public lineChartColors:Array<any> = [];
+  public lineChartColors:Array<any> = [
+
+    { // grey
+      backgroundColor: 'rgba(0,0,177,0.2)',
+      borderColor: 'rgba(0,0,177,1)',
+      pointBackgroundColor: 'rgba(0,0,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(0,0,177,0.8)'
+    },
+    { // dark grey
+      backgroundColor: 'rgba(77,0,0,0.2)',
+      borderColor: 'rgba(77,0,0,1)',
+      pointBackgroundColor: 'rgba(77,0,0,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(77,0,0,1)'
+    },
+    { // grey
+      backgroundColor: 'rgba(0,159,0,0.2)',
+      borderColor: 'rgba(0,159,0,1)',
+      pointBackgroundColor: 'rgba(0,159,0,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(0,159,0,0.8)'
+    }
+  ];
   public lineChartLegend:boolean = true;
   public lineChartType:string = 'line';
+  public lineChartStandby = false;
 
   // events
   //public chartClicked(e:any):void {
@@ -118,22 +163,11 @@ export class HistoryPageComponent {
   //  console.log(e);
   //}
 
-  setCharts(){
-    let lineChartData = _.cloneDeep(this.lineChartDataTemplate);
-    this.datas.forEach(function(value: Object,index,array){
-      lineChartData[value['clientNum']].data.push({x:value['time'],y:value['pm25']});
-    });
-    this.lineChartData = _.cloneDeep(lineChartData);
-  }
-
-  setChartsColor(colorList?:Array<any>){
-    if(!colorList){
-      colorList = this.colorList;
-    }
-
-    let lineChartColors = [];
-    colorList.forEach(function(value,index,array){
-      lineChartColors.push({
+  setChartsColor(callback:Function){
+    callback();
+    this.lineChartColors.length = 0;
+    this.colorList.forEach((value,index,array)=>{
+      this.lineChartColors.push({
         backgroundColor: `rgba(${value[0]},${value[1]},${value[2]},0.2)`,
         borderColor: `rgba(${value[0]},${value[1]},${value[2]},1)`,
         pointBackgroundColor: `rgba(${value[0]},${value[1]},${value[2]},1)`,
@@ -142,7 +176,8 @@ export class HistoryPageComponent {
         pointHoverBorderColor: `rgba(${value[0]},${value[1]},${value[2]},1)`
       });
     });
-    this.lineChartColors = _.cloneDeep(lineChartColors);
+    this.setLineChartDataTemplate();
+
   }
 
   setLineChartDataTemplate(){
@@ -155,6 +190,25 @@ export class HistoryPageComponent {
     });
 
     this.lineChartDataTemplate = _.cloneDeep(lineChartDataTemplate);
+    this.loadedLineChartDataTemplate = true;
     this.setCharts();
+
   }
+
+  setCharts(){
+    this.lineChartData = _.cloneDeep(this.lineChartDataTemplate);
+    this.datas.forEach((value: Object,index,array)=>{
+      this.lineChartData[value['clientNum']].data.push({x:value['time'],y:value['pm25']});
+    });
+    this.lineChartStandby = true;
+    //if (this.chart && this.chart.chart && this.chart.chart.config) {
+    //  setTimeout(()=> {
+    //    this.chart.chart.config.colors = this.lineChartColors;
+    //    //this.chart.chart.config.data.datasets = this.lineChartData;
+    //    this.chart.chart.update();
+    //  }, 5000);
+    //}
+  }
+
+
 }

@@ -24,8 +24,8 @@
           </div>
       </section>
   -->
-  <div style="display: block;">
-    <canvas baseChart width="400" height="150"
+  <div *ngIf="lineChartStandby" style="display: block;">
+    <canvas class="chart" baseChart width="400" height="150"
             [datasets]="lineChartData"
             [labels]="lineChartLabels"
             [options]="lineChartOptions"

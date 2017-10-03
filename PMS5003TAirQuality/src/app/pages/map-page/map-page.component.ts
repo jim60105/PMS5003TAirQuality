@@ -16,7 +16,7 @@ export class MapPageComponent {
     lng: number = 120.6053346;
     zoom: number = 15;
     clientDatas:Object[] = [];
-    private dbURL = "assets/php/getClientInfo.php";
+    private dbURL = "/assets/php/getClientInfo.php";
 
     constructor(private http:Http) {}
 

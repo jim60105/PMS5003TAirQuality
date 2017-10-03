@@ -31,7 +31,7 @@ export class RealTimePageComponent {
     clearInterval(this.getDataInterval);
   }
 
-  private dbURL = "assets/php/getDBRealTime.php";
+  private dbURL = "/assets/php/getDBRealTime.php";
 
   getRealTimeAirDataHttp(){
     //noinspection TypeScriptUnresolvedFunction
