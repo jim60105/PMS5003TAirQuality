@@ -39,13 +39,13 @@
          value="{{ bs[0] | date:'yMd'}} - {{ bs[1] | date:'yMd'}}"
          bsDaterangepicker [(bsValue)]="bs"  (change)="getDataHttp()">
     <span style="display: inline-block">
-      <button class="btn btn-success" (click)="drp.toggle()">Date Range Picker popup</button>
+      <button class="btn btn-success" (click)="drp.toggle()">選擇日期</button>
       <bs-daterangepicker #drp [(bsValue)]="bs" placement="bottom" style="display: block"></bs-daterangepicker>
     </span>
-  <div class="table-responsive">
+  <!--div class="table-responsive">
     <table class="table table-striped">
       <thead>
-      <tr>
+      <tr class="filter-bar">
         <th>time</th>
         <th>PM1</th>
         <th>PM2.5</th>
@@ -67,5 +67,7 @@
       </tr>
       </tbody>
     </table>
-  </div>
+  </div-->
+  <app-history-table [datas]="datas"></app-history-table>
 </div>
+
