@@ -19,17 +19,21 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
-        "../node_modules/tether/dist/css/tether.min.css",
 		"../node_modules/bootstrap/dist/css/bootstrap.min.css",
         "../node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
         "../node_modules/snazzy-info-window/dist/snazzy-info-window.css",
-        "styles.css"
+        "assets/template/sb-admin.css",
+        "styles.css",
+
+        "assets/fonts/notosanstc.css",
+        "assets/fonts/notosanssc.css",
+        "assets/fonts/css.css"
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.min.js",
-        "../node_modules/tether/dist/js/tether.min.js",
         "../node_modules/bootstrap/dist/js/bootstrap.min.js",
-        "assets/rcolor.js"
+        "assets/rcolor.js",
+        "assets/template/sb-admin.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
