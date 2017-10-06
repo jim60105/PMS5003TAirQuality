@@ -1,37 +1,22 @@
 <div>
-  <!--
-      <h1>Dashboard</h1>
-      <section class="row text-center placeholders">
-          <div class="col-6 col-sm-3 placeholder">
-              <img src="data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <div class="text-muted">Something else</div>
-          </div>
-          <div class="col-6 col-sm-3 placeholder">
-              <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-          </div>
-          <div class="col-6 col-sm-3 placeholder">
-              <img src="data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-          </div>
-          <div class="col-6 col-sm-3 placeholder">
-              <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-          </div>
-      </section>
-  -->
-  <div *ngIf="lineChartStandby" style="display: block;">
-    <canvas class="chart" baseChart width="400" height="150"
-            [datasets]="lineChartData"
-            [labels]="lineChartLabels"
-            [options]="lineChartOptions"
-            [colors]="lineChartColors"
-            [legend]="lineChartLegend"
-            [chartType]="lineChartType"></canvas>
+  <div>
+    <ul class="nav nav-tabs">
+      <li role="presentation" [ngClass]="{'active': dataSet=='pm1'}"><a href="#" (click)="dataSet='pm1';setCharts()">PM1</a></li>
+      <li role="presentation" [ngClass]="{'active': dataSet=='pm25'}"><a href="#" (click)="dataSet='pm25';setCharts()">PM2.5</a></li>
+      <li role="presentation" [ngClass]="{'active': dataSet=='pm10'}"><a href="#" (click)="dataSet='pm10';setCharts()">PM10</a></li>
+      <li role="presentation" [ngClass]="{'active': dataSet=='temp'}"><a href="#" (click)="dataSet='temp';setCharts()">溫度</a></li>
+      <li role="presentation" [ngClass]="{'active': dataSet=='humid'}"><a href="#" (click)="dataSet='humid';setCharts()">濕度</a></li>
+    </ul>
+
+    <div *ngIf="lineChartStandby" style="display: block;">
+      <canvas class="chart" baseChart width="400" height="150"
+              [datasets]="lineChartData"
+              [labels]="lineChartLabels"
+              [options]="lineChartOptions"
+              [colors]="lineChartColors"
+              [legend]="lineChartLegend"
+              [chartType]="lineChartType"></canvas>
+    </div>
   </div>
 
   <h2>歷史查詢</h2>
@@ -68,6 +53,6 @@
       </tbody>
     </table>
   </div-->
-  <app-history-table [datas]="datas"></app-history-table>
+  <app-history-table [datas]="datas" [clientInfo]="clientInfo"></app-history-table>
 </div>
 

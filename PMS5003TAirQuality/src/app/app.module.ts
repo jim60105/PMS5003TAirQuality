@@ -6,8 +6,10 @@ import { HttpModule } from '@angular/http';
 import { AppRoutingModule } from './app-routing.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
+//Datepicker
 import { DatepickerModule } from 'ngx-bootstrap';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+
 //GoogleMap
 import { AgmCoreModule } from '@agm/core';
 import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
@@ -24,7 +26,7 @@ import { ChartsModule } from 'ng2-charts';
 
 //Angular 2 Data Table Bootstrap 4
 //https://www.npmjs.com/package/angular-4-data-table-fix
-import { DataTableModule } from 'angular-4-data-table';
+import { DataTableModule } from 'angular-4-data-table/src/index';
 
 import { AppComponent } from './app.component';
 import { MainPageComponent } from './pages/main-page/main-page.component';
@@ -57,10 +59,10 @@ import { RealTimePageComponent } from './pages/real-time-page/real-time-page.com
     }),
     AgmSnazzyInfoWindowModule,
 
+    DataTableModule,
     DatepickerModule.forRoot(),
     BsDatepickerModule.forRoot(),
     ChartsModule,
-    DataTableModule
   ],
   entryComponents: [
     MainPageComponent,

@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { DataTableResource } from 'angular-4-data-table';
+import { DataTableModule } from 'angular-4-data-table/src/index';
+import { DataTableResource } from 'angular-4-data-table/src/tools/data-table-resource';
+
 
 @Component({
   selector: 'app-history-table',
@@ -8,6 +10,7 @@ import { DataTableResource } from 'angular-4-data-table';
 })
 export class HistoryTableComponent {
   @Input() datas:any;
+  @Input() clientInfo:any;
 
   ngOnInit() {
     let interval = setInterval(()=> {

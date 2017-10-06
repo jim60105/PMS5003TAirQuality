@@ -1,15 +1,19 @@
 <div *ngIf="datasIsReady" style="margin: auto; max-width: 1000px; margin-bottom: 50px;">
-    <data-table
-                headerTitle=" "
-                [items]="items"
-                [itemCount]="itemCount"
-                (reload)="reloadItems($event)"
-    >
+    <data-table headerTitle="" [items]="items" [itemCount]="itemCount" (reload)="reloadItems($event)" >
         <data-table-column
                 property="time"
                 header="Time"
                 sortable="true"
-                width="200px">
+                width="150px">
+        </data-table-column>
+        <data-table-column
+                property="clientNum"
+                header="位置"
+                sortable="true"
+                width="150px">
+            <ng-template #dataTableCell let-item="item">
+                <span *ngIf="item.clientNum!==undefined">{{clientInfo[item.clientNum].name}}</span>
+            </ng-template>
         </data-table-column>
         <data-table-column
                 property="pm1"

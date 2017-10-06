@@ -10,6 +10,7 @@ import { arrayEqual } from '../../../assets/array-equal';
 import { BsDaterangepickerComponent } from "../../bs-daterangepicker.component"
 //noinspection TypeScriptCheckImport
 import * as _ from "lodash";
+
 declare var RColor:any;
 
 //https://stackoverflow.com/a/42692601/8706033
@@ -71,7 +72,7 @@ export class HistoryPageComponent {
   }
 
   private colorList:Array<any> = [];
-  private clientInfo:Array<any> = [];
+  public clientInfo:Array<any> = [];
   getClientDataHttp(){
     this.lineChartStandby = false;
     //noinspection TypeScriptUnresolvedFunction
@@ -195,10 +196,11 @@ export class HistoryPageComponent {
 
   }
 
+  public dataSet:string = 'pm25';
   setCharts(){
     this.lineChartData = _.cloneDeep(this.lineChartDataTemplate);
     this.datas.forEach((value: Object,index,array)=>{
-      this.lineChartData[value['clientNum']].data.push({x:value['time'],y:value['pm25']});
+      this.lineChartData[value['clientNum']].data.push({x:value['time'],y:value[this.dataSet]});
     });
     this.lineChartStandby = true;
     //if (this.chart && this.chart.chart && this.chart.chart.config) {
