@@ -104,7 +104,7 @@ table.tablesorter thead tr th:hover {
 	width: 225px;
 	position: fixed;
 	top: 50px;
-	height: 100%;
+	height: calc(100% - 50px);
 	border-radius: 0;
 	border: none;
 	background-color: #222222;

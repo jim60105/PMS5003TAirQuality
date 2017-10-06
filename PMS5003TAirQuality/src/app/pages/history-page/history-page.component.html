@@ -27,32 +27,6 @@
       <button class="btn btn-success" (click)="drp.toggle()">選擇日期</button>
       <bs-daterangepicker #drp [(bsValue)]="bs" placement="bottom" style="display: block"></bs-daterangepicker>
     </span>
-  <!--div class="table-responsive">
-    <table class="table table-striped">
-      <thead>
-      <tr class="filter-bar">
-        <th>time</th>
-        <th>PM1</th>
-        <th>PM2.5</th>
-        <th>PM10</th>
-        <th>temp</th>
-        <th>humid</th>
-        <th>clientNum</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let data of datas">
-        <td [innerHtml]="data.time"></td>
-        <td [innerHtml]="data.pm1"></td>
-        <td [innerHtml]="data.pm25"></td>
-        <td [innerHtml]="data.pm10"></td>
-        <td [innerHtml]="data.temp"></td>
-        <td [innerHtml]="data.humid"></td>
-        <td [innerHtml]="data.clientNum"></td>
-      </tr>
-      </tbody>
-    </table>
-  </div-->
   <app-history-table [datas]="datas" [clientInfo]="clientInfo"></app-history-table>
 </div>
 

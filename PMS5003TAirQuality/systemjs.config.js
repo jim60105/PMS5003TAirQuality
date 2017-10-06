@@ -12,6 +12,7 @@
     // ng2-bootstrap
     'moment': 'node_modules/moment',
     'ngx-bootstrap':              'node_modules/ngx-bootstrap',
+    'node_modules':               'node_modules',
   };
   // packages tells the System loader how to load when no filename and/or no extension
   var packages = {

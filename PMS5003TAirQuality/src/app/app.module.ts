@@ -30,10 +30,11 @@ import { DataTableModule } from 'angular-4-data-table/src/index';
 
 import { AppComponent } from './app.component';
 import { MainPageComponent } from './pages/main-page/main-page.component';
-import { MapPageComponent } from './pages/map-page/map-page.component';
 import { HistoryPageComponent } from './pages/history-page/history-page.component';
 import { HistoryTableComponent } from './pages/history-page/history-table/history-table.component';
-import { RealTimePageComponent } from './pages/real-time-page/real-time-page.component';
+import { MapComponent } from './pages/map-page/map/map.component';
+import { MapPageComponent } from './pages/map-page/map-page.component';
+
 
 @NgModule({
   declarations: [
@@ -42,7 +43,7 @@ import { RealTimePageComponent } from './pages/real-time-page/real-time-page.com
     MapPageComponent,
     HistoryPageComponent,
     HistoryTableComponent,
-    RealTimePageComponent,
+    MapComponent,
     Safe,
     DynamicComponentDirective,
   ],
@@ -68,7 +69,6 @@ import { RealTimePageComponent } from './pages/real-time-page/real-time-page.com
     MainPageComponent,
     MapPageComponent,
     HistoryPageComponent,
-    RealTimePageComponent,
   ],
   providers: [DynamicComponentService],
   bootstrap: [AppComponent]

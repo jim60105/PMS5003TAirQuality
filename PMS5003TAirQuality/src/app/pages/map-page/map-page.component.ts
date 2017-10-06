@@ -1,56 +1,51 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 
-import { CLIENTINFO } from '../../../assets/mock-clientInfo';
+import { MapComponent } from './map/map.component';
+
+import { realTimeDATA } from 'assets/mock-realTimeData';
 @Component({
-    selector: 'app-map-page',
-    templateUrl: './map-page.component.html',
-    styleUrls: ['./map-page.component.css']
+  selector: 'app-map-page',
+  templateUrl: './map-page.component.html',
+  styleUrls: ['./map-page.component.css']
 })
 export class MapPageComponent {
-    @Input() mapMarkerText: Object = {};
 
-    lat: number = 24.1814718;
-    lng: number = 120.6053346;
-    zoom: number = 15;
-    clientDatas:Object[] = [];
-    private dbURL = "/assets/php/getClientInfo.php";
+  constructor(private http:Http) {}
 
-    constructor(private http:Http) {}
+  realTimeAirData:Object = {};
 
-    ngOnInit() {
-        this.convertLatLngToNumber(CLIENTINFO); //Use mock data
-        this.getClientDataHttp();
-    }
+  getDataInterval: any;
 
-    getClientDataHttp(){
-        //noinspection TypeScriptUnresolvedFunction
-        return this.http.get(this.dbURL).map((res:Response) => {
-            let body = res.json();
-            return body || {};
-        }).subscribe((dataIn)=> {
-            //console.log(dataIn.toString());
-            this.convertLatLngToNumber(dataIn);
-        }, (err)=> {
-            console.error("Err: " + err);
-        });
-    }
+  ngOnInit() {
+    this.realTimeAirData = realTimeDATA;  //Use mock data
+    this.getRealTimeAirDataHttp();
+    this.getDataInterval = setInterval(() => {
+      this.getRealTimeAirDataHttp();
+    }, 61000);
+  }
 
-    convertLatLngToNumber(datas: dataObject[]){
-        datas.forEach(function(value,index,array){
-            //console.log(clientDatas[index].lat);
-            datas[index].lat = Number(datas[index].lat);
-            datas[index].lng = Number(datas[index].lng);
-        });
+  ngOnDestroy() {
+    clearInterval(this.getDataInterval);
+  }
 
-        this.clientDatas = datas;
-    }
-}
+  private dbURL = "/assets/php/getDBRealTime.php";
 
-export class dataObject{
-    lat: any;
-    lng: any;
-    name: string;
+  getRealTimeAirDataHttp(){
+    //noinspection TypeScriptUnresolvedFunction
+    return this.http.get(this.dbURL).map((res:Response) => {
+      let body = res.json();
+      return body || {};
+    }).subscribe((dataIn)=> {
+      this.realTimeAirData = {};
+      dataIn.forEach((value,index,array)=>{
+        this.realTimeAirData[value.clientNum] = value;
+      });
+    }, (err)=> {
+      console.error("Err: " + err);
+    });
+  }
+
 }

@@ -1,0 +1,27 @@
+<!-- this creates a google map on the page with the given lat/lng from -->
+<!-- the component as the initial center of the map: -->
+<agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom">
+    <!--agm-marker [latitude]="lat" [longitude]="lng">
+        <agm-snazzy-info-window [isOpen]="true">
+            <ng-template>
+                !Center!
+            </ng-template>
+        </agm-snazzy-info-window>
+    </agm-marker-->
+
+    <agm-marker *ngFor="let data of clientDatas" [latitude]="data.lat" [longitude]="data.lng">
+        <agm-snazzy-info-window [isOpen]="true" [maxWidth]="300" class="myClass">
+            <ng-template>
+                Name: {{data.name}}
+                <div *ngIf="mapMarkerText[data.no]">
+                    PM1: {{mapMarkerText[data.no].pm1}}<br>
+                    PM2.5: {{mapMarkerText[data.no].pm25}}<br>
+                    PM10: {{mapMarkerText[data.no].pm10}}<br>
+                    溫度: {{mapMarkerText[data.no].temp}}<br>
+                    濕度: {{mapMarkerText[data.no].humid}}<br>
+                    時間: {{mapMarkerText[data.no].time}}
+                </div>
+            </ng-template>
+        </agm-snazzy-info-window>
+    </agm-marker>
+</agm-map>

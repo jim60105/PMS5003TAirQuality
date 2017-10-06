@@ -1,8 +1,0 @@
-/* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-agm-map {
-    height: calc(100vh - 55.47px - 1rem);
-    margin: 0;
-    padding: 0;
-}
-
