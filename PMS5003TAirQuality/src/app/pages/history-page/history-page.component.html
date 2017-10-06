@@ -9,7 +9,7 @@
     </ul>
 
     <div *ngIf="lineChartStandby" style="display: block;">
-      <canvas class="chart" baseChart width="400" height="150"
+      <canvas id="chart" baseChart width="400" height="150"
               [datasets]="lineChartData"
               [labels]="lineChartLabels"
               [options]="lineChartOptions"

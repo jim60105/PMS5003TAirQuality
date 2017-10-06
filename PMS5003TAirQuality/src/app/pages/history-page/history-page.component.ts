@@ -114,6 +114,7 @@ export class HistoryPageComponent {
   ];
   public lineChartData:Array<any> = _.cloneDeep(this.lineChartDataTemplate);
   public lineChartLabels:Array<any> = [];
+//  options: { elements: { point: { hitRadius: 10, hoverRadius: 10 } } }
   public lineChartOptions:any = {
     type: 'line',
     responsive: true,
@@ -123,6 +124,13 @@ export class HistoryPageComponent {
         distribution: 'linear'
       }]
     },
+    elements:{
+      point:{
+        radius: 0,
+        hitRadius: 4,
+        hoverRadius: 4
+      }
+    }
   };
   public lineChartColors:Array<any> = [
 
