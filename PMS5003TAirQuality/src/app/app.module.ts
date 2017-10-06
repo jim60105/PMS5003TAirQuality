@@ -35,6 +35,7 @@ import { HistoryTableComponent } from './pages/history-page/history-table/histor
 import { MapComponent } from './pages/map-page/map/map.component';
 import { MapPageComponent } from './pages/map-page/map-page.component';
 
+import { GetRealTimeDataService } from './get-real-time-data.service';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,7 @@ import { MapPageComponent } from './pages/map-page/map-page.component';
     MapPageComponent,
     HistoryPageComponent,
   ],
-  providers: [DynamicComponentService],
+  providers: [DynamicComponentService, GetRealTimeDataService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
