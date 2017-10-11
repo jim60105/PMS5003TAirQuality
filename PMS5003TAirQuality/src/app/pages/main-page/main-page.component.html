@@ -1,10 +1,16 @@
 <div class="row">
-    <div class="col-lg-4">
-        <div class="panel panel-success">
-            <div class="panel-heading">
-                123
+    <span class="col-lg-4" *ngFor="let data of realTimeAirData;let idx = index">
+        <div class="panel" [ngClass]="panelClass[idx]">
+            <div class="panel-heading" style="text-align: center">
+                <p *ngIf="data.clientNum!==undefined" style="font-size: 30px;margin: 0px auto;">{{clientInfo[data.clientNum].name}}</p>
+                PM1: {{data.pm1}}<br>
+                PM2.5: {{data.pm25}}<br>
+                PM10: {{data.pm10}}<br>
+                溫度: {{data.temp}}<br>
+                濕度: {{data.humid}}<br>
+                {{data.time}}
             </div>
         </div>
-    </div>
+    </span>
 </div>
 <app-history-page></app-history-page>

@@ -3,39 +3,39 @@ import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 
-import { realTimeDATA } from 'assets/mock-realTimeData';
+import { CLIENTINFO } from 'assets/mock-clientInfo';
 
 @Injectable()
-export class GetRealTimeDataService {
+export class GetClientInfoService {
 
   constructor(private http:Http) {
-    this.data = realTimeDATA;  //Use mock data
-    this.getRealTimeAirDataHttp();
+    this.clientInfo = CLIENTINFO;  //Use mock data
+    this.getClientDataHttp();
     this.getDataInterval = setInterval(() => {
-      this.getRealTimeAirDataHttp();
+      this.getClientDataHttp();
     }, 61000);
   }
 
-  public data:Array<any> = [];
+  public clientInfo:Object = {};
   private getDataInterval: any;
-  private dbURL = "/assets/php/getDBRealTime.php";
+  private dbURL = "/assets/php/getClientInfo.php";
 
   ngOnDestroy() {
     clearInterval(this.getDataInterval);
   }
 
-  public getRealTimeAirDataHttp(){
+
+  public getClientDataHttp(){
     //noinspection TypeScriptUnresolvedFunction
     return this.http.get(this.dbURL).map((res:Response) => {
       let body = res.json();
       return body || {};
     }).subscribe((dataIn)=> {
-      this.data.length = 0;
-      dataIn.forEach((value,index,array)=>{
-        this.data[value.clientNum] = value;
-      });
+      //console.log(dataIn.toString());
+      this.clientInfo = dataIn;
     }, (err)=> {
       console.error("Err: " + err);
+      this.clientInfo = CLIENTINFO;
     });
   }
 }

@@ -2,7 +2,7 @@ import { bsDatepickerReducer } from "ngx-bootstrap/datepicker/reducer/bs-datepic
 
 export class BsDaterangepickerComponent {
   private bsRangeValue:any;
-  constructor(minDate: Date = (new Date(new Date(new Date((new Date()).setMonth((new Date()).getMonth() - 2))).setHours(0,0,0,0))),maxDate:Date = new Date((new Date()).setHours(23,59,59))) {
+  constructor(minDate: Date = (new Date(new Date(new Date((new Date()).setDate((new Date()).getDate() - 7))).setHours(0,0,0,0))),maxDate:Date = new Date((new Date()).setHours(23,59,59))) {
     this.bsRangeValue = [minDate,maxDate];
   }
 

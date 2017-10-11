@@ -6,7 +6,6 @@ import { Observable } from 'rxjs/Observable';
 import { DATA } from '../../../assets/mock-data';
 import { CLIENTINFO } from '../../../assets/mock-clientInfo';
 
-import { arrayEqual } from '../../../assets/array-equal';
 import { BsDaterangepickerComponent } from "../../bs-daterangepicker.component"
 //noinspection TypeScriptCheckImport
 import * as _ from "lodash";
@@ -37,7 +36,7 @@ export class HistoryPageComponent {
   }
 
   ngDoCheck() {
-    if(!arrayEqual(this.bs,this.bsRangeValue.getTimeByDate())) {
+    if(!_.isEqual(this.bs,this.bsRangeValue.getTimeByDate())) {
       this.bsRangeValue.setTimeByDate(this.bs[0],this.bs[1]);
       this.getDataHttp();
       //console.log('bsRangeValue change detect.');

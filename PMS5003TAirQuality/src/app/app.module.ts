@@ -36,6 +36,7 @@ import { MapComponent } from './pages/map-page/map/map.component';
 import { MapPageComponent } from './pages/map-page/map-page.component';
 
 import { GetRealTimeDataService } from './get-real-time-data.service';
+import { GetClientInfoService } from "./get-client-info.service";
 
 @NgModule({
   declarations: [
@@ -71,7 +72,7 @@ import { GetRealTimeDataService } from './get-real-time-data.service';
     MapPageComponent,
     HistoryPageComponent,
   ],
-  providers: [DynamicComponentService, GetRealTimeDataService ],
+  providers: [DynamicComponentService, GetRealTimeDataService, GetClientInfoService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

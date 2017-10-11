@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MapComponent } from './map/map.component';
-import {GetRealTimeDataService} from "../../get-real-time-data.service";
+import { GetRealTimeDataService } from "../../get-real-time-data.service";
 
 @Component({
   selector: 'app-map-page',
@@ -11,6 +11,6 @@ export class MapPageComponent {
 
   constructor(public _realTimeDataService:GetRealTimeDataService) {}
 
-  public realTimeAirData = this._realTimeDataService.getData();
+  public realTimeAirData = this._realTimeDataService.data;
 
 }
