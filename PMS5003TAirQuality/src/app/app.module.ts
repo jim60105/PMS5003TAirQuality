@@ -35,8 +35,9 @@ import { HistoryTableComponent } from './pages/history-page/history-table/histor
 import { MapComponent } from './pages/map-page/map/map.component';
 import { MapPageComponent } from './pages/map-page/map-page.component';
 
-import { GetRealTimeDataService } from './get-real-time-data.service';
-import { GetClientInfoService } from "./get-client-info.service";
+import { GetRealTimeDataService } from './services/get-real-time-data.service';
+import { GetClientInfoService } from "./services/get-client-info.service";
+import { GetDataService } from "./services/get-data.service";
 
 @NgModule({
   declarations: [
@@ -72,7 +73,12 @@ import { GetClientInfoService } from "./get-client-info.service";
     MapPageComponent,
     HistoryPageComponent,
   ],
-  providers: [DynamicComponentService, GetRealTimeDataService, GetClientInfoService ],
+  providers: [
+    DynamicComponentService,
+    GetRealTimeDataService,
+    GetClientInfoService,
+    GetDataService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

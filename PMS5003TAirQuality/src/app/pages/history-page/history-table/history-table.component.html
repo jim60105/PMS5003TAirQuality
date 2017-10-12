@@ -1,5 +1,5 @@
-<div *ngIf="datasIsReady" style="margin: auto; max-width: 1000px; margin-bottom: 50px;">
-    <data-table headerTitle="" [items]="items" [itemCount]="itemCount" (reload)="reloadItems($event)" >
+<div *ngIf="datasIsReady" style="margin: auto; margin-bottom: 50px;">
+    <data-table headerTitle="" [items]="items" [itemCount]="itemCount" (reload)="reloadItems($event)" style="min-width: 675px;">
         <data-table-column
                 property="time"
                 header="Time"
@@ -18,27 +18,32 @@
         <data-table-column
                 property="pm1"
                 header="PM1"
-                sortable="true">
+                sortable="true"
+                width="70px">
         </data-table-column>
         <data-table-column
                 property="pm25"
                 header="PM2.5"
-                sortable="true">
+                sortable="true"
+                width="70px">
         </data-table-column>
         <data-table-column
                 property="pm10"
                 header="PM10"
-                sortable="true">
+                sortable="true"
+                width="70px">
         </data-table-column>
         <data-table-column
                 property="temp"
                 header="溫度"
-                sortable="true">
+                sortable="true"
+                width="70px">
         </data-table-column>
         <data-table-column
                 property="humid"
                 header="濕度"
-                sortable="true">
+                sortable="true"
+                width="70px">
         </data-table-column>
     </data-table>
 </div>

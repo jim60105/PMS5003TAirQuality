@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MapComponent } from './map/map.component';
-import { GetRealTimeDataService } from "../../get-real-time-data.service";
+import { GetRealTimeDataService } from "../../services/get-real-time-data.service";
 
 @Component({
   selector: 'app-map-page',

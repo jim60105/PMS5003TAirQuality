@@ -9,7 +9,7 @@
         </agm-snazzy-info-window>
     </agm-marker-->
 
-    <agm-marker *ngFor="let data of clientDatas" [latitude]="data.lat" [longitude]="data.lng">
+    <agm-marker *ngFor="let data of clientInfo" [latitude]="data.lat" [longitude]="data.lng">
         <agm-snazzy-info-window [isOpen]="true" [maxWidth]="300" class="myClass">
             <ng-template>
                 Name: {{data.name}}

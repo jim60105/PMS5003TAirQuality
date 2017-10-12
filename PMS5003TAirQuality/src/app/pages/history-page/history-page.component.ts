@@ -3,9 +3,6 @@ import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 
-import { DATA } from '../../../assets/mock-data';
-import { CLIENTINFO } from '../../../assets/mock-clientInfo';
-
 import { BsDaterangepickerComponent } from "../../bs-daterangepicker.component"
 //noinspection TypeScriptCheckImport
 import * as _ from "lodash";
@@ -15,6 +12,9 @@ declare var RColor:any;
 //https://stackoverflow.com/a/42692601/8706033
 import { BaseChartDirective } from 'ng2-charts/ng2-charts';
 
+import { GetRealTimeDataService } from "../../services/get-real-time-data.service";
+import { GetClientInfoService } from "../../services/get-client-info.service";
+import { GetDataService } from "../../services/get-data.service";
 @Component({
   selector: 'app-history-page',
   templateUrl: './history-page.component.html',
@@ -22,7 +22,9 @@ import { BaseChartDirective } from 'ng2-charts/ng2-charts';
 })
 export class HistoryPageComponent {
 
-  constructor(private http:Http) {}
+  constructor(private http:Http,
+              private _getClientInfoService:GetClientInfoService,
+              private _getDataService:GetDataService) {}
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
   public datas:Object[] = [];
@@ -31,7 +33,17 @@ export class HistoryPageComponent {
 
   ngOnInit() {
     //Generate Radom Color
-    this.getClientDataHttp();
+    this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
+      this.clientInfo = res;
+
+      this.setChartsColor(()=>{
+        let color = new RColor;
+        this.colorList = [];
+        for(let i=0;i<this.clientInfo.length;i++){
+          this.colorList.push(color.get());
+        }
+      });
+    });
     this.getDataHttp();
   }
 
@@ -43,66 +55,22 @@ export class HistoryPageComponent {
     }
   }
 
-  private dbURL = "/assets/php/getDBByTime.php";
-
   getDataHttp(){
     let params = new URLSearchParams();
 
     params.set('minDate', this.bsRangeValue.getSQLString()[0]);
     params.set('maxDate', this.bsRangeValue.getSQLString()[1]);
-    //console.log(params);
-    //noinspection TypeScriptValidateTypes,TypeScriptUnresolvedFunction
-    return this.http.get(this.dbURL, {search: params}).map((res:Response) => {
-      let body = res.json();
-      return body || {};
-    }).subscribe((dataIn)=> {
-      //console.log(dataIn.toString());
-      this.datas = dataIn;
+
+    this._getDataService.getDataHttpWithPromise(params).then((res)=>{
+      this.datas = res;
       if(this.loadedLineChartDataTemplate){
-        this.setCharts();
-      }
-    }, (err)=> {
-      console.error("Err: " + err);
-      this.datas = DATA;  //Use mock data
-      if(this.loadedLineChartDataTemplate) {
         this.setCharts();
       }
     });
   }
 
   private colorList:Array<any> = [];
-  public clientInfo:Array<any> = [];
-  getClientDataHttp(){
-    this.lineChartStandby = false;
-    //noinspection TypeScriptUnresolvedFunction
-    return this.http.get("/assets/php/getClientInfo.php").map((res:Response) => {
-      let body = res.json();
-      return body || {};
-    }).subscribe((dataIn)=> {
-      //console.log(dataIn.toString());
-      this.clientInfo = dataIn;
-
-      this.setChartsColor(()=> {
-        let color = new RColor;
-        this.colorList = [];
-        for (let i = 0; i < this.clientInfo.length; i++) {
-          this.colorList.push(color.get());
-        }
-      });
-    }, (err)=> {
-      console.error("Err: " + err);
-      this.clientInfo = CLIENTINFO;
-
-      this.setChartsColor(()=>{
-        let color = new RColor;
-        this.colorList = [];
-        for(let i=0;i<this.clientInfo.length;i++){
-          this.colorList.push(color.get());
-        }
-      });
-    });
-  }
-
+  public clientInfo:any = [];
 
   // lineChart
   private loadedLineChartDataTemplate:Boolean = false;
@@ -210,13 +178,6 @@ export class HistoryPageComponent {
       this.lineChartData[value['clientNum']].data.push({x:value['time'],y:value[this.dataSet]});
     });
     this.lineChartStandby = true;
-    //if (this.chart && this.chart.chart && this.chart.chart.config) {
-    //  setTimeout(()=> {
-    //    this.chart.chart.config.colors = this.lineChartColors;
-    //    //this.chart.chart.config.data.datasets = this.lineChartData;
-    //    this.chart.chart.update();
-    //  }, 5000);
-    //}
   }
 
 

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { HistoryPageComponent } from '../history-page/history-page.component';
-import { GetRealTimeDataService } from "../../get-real-time-data.service";
-import { GetClientInfoService } from "../../get-client-info.service";
+import { GetRealTimeDataService } from "../../services/get-real-time-data.service";
+import { GetClientInfoService } from "../../services/get-client-info.service";
 
 //noinspection TypeScriptCheckImport
 import * as _ from "lodash";
@@ -11,25 +11,23 @@ import * as _ from "lodash";
     styleUrls: ['./main-page.component.css']
 })
 export class MainPageComponent {
-    constructor(public _realTimeDataService:GetRealTimeDataService,
+    constructor(public _getRealTimeDataService:GetRealTimeDataService,
                 public _clientInfoService:GetClientInfoService) {
         this.calcAQI();
     }
 
-    public realTimeAirData:Array<any> = this._realTimeDataService.data;
+    public realTimeAirData:Array<any> = this._getRealTimeDataService.data;
     private tempRealTimeAirData:Array<any> = _.cloneDeep(this.realTimeAirData);
     public clientInfo = this._clientInfoService.clientInfo;
     public panelClass:Array<string> = [];
-    private getDataInterval: any;
 
-    ngOnDestroy() {
-        clearInterval(this.getDataInterval);
-    }
     ngDoCheck() {
+        //noinspection TypeScriptValidateJSTypes
         if(!_.isEqual(this.realTimeAirData,this.tempRealTimeAirData)) {
             this.calcAQI();
         }
     }
+
     private calcAQI(){
         if(this.realTimeAirData[0]!==undefined){
             this.panelClass.length = 0;
@@ -89,8 +87,6 @@ export class MainPageComponent {
                     console.log("Calc AQI Level Error."+pm25);
                 }
             });
-
         }
-
     }
 }

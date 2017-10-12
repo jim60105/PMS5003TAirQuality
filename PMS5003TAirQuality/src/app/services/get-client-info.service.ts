@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
-import 'rxjs/add/operator/map';
+import '../../../node_modules/rxjs/add/operator/toPromise';
 import { Observable } from 'rxjs/Observable';
 
 import { CLIENTINFO } from 'assets/mock-clientInfo';
@@ -10,32 +10,34 @@ export class GetClientInfoService {
 
   constructor(private http:Http) {
     this.clientInfo = CLIENTINFO;  //Use mock data
-    this.getClientDataHttp();
+    this.getClientDataHttpWithPromise();
     this.getDataInterval = setInterval(() => {
-      this.getClientDataHttp();
+      this.getClientDataHttpWithPromise();
     }, 61000);
   }
 
-  public clientInfo:Object = {};
+  public clientInfo:Array<any>;
   private getDataInterval: any;
-  private dbURL = "/assets/php/getClientInfo.php";
+  private dbURL = "assets/php/getClientInfo.php";
 
   ngOnDestroy() {
     clearInterval(this.getDataInterval);
   }
 
 
-  public getClientDataHttp(){
+  public getClientDataHttpWithPromise(){
     //noinspection TypeScriptUnresolvedFunction
-    return this.http.get(this.dbURL).map((res:Response) => {
+    return this.http.get(this.dbURL).toPromise().then((res:Response) => {
       let body = res.json();
       return body || {};
-    }).subscribe((dataIn)=> {
+    }).then((dataIn)=> {
       //console.log(dataIn.toString());
       this.clientInfo = dataIn;
-    }, (err)=> {
-      console.error("Err: " + err);
+      return Promise.resolve(this.clientInfo);
+    }).catch((err)=> {
+      console.error("Err: Error getting client info." + err);
       this.clientInfo = CLIENTINFO;
+      return Promise.resolve(this.clientInfo);
     });
   }
 }
