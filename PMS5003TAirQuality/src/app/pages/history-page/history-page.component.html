@@ -6,6 +6,14 @@
       <li role="presentation" [ngClass]="{'active': dataSet=='pm10'}"><a href="#" (click)="dataSet='pm10';setCharts()">PM10</a></li>
       <li role="presentation" [ngClass]="{'active': dataSet=='temp'}"><a href="#" (click)="dataSet='temp';setCharts()">溫度</a></li>
       <li role="presentation" [ngClass]="{'active': dataSet=='humid'}"><a href="#" (click)="dataSet='humid';setCharts()">濕度</a></li>
+      <span style="display: block;float: right">
+          <input type="text" value="{{ bs[0] | date:'yMd'}} ~ {{ bs[1] | date:'yMd'}}"
+                 bsDaterangepicker [(bsValue)]="bs"  (change)="getDataHttp()">
+          <span style="display: inline-block">
+              <button class="btn btn-success" (click)="drp.toggle()">選擇日期</button>
+              <bs-daterangepicker #drp [(bsValue)]="bs" placement="right" style="display: block"></bs-daterangepicker>
+          </span>
+      </span>
     </ul>
 
     <div *ngIf="lineChartStandby" style="display: block;">
@@ -19,14 +27,6 @@
     </div>
   </div>
 
-  <h2>歷史查詢</h2>
-  <input type="text"
-         value="{{ bs[0] | date:'yMd'}} ~ {{ bs[1] | date:'yMd'}}"
-         bsDaterangepicker [(bsValue)]="bs"  (change)="getDataHttp()">
-    <span style="display: inline-block">
-      <button class="btn btn-success" (click)="drp.toggle()">選擇日期</button>
-      <bs-daterangepicker #drp [(bsValue)]="bs" placement="bottom" style="display: block"></bs-daterangepicker>
-    </span>
   <app-history-table [datas]="datas" [clientInfo]="clientInfo" ></app-history-table>
 </div>
 
