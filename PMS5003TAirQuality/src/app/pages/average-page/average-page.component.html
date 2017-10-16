@@ -1,11 +1,13 @@
-<span>
-          <input type="text" value="{{ bs[0] | date:'yMd'}} ~ {{ bs[1] | date:'yMd'}}"
-                 bsDaterangepicker [(bsValue)]="bs"  (change)="getDataHttp()">
-          <span style="display: inline-block">
-              <button class="btn btn-success" (click)="drp.toggle()">選擇日期</button>
-              <bs-daterangepicker #drp [(bsValue)]="bs" placement="left" style="display: block"></bs-daterangepicker>
-          </span>
-      </span>
+<span style="display: block;float: right">
+    <span>
+        <input type="text" value="{{ bs[0] | date:'yMd'}} ~ {{ bs[1] | date:'yMd'}}"
+             bsDaterangepicker [(bsValue)]="bs"  (change)="getDataHttp()">
+        <span style="display: inline-block">
+            <button class="btn btn-success" (click)="drp.toggle()">選擇日期</button>
+            <bs-daterangepicker #drp [(bsValue)]="bs" placement="left" style="display: block"></bs-daterangepicker>
+        </span>
+    </span>
+</span>
 <div *ngIf="barChartStandby" style="display: block;">
     <canvas id="chart" baseChart width="400" height="150"
             [datasets]="barChartData"
