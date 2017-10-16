@@ -36,7 +36,7 @@ export class GetRealTimeDataService {
       });
       return Promise.resolve(this.data);
     }).catch((err)=> {
-      console.error("Err: Error getting real time data." + err);
+      console.warn("Err: Error getting real time data.");
       this.data = realTimeDATA;  //Use mock data
       return Promise.resolve(this.data);
     });

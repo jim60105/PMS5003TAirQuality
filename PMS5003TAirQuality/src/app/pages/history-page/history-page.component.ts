@@ -1,9 +1,8 @@
-import { Component, DoCheck, ViewChild  } from '@angular/core';
-import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
-import 'rxjs/add/operator/map';
-import { Observable } from 'rxjs/Observable';
+import { Component, ViewChild, Input } from '@angular/core';
+import { URLSearchParams } from '@angular/http';
 
 import { BsDaterangepickerComponent } from "../../bs-daterangepicker.component"
+
 //noinspection TypeScriptCheckImport
 import * as _ from "lodash";
 
@@ -11,6 +10,8 @@ declare var RColor:any;
 
 //https://stackoverflow.com/a/42692601/8706033
 import { BaseChartDirective } from 'ng2-charts/ng2-charts';
+
+import { DataTableComponent } from "../../data-table/data-table.component";
 
 import { GetRealTimeDataService } from "../../services/get-real-time-data.service";
 import { GetClientInfoService } from "../../services/get-client-info.service";
@@ -21,11 +22,9 @@ import { GetDataService } from "../../services/get-data.service";
   styleUrls: ['./history-page.component.css']
 })
 export class HistoryPageComponent {
-
-  constructor(private http:Http,
-              private _getClientInfoService:GetClientInfoService,
+  @Input() tableVisible:boolean = true;
+  constructor(private _getClientInfoService:GetClientInfoService,
               private _getDataService:GetDataService) {}
-  @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
   public datas:Object[] = [];
   public bsRangeValue = new BsDaterangepickerComponent();

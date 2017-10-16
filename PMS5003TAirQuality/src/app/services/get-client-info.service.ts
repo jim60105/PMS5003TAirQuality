@@ -35,7 +35,7 @@ export class GetClientInfoService {
       this.clientInfo = dataIn;
       return Promise.resolve(this.clientInfo);
     }).catch((err)=> {
-      console.error("Err: Error getting client info." + err);
+      console.warn("Err: Error getting client info.");
       this.clientInfo = CLIENTINFO;
       return Promise.resolve(this.clientInfo);
     });

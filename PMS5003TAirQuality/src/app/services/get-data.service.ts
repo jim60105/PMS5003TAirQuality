@@ -33,7 +33,7 @@ export class GetDataService {
       this.data = dataIn;
       return Promise.resolve(this.data);
     }).catch((err)=> {
-      console.error("Err: Error getting airData." + err);
+      console.warn("Err: Error getting airData.");
       this.data = DATA;  //Use mock data
       return Promise.resolve(this.data);
     });

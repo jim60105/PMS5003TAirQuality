@@ -31,9 +31,10 @@ import { DataTableModule } from 'angular-4-data-table/src/index';
 import { AppComponent } from './app.component';
 import { MainPageComponent } from './pages/main-page/main-page.component';
 import { HistoryPageComponent } from './pages/history-page/history-page.component';
-import { HistoryTableComponent } from './pages/history-page/history-table/history-table.component';
 import { MapComponent } from './pages/map-page/map/map.component';
 import { MapPageComponent } from './pages/map-page/map-page.component';
+import { AveragePageComponent } from './pages/average-page/average-page.component';
+import { DataTableComponent } from './data-table/data-table.component';
 
 import { GetRealTimeDataService } from './services/get-real-time-data.service';
 import { GetClientInfoService } from "./services/get-client-info.service";
@@ -45,10 +46,11 @@ import { GetDataService } from "./services/get-data.service";
     MainPageComponent,
     MapPageComponent,
     HistoryPageComponent,
-    HistoryTableComponent,
+    DataTableComponent,
     MapComponent,
     Safe,
     DynamicComponentDirective,
+    AveragePageComponent,
   ],
   imports: [
     BrowserModule,
@@ -72,6 +74,7 @@ import { GetDataService } from "./services/get-data.service";
     MainPageComponent,
     MapPageComponent,
     HistoryPageComponent,
+    AveragePageComponent
   ],
   providers: [
     DynamicComponentService,

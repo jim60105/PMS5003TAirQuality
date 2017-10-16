@@ -1,16 +1,15 @@
 <div *ngIf="datasIsReady" style="margin: auto; margin-bottom: 50px;">
-    <data-table headerTitle="" [items]="items" [itemCount]="itemCount" (reload)="reloadItems($event)" style="min-width: 675px;">
+    <data-table headerTitle="" [items]="items" [itemCount]="itemCount" (reload)="reloadItems($event)" [limit]="limit" style="min-width: 675px;">
         <data-table-column
+                *ngIf="!timeDisable"
                 property="time"
                 header="Time"
-                sortable="true"
-                width="150px">
+                sortable="true" >
         </data-table-column>
         <data-table-column
                 property="clientNum"
                 header="位置"
-                sortable="true"
-                width="150px">
+                sortable="true" >
             <ng-template #dataTableCell let-item="item">
                 <span *ngIf="item.clientNum!==undefined">{{clientInfo[item.clientNum].name}}</span>
             </ng-template>
@@ -18,32 +17,27 @@
         <data-table-column
                 property="pm1"
                 header="PM1"
-                sortable="true"
-                width="70px">
+                sortable="true" >
         </data-table-column>
         <data-table-column
                 property="pm25"
                 header="PM2.5"
-                sortable="true"
-                width="70px">
+                sortable="true" >
         </data-table-column>
         <data-table-column
                 property="pm10"
                 header="PM10"
-                sortable="true"
-                width="70px">
+                sortable="true" >
         </data-table-column>
         <data-table-column
                 property="temp"
                 header="溫度"
-                sortable="true"
-                width="70px">
+                sortable="true" >
         </data-table-column>
         <data-table-column
                 property="humid"
                 header="濕度"
-                sortable="true"
-                width="70px">
+                sortable="true" >
         </data-table-column>
     </data-table>
 </div>
