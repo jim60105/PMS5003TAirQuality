@@ -7,33 +7,28 @@ import { DATA } from '../../assets/mock-data';
 
 @Injectable()
 export class GetDataService {
-
   constructor(private http:Http) {
-    this.data = DATA;  //Use mock data
     this.getDataHttpWithPromise();
-    this.getDataInterval = setInterval(() => {
-      this.getDataHttpWithPromise();
-    }, 61000);
   }
 
+  //資料
   public data:Array<any> = [];
-  private getDataInterval: any;
+  //php位置
   private dbURL = "assets/php/getDBByTime.php";
 
-  ngOnDestroy() {
-    clearInterval(this.getDataInterval);
-  }
-
+  //獲取空汙資料
   public getDataHttpWithPromise(params:any = new URLSearchParams()){
     //noinspection TypeScriptUnresolvedFunction,TypeScriptValidateTypes
     return this.http.get(this.dbURL, {search: params}).toPromise().then((res:Response) => {
       let body = res.json();
       return body || {};
     }).then((dataIn)=> {
+      //成功取得資料
       this.data = dataIn;
       return Promise.resolve(this.data);
     }).catch((err)=> {
-      console.warn("Err: Error getting airData.");
+      //失敗取得資料
+      console.warn("Warn: Cannot get airData.");
       this.data = DATA;  //Use mock data
       return Promise.resolve(this.data);
     });

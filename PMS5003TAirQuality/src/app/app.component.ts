@@ -1,21 +1,26 @@
+import { Component, ComponentFactoryResolver, ViewChild } from '@angular/core';
 import { DynamicComponentService } from './dynamic-component.service';
 import { DynamicComponentDirective } from './dynamic-component.directive';
-import { OnInit } from '@angular/core';
-import { Component, ComponentFactoryResolver, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   //styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit{
+export class AppComponent{
+  constructor(private dynamicComponentService: DynamicComponentService,
+              private componentFactoryResolver: ComponentFactoryResolver) {  }
 
   @ViewChild(DynamicComponentDirective) componentHost: DynamicComponentDirective;
 
   selectedComponentName: string;
+  navbarClass = ["disabled","","",""];
 
-  constructor(private dynamicComponentService: DynamicComponentService,
-              private componentFactoryResolver: ComponentFactoryResolver) {  }
+  //Run at start
+  ngOnInit() {
+    this.displayComponent('MainPageComponent');
+    this.setNavbarActive(0);
+  }
 
   displayComponent(componentName: string) {
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(
@@ -26,10 +31,10 @@ export class AppComponent implements OnInit{
     const componentRef = viewContainerRef.createComponent(componentFactory);
   }
 
-  //Run at start
-  ngOnInit() {
-    this.displayComponent('MainPageComponent');
+  public setNavbarActive(component:number){
+    for(let i=0;i<this.navbarClass.length;i++){
+      this.navbarClass[i] = "";
+    }
+    this.navbarClass[component] = "active";
   }
-
-
 }

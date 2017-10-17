@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" *ngIf="realTimeAirData">
     <span class="col-lg-4" *ngFor="let data of realTimeAirData;let idx = index">
         <div class="panel" [ngClass]="panelClass[idx]">
             <div class="panel-heading" style="text-align: center">

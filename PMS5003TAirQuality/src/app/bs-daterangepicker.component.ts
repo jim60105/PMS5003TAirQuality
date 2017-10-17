@@ -1,10 +1,10 @@
 import { bsDatepickerReducer } from "ngx-bootstrap/datepicker/reducer/bs-datepicker.reducer";
 
 export class BsDaterangepickerComponent {
-  private bsRangeValue:any;
   constructor(minDate: Date = (new Date(new Date(new Date((new Date()).setDate((new Date()).getDate() - 7))).setHours(0,0,0,0))),maxDate:Date = new Date((new Date()).setHours(23,59,59))) {
     this.bsRangeValue = [minDate,maxDate];
   }
+  private bsRangeValue:any;
 
   public setTimeByDate(minDate:Date,maxDate:Date){
     this.bsRangeValue[0] = minDate;

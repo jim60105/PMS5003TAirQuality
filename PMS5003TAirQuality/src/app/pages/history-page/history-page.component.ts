@@ -22,54 +22,24 @@ import { GetDataService } from "../../services/get-data.service";
   styleUrls: ['./history-page.component.css']
 })
 export class HistoryPageComponent {
+  //是否顯示表格
   @Input() tableVisible:boolean = true;
   constructor(private _getClientInfoService:GetClientInfoService,
               private _getDataService:GetDataService) {}
 
-  public datas:Object[] = [];
+  //日期選擇器
   public bsRangeValue = new BsDaterangepickerComponent();
   public bs:Date[]= this.bsRangeValue.getTimeByDate();
 
-  ngOnInit() {
-    //Generate Radom Color
-    this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
-      this.clientInfo = res;
-
-      this.setChartsColor(()=>{
-        let color = new RColor;
-        this.colorList = [];
-        for(let i=0;i<this.clientInfo.length;i++){
-          this.colorList.push(color.get());
-        }
-      });
-    });
-    this.getDataHttp();
-  }
-
-  ngDoCheck() {
-    if(!_.isEqual(this.bs,this.bsRangeValue.getTimeByDate())) {
-      this.bsRangeValue.setTimeByDate(this.bs[0],this.bs[1]);
-      this.getDataHttp();
-      //console.log('bsRangeValue change detect.');
-    }
-  }
-
-  getDataHttp(){
-    let params = new URLSearchParams();
-
-    params.set('minDate', this.bsRangeValue.getSQLString()[0]);
-    params.set('maxDate', this.bsRangeValue.getSQLString()[1]);
-
-    this._getDataService.getDataHttpWithPromise(params).then((res)=>{
-      this.datas = res;
-      if(this.loadedLineChartDataTemplate){
-        this.setCharts();
-      }
-    });
-  }
-
+  //顏色清單
   private colorList:Array<any> = [];
+
+  //資料
+  public data:Object[] = [];
   public clientInfo:any = [];
+
+  //圖表開啟之頁籤
+  public dataSet:string = 'pm25';
 
   // lineChart
   private loadedLineChartDataTemplate:Boolean = false;
@@ -80,7 +50,6 @@ export class HistoryPageComponent {
   ];
   public lineChartData:Array<any> = _.cloneDeep(this.lineChartDataTemplate);
   public lineChartLabels:Array<any> = [];
-//  options: { elements: { point: { hitRadius: 10, hoverRadius: 10 } } }
   public lineChartOptions:any = {
     type: 'line',
     responsive: true,
@@ -99,63 +68,80 @@ export class HistoryPageComponent {
     }
   };
   public lineChartColors:Array<any> = [
-
-    { // grey
-      backgroundColor: 'rgba(0,0,177,0.2)',
-      borderColor: 'rgba(0,0,177,1)',
-      pointBackgroundColor: 'rgba(0,0,177,1)',
+    {
+      backgroundColor: '#fff',
+      borderColor: '#fff',
+      pointBackgroundColor: '#fff',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(0,0,177,0.8)'
+      pointHoverBorderColor: '#fff'
     },
-    { // dark grey
-      backgroundColor: 'rgba(77,0,0,0.2)',
-      borderColor: 'rgba(77,0,0,1)',
-      pointBackgroundColor: 'rgba(77,0,0,1)',
+    {
+      backgroundColor: '#fff',
+      borderColor: '#fff',
+      pointBackgroundColor: '#fff',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(77,0,0,1)'
+      pointHoverBorderColor: '#fff'
     },
-    { // grey
-      backgroundColor: 'rgba(0,159,0,0.2)',
-      borderColor: 'rgba(0,159,0,1)',
-      pointBackgroundColor: 'rgba(0,159,0,1)',
+    {
+      backgroundColor: '#fff',
+      borderColor: '#fff',
+      pointBackgroundColor: '#fff',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(0,159,0,0.8)'
+      pointHoverBorderColor: '#fff'
     }
   ];
   public lineChartLegend:boolean = true;
   public lineChartType:string = 'line';
   public lineChartStandby = false;
-
   // events
   //public chartClicked(e:any):void {
   //  console.log(e);
   //}
-
   //public chartHovered(e:any):void {
   //  console.log(e);
   //}
 
-  setChartsColor(callback:Function){
-    callback();
+  ngOnInit() {
+    this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
+      this.clientInfo = res;
+      this.setChartsColor();
+    });
+  }
+
+  ngDoCheck() {
+    //日期選擇改變時觸發getDataHttp
+    if(!_.isEqual(this.bs,this.bsRangeValue.getTimeByDate())) {
+      this.bsRangeValue.setTimeByDate(this.bs[0],this.bs[1]);
+      this.getDataHttp();
+    }
+  }
+
+  private setChartsColor(){
+    //Generate Radom Color
+    let color = new RColor;
+    this.colorList = [];
+    for(let i=0;i<this.clientInfo.length;i++){
+      this.colorList.push(color.get());
+    }
+
     this.lineChartColors.length = 0;
     this.colorList.forEach((value,index,array)=>{
       this.lineChartColors.push({
         backgroundColor: `rgba(${value[0]},${value[1]},${value[2]},0.2)`,
-        borderColor: `rgba(${value[0]},${value[1]},${value[2]},1)`,
-        pointBackgroundColor: `rgba(${value[0]},${value[1]},${value[2]},1)`,
+        borderColor: `rgba(${value[0]},${value[1]},${value[2]},0.9)`,
+        pointBackgroundColor: `rgba(${value[0]},${value[1]},${value[2]},0.9)`,
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: `rgba(${value[0]},${value[1]},${value[2]},1)`
+        pointHoverBorderColor: `rgba(${value[0]},${value[1]},${value[2]},0.9)`
       });
     });
     this.setLineChartDataTemplate();
-
   }
 
-  setLineChartDataTemplate(){
+  private setLineChartDataTemplate(){
     let lineChartDataTemplate:Array<any> = [];
 
     this.clientInfo.forEach(function(value,index,array){
@@ -166,16 +152,31 @@ export class HistoryPageComponent {
 
     this.lineChartDataTemplate = _.cloneDeep(lineChartDataTemplate);
     this.loadedLineChartDataTemplate = true;
-    this.setCharts();
-
+    this.getDataHttp();
   }
 
-  public dataSet:string = 'pm25';
-  setCharts(){
+  //獲取空汙資料
+  public getDataHttp(){
+    this.lineChartStandby = false;
+    let params = new URLSearchParams();
+
+    params.set('minDate', this.bsRangeValue.getSQLString()[0]);
+    params.set('maxDate', this.bsRangeValue.getSQLString()[1]);
+
+    this._getDataService.getDataHttpWithPromise(params).then((res)=>{
+      this.data = res;
+      if(this.loadedLineChartDataTemplate){
+        this.setCharts();
+      }
+    });
+  }
+
+  public setCharts(){
     this.lineChartData = _.cloneDeep(this.lineChartDataTemplate);
-    this.datas.forEach((value: Object,index,array)=>{
+    this.data.forEach((value: Object, index, array)=>{
       this.lineChartData[value['clientNum']].data.push({x:value['time'],y:value[this.dataSet]});
     });
+    this.lineChartStandby = false;
     this.lineChartStandby = true;
   }
 

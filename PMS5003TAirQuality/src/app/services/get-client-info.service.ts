@@ -7,35 +7,28 @@ import { CLIENTINFO } from 'assets/mock-clientInfo';
 
 @Injectable()
 export class GetClientInfoService {
-
   constructor(private http:Http) {
-    this.clientInfo = CLIENTINFO;  //Use mock data
     this.getClientDataHttpWithPromise();
-    this.getDataInterval = setInterval(() => {
-      this.getClientDataHttpWithPromise();
-    }, 61000);
   }
 
+  //資料
   public clientInfo:Array<any>;
-  private getDataInterval: any;
+  //php位置
   private dbURL = "assets/php/getClientInfo.php";
 
-  ngOnDestroy() {
-    clearInterval(this.getDataInterval);
-  }
-
-
+  //獲取終端資料
   public getClientDataHttpWithPromise(){
     //noinspection TypeScriptUnresolvedFunction
     return this.http.get(this.dbURL).toPromise().then((res:Response) => {
       let body = res.json();
       return body || {};
     }).then((dataIn)=> {
-      //console.log(dataIn.toString());
+      //成功取得資料
       this.clientInfo = dataIn;
       return Promise.resolve(this.clientInfo);
     }).catch((err)=> {
-      console.warn("Err: Error getting client info.");
+      //失敗取得資料
+      console.warn("Warn: cannot get client info.");
       this.clientInfo = CLIENTINFO;
       return Promise.resolve(this.clientInfo);
     });

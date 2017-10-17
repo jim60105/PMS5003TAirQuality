@@ -1,4 +1,4 @@
-<div *ngIf="datasIsReady" style="margin: auto; margin-bottom: 50px;">
+<div *ngIf="dataIsReady" style="margin: auto; margin-bottom: 50px;">
     <data-table headerTitle="" [items]="items" [itemCount]="itemCount" (reload)="reloadItems($event)" [limit]="limit" style="min-width: 675px;">
         <data-table-column
                 *ngIf="!timeDisable"

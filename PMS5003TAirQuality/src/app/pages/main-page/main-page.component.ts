@@ -12,22 +12,37 @@ import * as _ from "lodash";
 })
 export class MainPageComponent {
     constructor(public _getRealTimeDataService:GetRealTimeDataService,
-                public _clientInfoService:GetClientInfoService) {
-        this.calcAQI();
-    }
+                public _getClientInfoService:GetClientInfoService) { }
 
+    //資料
     public realTimeAirData:Array<any> = this._getRealTimeDataService.data;
     private tempRealTimeAirData:Array<any> = _.cloneDeep(this.realTimeAirData);
-    public clientInfo = this._clientInfoService.clientInfo;
+    public clientInfo = this._getClientInfoService.clientInfo;
+    //panel的顏色class
     public panelClass:Array<string> = [];
 
-    ngDoCheck() {
-        //noinspection TypeScriptValidateJSTypes
-        if(!_.isEqual(this.realTimeAirData,this.tempRealTimeAirData)) {
+    ngOnInit() {
+        this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
+            this.clientInfo = res;
+            this._getRealTimeDataService.getRealTimeAirDataHttpWithPromise().then((res)=>{
+                this.realTimeAirData = this._getRealTimeDataService.data;
+            });
+        });
+        if(_.isEqual(this.realTimeAirData,this.tempRealTimeAirData)&&this.realTimeAirData.length!=0) {
             this.calcAQI();
         }
     }
 
+    ngDoCheck() {
+        //realTime改變時觸發AQI計算
+        //noinspection TypeScriptValidateJSTypes
+        if(!_.isEqual(this.realTimeAirData,this.tempRealTimeAirData)) {
+            this.tempRealTimeAirData = _.cloneDeep(this.realTimeAirData);
+            this.calcAQI();
+        }
+    }
+
+    //計算AQI顏色
     private calcAQI(){
         if(this.realTimeAirData[0]!==undefined){
             this.panelClass.length = 0;
@@ -37,6 +52,7 @@ export class MainPageComponent {
 
                 let pm25 = Number(value.pm25);
                 let pm10 = Number(value.pm10);
+                //顏色及數值依照政府標準
                 //https://taqm.epa.gov.tw/taqm/tw/b0201.aspx
                 switch (true){
                     case (pm25<=15.4):                        //green
@@ -84,7 +100,7 @@ export class MainPageComponent {
                 if(AQI!=0) {
                     this.panelClass[index] = "AQI" + AQI;
                 }else{
-                    console.log("Calc AQI Level Error."+pm25);
+                    console.log(`Calc AQI Level Error. PM2.5: ${pm25}, PM10: ${pm10}`);
                 }
             });
         }

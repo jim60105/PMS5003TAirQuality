@@ -1,15 +1,5 @@
-<!-- this creates a google map on the page with the given lat/lng from -->
-<!-- the component as the initial center of the map: -->
 <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom">
-    <!--agm-marker [latitude]="lat" [longitude]="lng">
-        <agm-snazzy-info-window [isOpen]="true">
-            <ng-template>
-                !Center!
-            </ng-template>
-        </agm-snazzy-info-window>
-    </agm-marker-->
-
-    <agm-marker *ngFor="let data of clientInfo" [latitude]="data.lat" [longitude]="data.lng">
+    <agm-marker *ngFor="let data of clientInfoNum" [latitude]="data.lat" [longitude]="data.lng">
         <agm-snazzy-info-window [isOpen]="true" [maxWidth]="300" class="myClass">
             <ng-template>
                 Name: {{data.name}}
