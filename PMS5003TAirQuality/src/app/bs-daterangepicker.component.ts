@@ -15,8 +15,9 @@ export class BsDaterangepickerComponent {
   }
 
   public getSQLString(): string[]{
-    return [ (new Date ((new Date((new Date(new Date(this.bsRangeValue[0]))).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' '),
-        (new Date ((new Date((new Date(new Date(this.bsRangeValue[1]))).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ')
+    return [
+      new Date((new Date(this.bsRangeValue[0])).getTime() - ((new Date()).getTimezoneOffset()*60000)).toISOString().slice(0, 19).replace('T', ' '),
+      new Date(new Date(new Date((new Date(this.bsRangeValue[1]).setHours(23,59,59,999))).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ')
     ];
   }
 }

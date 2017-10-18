@@ -8,10 +8,11 @@
     padding: 15px;
 }
 
-.copyright{
+.version{
     position: absolute;
     bottom: 0px;
+    right: 0px;
     font-size: 8px;
-    margin: 10px;
-    color: rgb(138, 138, 138);
+    margin: 1px;
+    color: rgb(70, 70, 70);
 }
