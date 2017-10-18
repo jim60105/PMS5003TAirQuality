@@ -1,16 +1,18 @@
-<div class="row" *ngIf="realTimeAirData!==undefined">
-    <span class="col-lg-4" *ngFor="let data of realTimeAirData;let idx = index">
-        <div class="panel" *ngIf="panelClass" [ngClass]="panelClass[idx]">
-            <div class="panel-heading" style="text-align: center">
-                <p *ngIf="data.clientNum!==undefined && clientInfo!==undefined" style="font-size: 30px;margin: 0px auto;">{{clientInfo[data.clientNum].name}}</p>
-                PM1: {{data.pm1}}<br>
-                PM2.5: {{data.pm25}}<br>
-                PM10: {{data.pm10}}<br>
-                溫度: {{data.temp}}<br>
-                濕度: {{data.humid}}<br>
-                {{data.time}}
+<div class="a-fadein">
+    <div class="row" *ngIf="realTimeAirData!==undefined">
+        <span class="col-lg-4" *ngFor="let data of realTimeAirData;let idx = index">
+            <div class="panel" *ngIf="panelClass" [ngClass]="panelClass[idx]">
+                <div class="panel-heading" style="text-align: center">
+                    <p *ngIf="data.clientNum!==undefined && clientInfo!==undefined" style="font-size: 30px;margin: 0px auto;">{{clientInfo[data.clientNum].name}}</p>
+                    PM1: {{data.pm1}}<br>
+                    PM2.5: {{data.pm25}}<br>
+                    PM10: {{data.pm10}}<br>
+                    溫度: {{data.temp}}<br>
+                    濕度: {{data.humid}}<br>
+                    {{data.time}}
+                </div>
             </div>
-        </div>
-    </span>
+        </span>
+    </div>
+    <app-history-page [tableVisible]="false"></app-history-page>
 </div>
-<app-history-page [tableVisible]="false"></app-history-page>

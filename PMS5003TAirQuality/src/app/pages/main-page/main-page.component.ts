@@ -98,7 +98,12 @@ export class MainPageComponent {
                 let AQI = Math.max(temp10, temp25);
 
                 if(AQI!=0) {
-                    this.panelClass[index] = "AQI" + AQI;
+                    if(AQI>=3){
+                        //震動特效
+                        this.panelClass[index] = `AQI${AQI} a-ring`;
+                    }else{
+                        this.panelClass[index] = "AQI" + AQI;
+                    }
                 }else{
                     console.log(`Calc AQI Level Error. PM2.5: ${pm25}, PM10: ${pm10}`);
                 }

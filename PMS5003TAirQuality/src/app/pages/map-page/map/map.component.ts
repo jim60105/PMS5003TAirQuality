@@ -29,8 +29,8 @@ export class MapComponent {
     //以東海大學為中心
     public lat: number = 24.1814718;
     public lng: number = 120.6053346;
-    //縮放比例15，在1920*1080之畫面顯示良好
-    public zoom: number = 15;
+    //縮放比例14，在1280*1024之畫面顯示良好
+    public zoom: number = 14;
     //測站資料
     public clientInfo = this._getClientInfoService.clientInfo;
     public clientInfoNum;
