@@ -16,9 +16,10 @@ export class DataTableComponent {
   @Input() data:any;
   private dataTemp = _.cloneDeep(this.data);
   @Input() clientInfo:any;
-  @Input() timeDisable:boolean = false;
   //顯示列數
   @Input() limit:number = 10;
+  @Input() title = ['Time','位置','PM1','PM2.5','PM10','溫度','濕度'];
+  @Input() property = ['time','clientNum','pm1','pm25','pm10','temp','humid'];
 
   itemResource = new DataTableResource(this.data);
   items = [];

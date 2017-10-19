@@ -1,11 +1,11 @@
 <div class="a-fadein">
-  <div>
+    <div>
     <ul class="nav nav-tabs">
-      <li role="presentation" [ngClass]="{'active': dataSet=='pm1'}"><a href="#" (click)="dataSet='pm1';setCharts()">PM1</a></li>
-      <li role="presentation" [ngClass]="{'active': dataSet=='pm25'}"><a href="#" (click)="dataSet='pm25';setCharts()">PM2.5</a></li>
-      <li role="presentation" [ngClass]="{'active': dataSet=='pm10'}"><a href="#" (click)="dataSet='pm10';setCharts()">PM10</a></li>
-      <li role="presentation" [ngClass]="{'active': dataSet=='temp'}"><a href="#" (click)="dataSet='temp';setCharts()">溫度</a></li>
-      <li role="presentation" [ngClass]="{'active': dataSet=='humid'}"><a href="#" (click)="dataSet='humid';setCharts()">濕度</a></li>
+      <li role="presentation" [ngClass]="{'active': dataSet=='pm1'}"><a href="#" (click)="dataSet='pm1';setCharts();calcPercentageData()">PM1</a></li>
+      <li role="presentation" [ngClass]="{'active': dataSet=='pm25'}"><a href="#" (click)="dataSet='pm25';setCharts();calcPercentageData()">PM2.5</a></li>
+      <li role="presentation" [ngClass]="{'active': dataSet=='pm10'}"><a href="#" (click)="dataSet='pm10';setCharts();calcPercentageData()">PM10</a></li>
+      <li role="presentation" [ngClass]="{'active': dataSet=='temp'}"><a href="#" (click)="dataSet='temp';setCharts();calcPercentageData()">溫度</a></li>
+      <li role="presentation" [ngClass]="{'active': dataSet=='humid'}"><a href="#" (click)="dataSet='humid';setCharts();calcPercentageData()">濕度</a></li>
       <span style="display: block;float: right">
           <input type="text" value="{{ bs[0] | date:'yMd'}} ~ {{ bs[1] | date:'yMd'}}"
                  bsDaterangepicker [(bsValue)]="bs"  (change)="getDataHttp()">
@@ -25,8 +25,22 @@
               [legend]="lineChartLegend"
               [chartType]="lineChartType"></canvas>
     </div>
-  </div>
 
-  <app-data-table *ngIf="tableVisible" [data]="data" [clientInfo]="clientInfo" ></app-data-table>
+      <app-data-table
+              *ngIf="tableVisible"
+              [data]="percentageData"
+              [clientInfo]="clientInfo"
+              [limit]="tableRowLimit"
+              [property]="['clientNum','0%~20%','21%~40%','41%~60%','61%~80%','81%~100%']"
+              [title]="['位置','0%~20%','21%~40%','41%~60%','61%~80%','81%~100%']">
+      </app-data-table>
+    </div>
+    <div *ngIf="tableVisible">
+        <h2>歷史數據</h2>
+      <app-data-table
+              [data]="data"
+              [clientInfo]="clientInfo" >
+      </app-data-table>
+    </div>
 </div>
 
