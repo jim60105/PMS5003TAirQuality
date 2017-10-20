@@ -41,6 +41,15 @@ export class HistoryPageComponent {
   //圖表開啟之頁籤
   public dataSet:string = 'pm25';
 
+  //AQI表格
+  public percentageData:Object[] = [];
+  public percentageTitle = ['位置','良好 0～50','普通 51～100','對敏感族群不健康 101～150','對所有族群不健康 151～200','非常不健康 201～300','危害 301～400','危害 401～500'];
+  public percentageProperty = ['clientNum',0,1,2,3,4,5,6];
+  public percentageSortable = ["","","","","","","",""];
+  public percentageTitleClass = ['','AQI1','AQI2','AQI3','AQI4','AQI5','AQI6','AQI6'];
+      //列數
+  public tableRowLimit:number = 3;
+
   // lineChart
   private loadedLineChartDataTemplate:Boolean = false;
   private lineChartDataTemplate:Array<any> = [
@@ -183,58 +192,49 @@ export class HistoryPageComponent {
     this.lineChartStandby = true;
   }
 
-  public percentageData:Object[] = [];
-  public perventageTitle = ['0%~20%','21%~40%','41%~60%','61%~80%','81%~100%'];
-  //表格列數
-  public tableRowLimit:number = 3;
-  public tableTitle = ['位置','0%~20%','21%~40%','41%~60%','61%~80%','81%~100%'];
   public calcPercentageData() {
-    let max:number[]=[];
-    let min:number[]=[];
-    let level:number[][]=[[],[],[],[]];
     let percentageCount:number[][]=[];
     let dataCount:number[] = [];
-    this.data.forEach((value: Object, index, array)=>{
-      //與陣列內未初始化之元素相比較，皆回傳false
-      max[value['clientNum']] = (value[this.dataSet]<max[value['clientNum']])?max[value['clientNum']]:Number(value[this.dataSet]);
-      min[value['clientNum']] = (value[this.dataSet]>min[value['clientNum']])?min[value['clientNum']]:Number(value[this.dataSet]);
-    });
+    let level25 = [15.5,35.5,54.5,150.5,250.5,350.5,500.5];
+    let level10 = [55,126,255,355,425,505,605];
+    let level:number[]=(this.dataSet=='pm25')?level25:level10;
+
     this.clientInfo.forEach((value: Object, i, array)=>{
-      let gap = (max[i]-min[i])/5;
-      level[0][i] = min[i]+gap;
-      level[1][i] = min[i]+gap*2;
-      level[2][i] = min[i]+gap*3;
-      level[3][i] = min[i]+gap*4;
-      percentageCount[i] = [0,0,0,0,0];
+      percentageCount[i] = [0,0,0,0,0,0,0];
       dataCount[i] = 0;
       this.percentageData[i] = {};
     });
+
     this.data.forEach((value: Object, index, array)=>{
       switch (true){
-        case (value[this.dataSet]<level[0][value['clientNum']]):
+        case (value[this.dataSet]<level[0]):
           percentageCount[value['clientNum']][0]++;
           break;
-        case (value[this.dataSet]<level[1][value['clientNum']]):
+        case (value[this.dataSet]<level[1]):
           percentageCount[value['clientNum']][1]++;
           break;
-        case (value[this.dataSet]<level[2][value['clientNum']]):
+        case (value[this.dataSet]<level[2]):
           percentageCount[value['clientNum']][2]++;
           break;
-        case (value[this.dataSet]<level[3][value['clientNum']]):
+        case (value[this.dataSet]<level[3]):
           percentageCount[value['clientNum']][3]++;
           break;
-        case (value[this.dataSet]<max[value['clientNum']]):
+        case (value[this.dataSet]<level[4]):
           percentageCount[value['clientNum']][4]++;
+          break;
+        case (value[this.dataSet]<level[5]):
+          percentageCount[value['clientNum']][5]++;
+          break;
+        case (value[this.dataSet]<level[6]):
+          percentageCount[value['clientNum']][6]++;
           break;
       }
       dataCount[value['clientNum']]++;
     });
     percentageCount.forEach((value, index, array)=>{
-      this.percentageData[index]['0%~20%'] = Math.round(percentageCount[index][0]/dataCount[index]*100*10000)/10000 + '%';
-      this.percentageData[index]['21%~40%'] = Math.round(percentageCount[index][1]/dataCount[index]*100*10000)/10000 + '%';
-      this.percentageData[index]['41%~60%'] = Math.round(percentageCount[index][2]/dataCount[index]*100*10000)/10000 + '%';
-      this.percentageData[index]['61%~80%'] = Math.round(percentageCount[index][3]/dataCount[index]*100*10000)/10000 + '%';
-      this.percentageData[index]['81%~100%'] = Math.round(percentageCount[index][4]/dataCount[index]*100*10000)/10000 + '%';
+      for(let i=0;i<7;i++){
+        this.percentageData[index][i] = Math.round(percentageCount[index][i]/dataCount[index]*100*100)/100 + '%';
+      }
       this.percentageData[index]['clientNum'] = index;
     });
   }

@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 
 //noinspection TypeScriptCheckImport
 import * as _ from "lodash";
+declare var $:any;
 
 import { GetClientInfoService } from "../../../services/get-client-info.service";
 
@@ -29,7 +30,6 @@ export class MapComponent {
     //以東海大學為中心
     public lat: number = 24.1814718;
     public lng: number = 120.6053346;
-    //縮放比例14，在1280*1024之畫面顯示良好
     public zoom: number = 14;
     //測站資料
     public clientInfo = this._getClientInfoService.clientInfo;
@@ -39,12 +39,14 @@ export class MapComponent {
     ngOnInit() {
         this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
             this.convertLatLngToNumber(this.clientInfo);
+            this.calcCenter();
         })
     }
     ngDoCheck() {
         //
         if(!_.isEqual(this.clientInfo,this.tempClientInfo)) {
             this.convertLatLngToNumber(this.clientInfo);
+            this.calcCenter();
         }
     }
 
@@ -58,6 +60,24 @@ export class MapComponent {
 
         this.clientInfoNum = data;
         this.tempClientInfo = _.cloneDeep(this.clientInfo);
+    }
+
+    //計算中心並調整縮放比例
+    calcCenter(){
+        let latMin:number;
+        let latMax:number;
+        let lngMin:number;
+        let lngMax:number;
+        this.clientInfoNum.forEach((value,index,array)=>{
+            latMin = (latMin<value.lat)?latMin:value.lat;
+            latMax = (latMax>value.lat)?latMax:value.lat;
+            lngMin = (lngMin<value.lng)?lngMin:value.lng;
+            lngMax = (lngMax>value.lng)?lngMax:value.lng;
+        });
+        this.lat = (latMin+latMax)/2;
+        this.lng = (lngMin+lngMax)/2;
+
+        this.zoom = Math.round($(window).width()/700+12.8);
     }
 }
 

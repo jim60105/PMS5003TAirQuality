@@ -27,16 +27,20 @@
     </div>
 
       <app-data-table
-              *ngIf="tableVisible"
+              *ngIf="tableVisible && (dataSet=='pm25' || dataSet=='pm10')"
               [data]="percentageData"
               [clientInfo]="clientInfo"
               [limit]="tableRowLimit"
-              [property]="['clientNum','0%~20%','21%~40%','41%~60%','61%~80%','81%~100%']"
-              [title]="['位置','0%~20%','21%~40%','41%~60%','61%~80%','81%~100%']">
+              [property]="percentageProperty"
+              [title]="percentageTitle"
+              [sortable]="percentageSortable"
+              [titleClass]="percentageTitleClass">
       </app-data-table>
     </div>
     <div *ngIf="tableVisible">
-        <h2>歷史數據</h2>
+
+        <hr>
+        <h2>數據總覽</h2>
       <app-data-table
               [data]="data"
               [clientInfo]="clientInfo" >

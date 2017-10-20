@@ -150,7 +150,7 @@ export class AveragePageComponent {
       temp.forEach((value,index,array)=>{
         Object.keys(value).forEach((key)=> {
           if(key!='count' && key!='clientNum') {
-            temp[index][key] = Math.round((temp[index][key]/temp[index]['count'])*10000)/10000;
+            temp[index][key] = Math.round((temp[index][key]/temp[index]['count'])*100)/100;
           }
         });
       });

@@ -20,6 +20,8 @@ export class DataTableComponent {
   @Input() limit:number = 10;
   @Input() title = ['Time','位置','PM1','PM2.5','PM10','溫度','濕度'];
   @Input() property = ['time','clientNum','pm1','pm25','pm10','temp','humid'];
+  @Input() sortable = ['true','true','true','true','true','true','true'];
+  @Input() titleClass = ['','','','','','',''];
 
   itemResource = new DataTableResource(this.data);
   items = [];
