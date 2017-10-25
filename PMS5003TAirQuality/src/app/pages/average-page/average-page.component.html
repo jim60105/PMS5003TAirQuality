@@ -1,12 +1,10 @@
 <div class="a-fadein">
-    <span style="display: block;float: right">
-        <span>
-            <input type="text" value="{{ bs[0] | date:'yMd'}} ~ {{ bs[1] | date:'yMd'}}"
-                 bsDaterangepicker [(bsValue)]="bs"  (change)="getDataHttp()">
-            <span style="display: inline-block">
-                <button class="btn btn-success" (click)="drp.toggle()">選擇日期</button>
-                <bs-daterangepicker #drp [(bsValue)]="bs" placement="left" style="display: block"></bs-daterangepicker>
-            </span>
+    <span class="input-group" daterangepicker (selected)="selectedDate($event, rangeValue)" style="max-width: 250px;float: right">
+        <span class="form-control uneditable-input"  name="daterange" >
+            {{ rangeValue[0] | date:'y-M-d'}} ~ {{ rangeValue[1] | date:'y-M-d'}}
+        </span>
+        <span class="input-group-btn">
+            <a type="button" class="btn btn-default"><i class="glyphicon glyphicon-calendar"></i></a>
         </span>
     </span>
     <div *ngIf="barChartStandby" style="display: block;">

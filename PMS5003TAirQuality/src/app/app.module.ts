@@ -9,6 +9,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 //Datepicker
 import { DatepickerModule } from 'ngx-bootstrap';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { Daterangepicker } from 'ng2-daterangepicker';
 
 //GoogleMap
 import { AgmCoreModule } from '@agm/core';
@@ -69,6 +70,7 @@ import { GetDataService } from "./services/get-data.service";
     DatepickerModule.forRoot(),
     BsDatepickerModule.forRoot(),
     ChartsModule,
+    Daterangepicker,
   ],
   entryComponents: [
     MainPageComponent,

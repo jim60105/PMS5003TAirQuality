@@ -1,12 +1,13 @@
 import { Component, ViewChild, Input } from '@angular/core';
 import { URLSearchParams } from '@angular/http';
 
-import { BsDaterangepickerComponent } from "../../bs-daterangepicker.component"
-
+declare var RColor:any;
 //noinspection TypeScriptCheckImport
 import * as _ from "lodash";
 
-declare var RColor:any;
+import * as moment from 'moment';
+import { DaterangepickerComponent } from "../../daterangepicker.component"
+import { Daterangepicker, DaterangepickerConfig } from 'ng2-daterangepicker';
 
 //https://stackoverflow.com/a/42692601/8706033
 import { BaseChartDirective } from 'ng2-charts/ng2-charts';
@@ -25,11 +26,11 @@ export class HistoryPageComponent {
   //是否顯示表格
   @Input() tableVisible:boolean = true;
   constructor(private _getClientInfoService:GetClientInfoService,
-              private _getDataService:GetDataService) {}
-
+              private _getDataService:GetDataService,
+              private daterangepickerOptions: DaterangepickerConfig) {}
   //日期選擇器
-  public bsRangeValue = new BsDaterangepickerComponent();
-  public bs:Date[]= this.bsRangeValue.getTimeByDate();
+  public _DaterangepickerComponent = new DaterangepickerComponent();
+  public rangeValue:Date[] = this._DaterangepickerComponent.getTimeByDate();
 
   //顏色清單
   private colorList:Array<any> = [];
@@ -120,14 +121,16 @@ export class HistoryPageComponent {
       this.tableRowLimit = this.clientInfo.length;
       this.setChartsColor();
     });
+    this.daterangepickerOptions.settings = this._DaterangepickerComponent.options;
   }
 
-  ngDoCheck() {
+  private selectedDate(value: any, dateInput: any) {
+    this.rangeValue[0] = value.start;
+    this.rangeValue[1] = value.end;
+    dateInput = this.rangeValue;
     //日期選擇改變時觸發getDataHttp
-    if(!_.isEqual(this.bs,this.bsRangeValue.getTimeByDate())) {
-      this.bsRangeValue.setTimeByDate(this.bs[0],this.bs[1]);
-      this.getDataHttp();
-    }
+    this._DaterangepickerComponent.setTimeByDate(this.rangeValue[0],this.rangeValue[1]);
+    this.getDataHttp();
   }
 
   private setChartsColor(){
@@ -171,8 +174,8 @@ export class HistoryPageComponent {
     this.lineChartStandby = false;
     let params = new URLSearchParams();
 
-    params.set('minDate', this.bsRangeValue.getSQLString()[0]);
-    params.set('maxDate', this.bsRangeValue.getSQLString()[1]);
+    params.set('minDate', this._DaterangepickerComponent.getSQLString()[0]);
+    params.set('maxDate', this._DaterangepickerComponent.getSQLString()[1]);
 
     this._getDataService.getDataHttpWithPromise(params).then((res)=>{
       this.data = res;

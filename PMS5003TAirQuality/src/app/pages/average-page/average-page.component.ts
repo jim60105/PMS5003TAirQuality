@@ -1,7 +1,7 @@
 import { Component, ViewChild, AfterViewInit, Input } from '@angular/core';
 import { URLSearchParams } from '@angular/http';
 
-import { BsDaterangepickerComponent } from "../../bs-daterangepicker.component"
+import { DaterangepickerComponent } from "../../daterangepicker.component"
 
 //noinspection TypeScriptCheckImport
 import * as _ from "lodash";
@@ -28,33 +28,14 @@ export class AveragePageComponent {
   public clientInfo:any = [];
 
   //日期選擇器
-  public bsRangeValue = new BsDaterangepickerComponent();
-  public bs:Date[]= this.bsRangeValue.getTimeByDate();
+  public _DaterangepickerComponent = new DaterangepickerComponent();
+  public rangeValue:Date[]= this._DaterangepickerComponent.getTimeByDate();
 
   //顏色清單
   private colorList:Array<any> = [];
 
   //表格列數
   public tableRowLimit:number = 3;
-
-  ngOnInit() {
-    //獲取clientInfo
-    this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
-      this.clientInfo = res;
-      //設定列數為client數量
-      this.tableRowLimit = this.clientInfo.length;
-      this.setChartsColor();
-    });
-  }
-
-  ngDoCheck() {
-    //日期選擇改變時觸發getDataHttp
-    if(!_.isEqual(this.bs,this.bsRangeValue.getTimeByDate())) {
-      this.bsRangeValue.setTimeByDate(this.bs[0],this.bs[1]);
-      this.getDataHttp();
-      //console.log('bsRangeValue change detect.');
-    }
-  }
 
   // barChart
   private loadedBarChartDataTemplate:Boolean = false;
@@ -85,6 +66,25 @@ export class AveragePageComponent {
   //public chartHovered(e:any):void {
   //  console.log(e);
   //}
+  
+  ngOnInit() {
+    //獲取clientInfo
+    this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
+      this.clientInfo = res;
+      //設定列數為client數量
+      this.tableRowLimit = this.clientInfo.length;
+      this.setChartsColor();
+    });
+  }
+
+  private selectedDate(value: any, dateInput: any) {
+    this.rangeValue[0] = value.start;
+    this.rangeValue[1] = value.end;
+    dateInput = this.rangeValue;
+    //日期選擇改變時觸發getDataHttp
+    this._DaterangepickerComponent.setTimeByDate(this.rangeValue[0],this.rangeValue[1]);
+    this.getDataHttp();
+  }
 
   setChartsColor(){
     //Generate Radom Color
@@ -124,8 +124,8 @@ export class AveragePageComponent {
     this.barChartStandby = false;
     let params = new URLSearchParams();
 
-    params.set('minDate', this.bsRangeValue.getSQLString()[0]);
-    params.set('maxDate', this.bsRangeValue.getSQLString()[1]);
+    params.set('minDate', this._DaterangepickerComponent.getSQLString()[0]);
+    params.set('maxDate', this._DaterangepickerComponent.getSQLString()[1]);
 
     this._getDataService.getDataHttpWithPromise(params).then((res)=>{
       this.data = res;
