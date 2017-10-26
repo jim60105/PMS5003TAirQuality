@@ -29,8 +29,10 @@
     "bootstrap": "^3.3.7",
     "bootstrap-table-filter": "^1.0.2",
     "chart.js": "^2.7.0",
+    "classlist.js": "^1.1.20150312",
     "core-js": "^2.5.1",
     "eslint": "^4.8.0",
+    "intl": "^1.2.5",
     "jquery": "3.2.0",
     "lodash": "^4.17.4",
     "moment": "^2.19.1",
@@ -42,6 +44,7 @@
     "snazzy-info-window": "^1.1.0",
     "tether": "^1.4.0",
     "typescript": "^2.5.3",
+    "web-animations-js": "^2.3.1",
     "zone.js": "^0.8.18"
   },
   "devDependencies": {
