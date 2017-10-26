@@ -7,8 +7,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 //Datepicker
-import { DatepickerModule } from 'ngx-bootstrap';
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { Daterangepicker } from 'ng2-daterangepicker';
 
 //GoogleMap
@@ -67,8 +65,6 @@ import { GetDataService } from "./services/get-data.service";
     AgmSnazzyInfoWindowModule,
 
     DataTableModule,
-    DatepickerModule.forRoot(),
-    BsDatepickerModule.forRoot(),
     ChartsModule,
     Daterangepicker,
   ],

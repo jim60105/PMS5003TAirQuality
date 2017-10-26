@@ -1,5 +1,5 @@
 <div class="a-fadein">
-    <span class="input-group" daterangepicker (selected)="selectedDate($event, rangeValue)" style="max-width: 250px;float: right">
+    <span class="input-group flashing" daterangepicker (selected)="selectedDate($event, rangeValue)" style="max-width: 250px;float: right">
         <span class="form-control uneditable-input"  name="daterange" >
             {{ rangeValue[0] | date:'y-M-d'}} ~ {{ rangeValue[1] | date:'y-M-d'}}
         </span>

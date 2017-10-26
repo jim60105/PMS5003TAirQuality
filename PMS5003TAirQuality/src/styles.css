@@ -17,3 +17,47 @@ body {
     color: rgb(70, 70, 70);
 }
 
+/*dateRangePicker Flash animation*/
+.flashing{
+    color:#fff;
+    border:solid 1px black;
+    border-radius: 4px;
+    animation-name: flash;
+    animation-duration: 2s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+
+    /* Chrome 4+, Safari 4+, Opera 15+ */
+    -webkit-animation-name: flash;
+    -webkit-animation-duration: 2s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-box-shadow: 0 0 8px #000000;
+
+    /* Firefox 5+ */
+    -moz-animation-name: flash;
+    -moz-animation-duration: 2s;
+    -moz-animation-timing-function: linear;
+    -moz-animation-iteration-count: infinite;
+    -moz-box-shadow: 0 0 8px #000000;
+}
+
+@keyframes flash {
+    0% { opacity: 1.0 }
+    90% { opacity: 0.5 }
+    100% { opacity: 1.0 }
+}
+
+/* Chrome 4+, Safari 4+, Opera 15+ */
+@-webkit-keyframes flash {
+    0% { opacity: 1.0 }
+    90% { opacity: 0.5 }
+    100% { opacity: 1.0 }
+}
+
+/* Firefox 5+ */
+@-moz-keyframes flash {
+    0% { opacity: 1.0 }
+    90% { opacity: 0.5 }
+    100% { opacity: 1.0 }
+}
