@@ -49,7 +49,7 @@ import { GetDataService } from "./services/get-data.service";
     MapComponent,
     Safe,
     DynamicComponentDirective,
-    AveragePageComponent,
+    AveragePageComponent
   ],
   imports: [
     BrowserModule,

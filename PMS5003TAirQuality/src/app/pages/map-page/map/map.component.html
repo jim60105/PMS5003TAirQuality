@@ -1,6 +1,6 @@
 <div class="a-fadein">
     <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom">
-        <agm-marker *ngFor="let data of clientInfoNum" [latitude]="data.lat" [longitude]="data.lng">
+        <agm-marker *ngFor="let data of clientInfoNum" [latitude]="data.lat" [longitude]="data.lng" [iconUrl]="mapMarkerText[data.no].icon">
             <agm-snazzy-info-window [isOpen]="true" [maxWidth]="300" class="myClass">
                 <ng-template>
                     Name: {{data.name}}

@@ -10,6 +10,7 @@ declare var $:any;
 
 import { GetClientInfoService } from "../../../services/get-client-info.service";
 
+import { CalcAQIComponent } from "../../../calc-AQI.component";
 export class dataObject{
     lat: any;
     lng: any;
@@ -27,6 +28,7 @@ export class MapComponent {
     constructor(private http:Http,
                 private _getClientInfoService:GetClientInfoService) {}
 
+    private _calcAQI = new CalcAQIComponent();
     //以東海大學為中心
     public lat: number = 24.1814718;
     public lng: number = 120.6053346;
@@ -36,18 +38,41 @@ export class MapComponent {
     public clientInfoNum;
     private tempClientInfo = this.clientInfo;
 
+    //AQIIconUrl
+    private icon:string[] = [
+        "assets/pic/AQI1.png",
+        "assets/pic/AQI2.png",
+        "assets/pic/AQI3.png",
+        "assets/pic/AQI4.png",
+        "assets/pic/AQI5.png",
+        "assets/pic/AQI6.png"
+    ];
+
     ngOnInit() {
         this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
             this.convertLatLngToNumber(this.clientInfo);
+            this.calcAQI();
             this.calcCenter();
         })
     }
     ngDoCheck() {
-        //
         if(!_.isEqual(this.clientInfo,this.tempClientInfo)) {
             this.convertLatLngToNumber(this.clientInfo);
+            this.calcAQI();
             this.calcCenter();
         }
+    }
+
+    calcAQI(){
+        this.mapMarkerText.forEach((value,index,array)=>{
+            let AQI = this._calcAQI.calc(value.pm25,value.pm10);
+
+            if(AQI>0 && AQI<=6) {
+                this.mapMarkerText[index].icon = this.icon[AQI-1];
+            }else{
+                console.log(`Calc AQI Level Error. PM2.5: ${value.pm25}, PM10: ${value.pm10}`);
+            }
+        });
     }
 
     //將資料內的數字字串轉為數字格式
