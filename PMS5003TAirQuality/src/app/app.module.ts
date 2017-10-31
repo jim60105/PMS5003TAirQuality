@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AppRoutingModule } from './app-routing.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 //Datepicker
 import { Daterangepicker } from 'ng2-daterangepicker';
@@ -27,12 +28,16 @@ import { ChartsModule } from 'ng2-charts';
 //https://www.npmjs.com/package/angular-4-data-table-fix
 import { DataTableModule } from 'angular-4-data-table/src/index';
 
+//Slider
+import { MatSliderModule } from '@angular/material';
+
 import { AppComponent } from './app.component';
 import { MainPageComponent } from './pages/main-page/main-page.component';
 import { HistoryPageComponent } from './pages/history-page/history-page.component';
 import { MapComponent } from './pages/map-page/map/map.component';
 import { MapPageComponent } from './pages/map-page/map-page.component';
 import { AveragePageComponent } from './pages/average-page/average-page.component';
+import { ComparePageComponent } from './pages/compare-page/compare-page.component';
 import { DataTableComponent } from './data-table/data-table.component';
 
 import { GetRealTimeDataService } from './services/get-real-time-data.service';
@@ -49,7 +54,8 @@ import { GetDataService } from "./services/get-data.service";
     MapComponent,
     Safe,
     DynamicComponentDirective,
-    AveragePageComponent
+    AveragePageComponent,
+    ComparePageComponent
   ],
   imports: [
     BrowserModule,
@@ -58,6 +64,8 @@ import { GetDataService } from "./services/get-data.service";
     FormsModule,
     HttpModule,
 	NgbModule.forRoot(),
+    BrowserAnimationsModule,
+    MatSliderModule,
 
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyDZMWcTgVoCqPDHMBGYpjRZ7stYsH7XZ-o'
@@ -72,7 +80,8 @@ import { GetDataService } from "./services/get-data.service";
     MainPageComponent,
     MapPageComponent,
     HistoryPageComponent,
-    AveragePageComponent
+    AveragePageComponent,
+    ComparePageComponent
   ],
   providers: [
     DynamicComponentService,

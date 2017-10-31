@@ -1,6 +1,7 @@
 import { Component, ComponentFactoryResolver, ViewChild } from '@angular/core';
 import { DynamicComponentService } from './dynamic-component.service';
 import { DynamicComponentDirective } from './dynamic-component.directive';
+import 'hammerjs';
 
 @Component({
   selector: 'app-root',
