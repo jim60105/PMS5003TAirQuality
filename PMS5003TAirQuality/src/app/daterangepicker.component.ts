@@ -1,7 +1,12 @@
 import * as moment from 'moment';
+import { Cookie } from 'ng2-cookies';
 
 export class DaterangepickerComponent {
-  constructor(minDate = moment().subtract(7, 'day').startOf('day'),maxDate = moment().endOf('day'),option?) {
+  constructor(
+      minDate = (Cookie.check('minDate'))?(moment(Cookie.get('minDate'))):(moment().subtract(7, 'day').startOf('day')),
+      maxDate = (Cookie.check('maxDate'))?(moment(Cookie.get('maxDate'))):(moment().endOf('day')),
+      option?
+  ) {
     this.rangeValue = [moment(minDate),moment(maxDate)];
     if(option){
       this.options = option;
@@ -26,6 +31,8 @@ export class DaterangepickerComponent {
   public setTimeByDate(minDate = moment().startOf('day').toDate(),maxDate = moment().endOf('day').toDate()){
     this.rangeValue[0] = moment(minDate);
     this.rangeValue[1] = moment(maxDate);
+    Cookie.set('minDate',minDate.toString());
+    Cookie.set('maxDate',maxDate.toString());
   }
   public getTimeByDate(){
     return [this.rangeValue[0].toDate(),this.rangeValue[1].toDate()];

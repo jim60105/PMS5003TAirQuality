@@ -186,6 +186,8 @@ SOFTWARE.
 
 ng2-daterangepicker@2.0.10 MIT
 
+ng2-cookies@1.0.12 MIT
+
 @angular/router@4.4.6 MIT
 
 @angular/http@4.4.6 MIT

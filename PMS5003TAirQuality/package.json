@@ -40,6 +40,7 @@
     "lodash": "^4.17.4",
     "moment": "^2.19.1",
     "ng2-charts": "^1.6.0",
+    "ng2-cookies": "^1.0.12",
     "ng2-daterangepicker": "^2.0.10",
     "ng2-slider-component": "^1.0.9",
     "ngx-bootstrap": "^2.0.0-beta.6",
