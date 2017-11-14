@@ -9,7 +9,7 @@ import { Component, Input } from '@angular/core';
   `,
   styles: [`
 .over {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -21,10 +21,9 @@ import { Component, Input } from '@angular/core';
 
 .layout {
     position: absolute;
-    top: 40%;
-    left: 40%;
-    width: 20%;
-    height: 20%;
+    top: 50%;
+    left: 50%;
+    transform:translate(-50%,-50%);
     z-index: 1001;
     text-align: center;
 }
@@ -34,6 +33,7 @@ import { Component, Input } from '@angular/core';
     -moz-animation: loading 2s infinite linear;
     -o-animation: loading 2s infinite linear;
     animation: loading 2s infinite linear;
+    width: 25vh;
 }
 @-webkit-keyframes loading {
     from {
