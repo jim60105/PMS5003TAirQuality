@@ -19,7 +19,7 @@ export class ComparePageComponent{
               private daterangepickerOptions: DaterangepickerConfig) {}
 
   ngOnInit() {
-    this.daterangepickerOptions.settings = new DaterangepickerComponent().options;
+    this.daterangepickerOptions.settings = this.dateRangepickerComponentArray[0].settings;
     this.daterangepickerOptions.settings.startDate = moment();
     this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
       this.clientInfo = res;
@@ -29,6 +29,7 @@ export class ComparePageComponent{
     }
   }
 
+  public _DaterangepickerComponent = new DaterangepickerComponent();
   private unique;
   public readyToGo = false;
   ngDoCheck() {

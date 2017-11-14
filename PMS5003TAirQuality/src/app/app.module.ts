@@ -8,7 +8,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 //Datepicker
-import { Daterangepicker } from 'ng2-daterangepicker';
+import { Daterangepicker, DaterangepickerConfig } from 'ng2-daterangepicker';
 
 //GoogleMap
 import { AgmCoreModule } from '@agm/core';
@@ -39,6 +39,7 @@ import { MapPageComponent } from './pages/map-page/map-page.component';
 import { AveragePageComponent } from './pages/average-page/average-page.component';
 import { ComparePageComponent } from './pages/compare-page/compare-page.component';
 import { DataTableComponent } from './data-table/data-table.component';
+import { LoadingComponent } from './loading.component';
 
 import { GetRealTimeDataService } from './services/get-real-time-data.service';
 import { GetClientInfoService } from "./services/get-client-info.service";
@@ -55,7 +56,8 @@ import { GetDataService } from "./services/get-data.service";
     Safe,
     DynamicComponentDirective,
     AveragePageComponent,
-    ComparePageComponent
+    ComparePageComponent,
+    LoadingComponent
   ],
   imports: [
     BrowserModule,
@@ -87,7 +89,8 @@ import { GetDataService } from "./services/get-data.service";
     DynamicComponentService,
     GetRealTimeDataService,
     GetClientInfoService,
-    GetDataService
+    GetDataService,
+    DaterangepickerConfig,
   ],
   bootstrap: [AppComponent]
 })

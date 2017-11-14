@@ -17,6 +17,7 @@ export class AppComponent{
   selectedComponentName: string;
   navbarClass = ["disabled","","",""];
 
+  public loading;
   //Run at start
   ngOnInit() {
     this.displayComponent('MainPageComponent');

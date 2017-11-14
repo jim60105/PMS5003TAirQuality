@@ -39,6 +39,9 @@ export class HistoryPageComponent {
   public data:Object[] = [];
   public clientInfo:any = [];
 
+  //Loading蓋版
+  public loading = true;
+
   //圖表開啟之頁籤
   public dataSet:string = 'pm25';
 
@@ -121,7 +124,7 @@ export class HistoryPageComponent {
       this.tableRowLimit = this.clientInfo.length;
       this.setChartsColor();
     });
-    this.daterangepickerOptions.settings = this._DaterangepickerComponent.options;
+    this.daterangepickerOptions.settings = this._DaterangepickerComponent.settings;
   }
 
   private selectedDate(value: any, dateInput: any) {
@@ -130,6 +133,7 @@ export class HistoryPageComponent {
     dateInput = this.rangeValue;
     //日期選擇改變時觸發getDataHttp
     this._DaterangepickerComponent.setTimeByDate(this.rangeValue[0],this.rangeValue[1]);
+    this.loading = true;
     this.getDataHttp();
   }
 
@@ -193,6 +197,7 @@ export class HistoryPageComponent {
     });
     this.lineChartStandby = false;
     this.lineChartStandby = true;
+    this.loading = false;
   }
 
   public calcPercentageData() {

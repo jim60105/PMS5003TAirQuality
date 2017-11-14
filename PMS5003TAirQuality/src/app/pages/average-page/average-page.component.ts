@@ -2,6 +2,7 @@ import { Component, ViewChild, AfterViewInit, Input } from '@angular/core';
 import { URLSearchParams } from '@angular/http';
 
 import { DaterangepickerComponent } from "../../daterangepicker.component"
+import { Daterangepicker, DaterangepickerConfig } from 'ng2-daterangepicker';
 
 //noinspection TypeScriptCheckImport
 import * as _ from "lodash";
@@ -21,7 +22,8 @@ export class AveragePageComponent {
   //是否顯示表格
   @Input() tableVisible:boolean = true;
   constructor(private _getClientInfoService:GetClientInfoService,
-              private _getDataService:GetDataService) {}
+              private _getDataService:GetDataService,
+              private daterangepickerOptions: DaterangepickerConfig) {}
   //資料
   public data:Object[] = [];
   public avgData:Object[] = [];
@@ -36,6 +38,9 @@ export class AveragePageComponent {
 
   //表格列數
   public tableRowLimit:number = 3;
+
+  //Loading蓋版
+  public loading = true;
 
   // barChart
   private loadedBarChartDataTemplate:Boolean = false;
@@ -75,6 +80,7 @@ export class AveragePageComponent {
       this.tableRowLimit = this.clientInfo.length;
       this.setChartsColor();
     });
+    this.daterangepickerOptions.settings = this._DaterangepickerComponent.settings;
   }
 
   private selectedDate(value: any, dateInput: any) {
@@ -83,6 +89,7 @@ export class AveragePageComponent {
     dateInput = this.rangeValue;
     //日期選擇改變時觸發getDataHttp
     this._DaterangepickerComponent.setTimeByDate(this.rangeValue[0],this.rangeValue[1]);
+    this.loading = true;
     this.getDataHttp();
   }
 
@@ -166,5 +173,6 @@ export class AveragePageComponent {
     });
     this.barChartStandby = false;
     this.barChartStandby = true;
+    this.loading = false;
   }
 }

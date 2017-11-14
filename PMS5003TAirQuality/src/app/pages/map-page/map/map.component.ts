@@ -37,6 +37,8 @@ export class MapComponent {
     public clientInfo = this._getClientInfoService.clientInfo;
     public clientInfoNum;
     private tempClientInfo = this.clientInfo;
+    //Loading蓋版
+    public loading = true;
 
     //AQIIconUrl
     private icon:string[] = [
@@ -57,6 +59,7 @@ export class MapComponent {
     }
     ngDoCheck() {
         if(!_.isEqual(this.clientInfo,this.tempClientInfo)) {
+            this.loading = true;
             this.convertLatLngToNumber(this.clientInfo);
             this.calcAQI();
             this.calcCenter();
@@ -103,6 +106,7 @@ export class MapComponent {
         this.lng = (lngMin+lngMax)/2;
 
         this.zoom = Math.round($(window).width()/700+12.8);
+        this.loading = false;
     }
 }
 
