@@ -11,6 +11,12 @@ export class MapPageComponent {
 
   constructor(public _realTimeDataService:GetRealTimeDataService) {}
 
-  public realTimeAirData = this._realTimeDataService.data;
+  ngOnInit(){
+    this._realTimeDataService.getRealTimeAirDataHttpWithPromise().then((res)=>{
+      this.realTimeAirData = this._realTimeDataService.data;
+    });
+  }
+
+  public realTimeAirData;
 
 }

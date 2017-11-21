@@ -31,8 +31,8 @@ export class DaterangepickerComponent {
   public rangeValue:any;
 
   public setTimeByDate(minDate = moment().startOf('day').toDate(),maxDate = moment().endOf('day').toDate()){
-    this.rangeValue[0] = minDate;
-    this.rangeValue[1] = maxDate;
+    this.rangeValue[0] = moment(minDate);
+    this.rangeValue[1] = moment(maxDate);
     Cookie.set('minDate',String(moment(minDate).format()));
     Cookie.set('maxDate',String(moment(maxDate).format()));
   }

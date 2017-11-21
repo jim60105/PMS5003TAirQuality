@@ -1,0 +1,9 @@
+.red{
+    border-color: red;
+    -webkit-box-shadow: 0 0 8px red;
+}
+
+
+.input-group {
+    margin-bottom: 2px;
+}

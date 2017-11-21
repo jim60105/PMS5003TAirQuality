@@ -18,54 +18,74 @@ export class ComparePageComponent{
               private _getDataService:GetDataService,
               private daterangepickerOptions: DaterangepickerConfig) {}
 
+  public _DaterangepickerComponent = new DaterangepickerComponent();
+  private unique;
+  public ready = false;
+  private overBound = false;
+  public errDate:boolean[] = [true,true];
+  public clientInfo;
+  public duration:number = 6;
+  public client:number = -1;
+  //日期選擇器
+  public dateRangepickerComponentArray:DaterangepickerComponent[] = [
+      new DaterangepickerComponent(moment().subtract(this.duration,'day').startOf('day'),moment()),
+      new DaterangepickerComponent(moment().subtract(this.duration,'day').startOf('day'),moment())
+  ];
+
   ngOnInit() {
     this.daterangepickerOptions.settings = this.dateRangepickerComponentArray[0].settings;
-    this.daterangepickerOptions.settings.startDate = moment();
+    this.daterangepickerOptions.settings.startDate = moment().subtract(this.duration,'day');
+    this.daterangepickerOptions.settings.maxDate = moment().subtract(this.duration,'day');
+    this.daterangepickerOptions.settings.singleDatePicker = true;
+
     this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
       this.clientInfo = res;
     });
-    for(let d of this.dateRangepickerComponentArray){
-      d.setTimeByDate();
-    }
   }
 
-  public _DaterangepickerComponent = new DaterangepickerComponent();
-  private unique;
-  public readyToGo = false;
-  ngDoCheck() {
-    //Check Ready
-    this.unique = _.uniqBy(this.dateRangepickerComponentArray,
-        (e)=>{
-          return e.rangeValue[0].toISOString();
-        });
-    if(this.unique.length == this.dateRangepickerComponentArray.length){
-      this.readyToGo = true;
-    }else{
-      this.readyToGo = false;
-    }
-  }
-  //日期選擇器
-  public dateRangepickerComponentArray:DaterangepickerComponent[] = [
-    new DaterangepickerComponent(),
-    new DaterangepickerComponent()
-  ];
 
-  public clientInfo;
-  public duration:number = 0;
-  public client:number = -1;
-
-  public addDRCA(){
-    this.dateRangepickerComponentArray.push(new DaterangepickerComponent());
-    this.dateRangepickerComponentArray[this.dateRangepickerComponentArray.length-1].setTimeByDate();
+  public addDateRangepickerComponentArray(){
+    this.errDate.push(true);
+    this.dateRangepickerComponentArray.push(new DaterangepickerComponent(moment().subtract(this.duration,'day').startOf('day'),moment()));
+    this.checkReady();
   }
-  private selectedDate(value: any,index: number) {
+  private selectedDate(value: any, dateInput: any,index: number) {
     //日期選擇改變時觸發getDataHttp
-    this.dateRangepickerComponentArray[index].setTimeByDate(value.start,value.end);
+    this.dateRangepickerComponentArray[index].setTimeByDate(value.start,moment(value.start).add(this.duration,'day').toDate());
+    dateInput = this.dateRangepickerComponentArray[index];
+    this.checkReady();
   }
   private changeDuration(event: any){
-    this.duration = event.value;
+    this.duration = event.value-1;
     for(let d of this.dateRangepickerComponentArray){
       d.setTimeByDate(d.getTimeByDate()[0], moment(d.getTimeByDate()[0]).add(this.duration, 'day').endOf('day').toDate());
     }
+
+    this.daterangepickerOptions.settings.startDate = moment().subtract(this.duration,'day');
+    this.daterangepickerOptions.settings.maxDate = moment().subtract(this.duration,'day');
+    this.checkReady();
+  }
+  private checkReady(){
+    this.overBound = false;
+    this.errDate = [];
+    this.unique = _.uniqBy(this.dateRangepickerComponentArray,
+        (e)=>{
+          if(e.rangeValue[0]>=this.daterangepickerOptions.settings.maxDate && !e.rangeValue[0]<=this.daterangepickerOptions.settings.minDate) {
+            this.overBound = true;
+            this.errDate.push(false);
+          }else{
+            this.errDate.push(true);
+          }
+          return e.rangeValue[0].toISOString();
+        });
+    if(this.unique.length>1  && !this.overBound){
+      this.ready = true;
+    }else{
+      this.ready = false;
+    }
+  }
+
+  private submit(){
+    console.log(this.unique);
   }
 }

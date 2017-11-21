@@ -1,6 +1,6 @@
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
     <form>
-        <div id="collapseOne" class="form-group panel-collapse collapse in " role="tabpanel" aria-labelledby="headingOne">
+        <div class="form-group">
             <label for="clientChooser">選擇測站</label>
             <br>
             <div class="btn-group" data-toggle="buttons" id="clientChooser" >
@@ -9,32 +9,34 @@
                 </label>
             </div>
         </div>
-        <div id="collapseTwo" class="form-group panel-collapse collapse" [ngClass]="{'in': client!=-1}"  role="tabpanel" aria-labelledby="headingTwo">
-            <label>設定時長</label>
+        <div *ngIf="client!=-1">
+            <div class="form-group">
+                <label>設定時長</label>
 
-            : {{duration}} 天
-            <br>
-            <mat-slider id="duration" (change)="changeDuration($event)" min="1" max="31" step="1" value="0" thumb-label="true" style="width: 99%"></mat-slider>
-            <br>
-        </div>
+                : {{duration+1}} 天
+                <br>
+                <mat-slider (change)="changeDuration($event)" min="1" max="31" step="1" value="7" thumb-label="true" style="width: 99%"></mat-slider>
+                <br>
+            </div>
 
-        <div id="collapseThree" class="form-group panel-collapse collapse" [ngClass]="{'in': duration!=0}" role="tabpanel" aria-labelledby="headingThree">
-            <label>設定起始日期</label>
-            <div *ngFor="let d of dateRangepickerComponentArray;let idx = index">
-                <div class="input-group" daterangepicker (selected)="selectedDate($event, idx)" style="max-width: 150px">
-                    <span class="form-control uneditable-input"  name="daterange">
-                        {{ d.getTimeByDate()[0] | date:'y-M-d'}}
-                    </span>
-                    <span class="input-group-btn">
-                        <a type="button" class="btn btn-default"><i class="glyphicon glyphicon-calendar"></i></a>
-                    </span>
+            <div class="form-group">
+                <label>設定起始日期</label>
+                <div *ngFor="let d of dateRangepickerComponentArray;let idx = index">
+                    <div class="input-group" daterangepicker  [ngClass]="{'red':!errDate[idx], flashing:!errDate[idx]}" (selected)="selectedDate($event, d, idx)" style="max-width: 150px">
+                        <span class="form-control uneditable-input" name="daterange">
+                            {{ d.getTimeByDate()[0] | date:'y-M-d'}}
+                        </span>
+                        <span class="input-group-btn">
+                            <a type="button" class="btn btn-default"><i class="glyphicon glyphicon-calendar"></i></a>
+                        </span>
+                    </div>
+                </div>
+                <div class="btn btn-default" (click)="addDateRangepickerComponentArray()">
+                    + Add
                 </div>
             </div>
-            <div class="btn btn-default" (click)="addDRCA()">
-                + Add
-            </div>
-        </div>
 
-        <input class="btn btn-primary" type="submit" value="Submit" [ngClass]="{'disabled': !readyToGo}">
+            <input class="btn btn-primary" type="submit" value="Submit" [ngClass]="{'disabled': !ready}" (click)="submit()">
+        </div>
     </form>
 </div>
