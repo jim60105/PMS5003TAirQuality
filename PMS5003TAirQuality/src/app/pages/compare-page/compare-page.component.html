@@ -1,42 +1,66 @@
-<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-    <form>
-        <div class="form-group">
-            <label for="clientChooser">選擇測站</label>
-            <br>
-            <div class="btn-group" data-toggle="buttons" id="clientChooser" >
-                <label class="btn btn-default" (click)="client = idx" *ngFor="let c of clientInfo;let idx = index">
-                    <input type="radio" name="client" autocomplete="off"> {{c.name}}
-                </label>
-            </div>
+<div class="a-fadein">
+
+    <div *ngIf="lineChartStandby">
+        <ul class="nav nav-tabs">
+            <li role="presentation" [ngClass]="{'active': dataSet=='pm1'}"><a href="#" (click)="dataSet='pm1';setCharts();calcPercentageData()">PM1</a></li>
+            <li role="presentation" [ngClass]="{'active': dataSet=='pm25'}"><a href="#" (click)="dataSet='pm25';setCharts();calcPercentageData()">PM2.5</a></li>
+            <li role="presentation" [ngClass]="{'active': dataSet=='pm10'}"><a href="#" (click)="dataSet='pm10';setCharts();calcPercentageData()">PM10</a></li>
+            <li role="presentation" [ngClass]="{'active': dataSet=='temp'}"><a href="#" (click)="dataSet='temp';setCharts();calcPercentageData()">溫度</a></li>
+            <li role="presentation" [ngClass]="{'active': dataSet=='humid'}"><a href="#" (click)="dataSet='humid';setCharts();calcPercentageData()">濕度</a></li>
+        </ul>
+
+        <div *ngIf="lineChartStandby" style="display: block;">
+            <canvas id="chart" baseChart width="400" height="150"
+                    [datasets]="lineChartData"
+                    [labels]="lineChartLabels"
+                    [options]="lineChartOptions"
+                    [colors]="lineChartColors"
+                    [legend]="lineChartLegend"
+                    [chartType]="lineChartType"></canvas>
         </div>
-        <div *ngIf="client!=-1">
+    </div>
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <form>
             <div class="form-group">
-                <label>設定時長</label>
-
-                : {{duration+1}} 天
+                <label for="clientChooser">選擇測站</label>
                 <br>
-                <mat-slider (change)="changeDuration($event)" min="1" max="31" step="1" value="7" thumb-label="true" style="width: 99%"></mat-slider>
-                <br>
+                <div class="btn-group" data-toggle="buttons" id="clientChooser" >
+                    <label class="btn btn-default" (click)="client = idx" *ngFor="let c of clientInfo;let idx = index">
+                        <input type="radio" name="client" autocomplete="off"> {{c.name}}
+                    </label>
+                </div>
             </div>
+            <div *ngIf="client!=-1">
+                <div class="form-group">
+                    <label>設定時長</label>
 
-            <div class="form-group">
-                <label>設定起始日期</label>
-                <div *ngFor="let d of dateRangepickerComponentArray;let idx = index">
-                    <div class="input-group" daterangepicker  [ngClass]="{'red':!errDate[idx], flashing:!errDate[idx]}" (selected)="selectedDate($event, d, idx)" style="max-width: 150px">
+                    : {{duration+1}} 天
+                    <br>
+                    <mat-slider (change)="changeDuration($event)" min="1" max="31" step="1" value="7" thumb-label="true" style="width: 99%"></mat-slider>
+                    <br>
+                </div>
+
+                <div class="form-group">
+                    <label>設定起始日期</label>
+                    <div *ngFor="let d of dateRangepickerComponentArray;let idx = index">
+                        <span>數據{{idx}}</span>
+                        <div class="input-group" daterangepicker  [ngClass]="{'red':!errDate[idx], flashing:!errDate[idx]}" (selected)="selectedDate($event, d, idx)" style="max-width: 150px">
                         <span class="form-control uneditable-input" name="daterange">
                             {{ d.getTimeByDate()[0] | date:'y-M-d'}}
                         </span>
                         <span class="input-group-btn">
                             <a type="button" class="btn btn-default"><i class="glyphicon glyphicon-calendar"></i></a>
                         </span>
+                        </div>
+                    </div>
+                    <div class="btn btn-default" (click)="addDateRangepickerComponentArray()">
+                        + Add
                     </div>
                 </div>
-                <div class="btn btn-default" (click)="addDateRangepickerComponentArray()">
-                    + Add
-                </div>
-            </div>
 
-            <input class="btn btn-primary" type="submit" value="Submit" [ngClass]="{'disabled': !ready}" (click)="submit()">
-        </div>
-    </form>
+                <input class="btn btn-primary" type="submit" value="Submit" [ngClass]="{'disabled': !ready}" (click)="submit()">
+            </div>
+        </form>
+    </div>
+    <app-loading [loading]="loading"></app-loading>
 </div>
