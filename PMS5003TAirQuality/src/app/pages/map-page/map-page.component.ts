@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
+import { URLSearchParams } from '@angular/http';
 import { MapComponent } from './map/map.component';
-import { GetRealTimeDataService } from "../../services/get-real-time-data.service";
+import { GetSingleDataService } from "../../services/get-single-data.service";
 
 @Component({
   selector: 'app-map-page',
@@ -9,14 +10,19 @@ import { GetRealTimeDataService } from "../../services/get-real-time-data.servic
 })
 export class MapPageComponent {
 
-  constructor(public _realTimeDataService:GetRealTimeDataService) {}
+  constructor(public _realTimeDataService:GetSingleDataService) {}
 
   ngOnInit(){
-    this._realTimeDataService.getRealTimeAirDataHttpWithPromise().then((res)=>{
-      this.realTimeAirData = this._realTimeDataService.data;
+
+    let params = new URLSearchParams();
+    //TODO
+    params.set('time', '2017-11-05 11:04:00');
+
+    this._realTimeDataService.getSingleDataHttpWithPromise(params).then((res)=>{
+      this.airData = this._realTimeDataService.data;
     });
   }
 
-  public realTimeAirData;
+  public airData;
 
 }

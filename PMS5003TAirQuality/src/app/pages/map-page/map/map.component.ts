@@ -25,6 +25,7 @@ export class dataObject{
 export class MapComponent {
     //Marker顯示文字
     @Input() mapMarkerText;
+    private tempMapMarkerText;
     constructor(private http:Http,
                 private _getClientInfoService:GetClientInfoService) {}
 
@@ -53,7 +54,6 @@ export class MapComponent {
     ngOnInit() {
         this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
             this.convertLatLngToNumber(this.clientInfo);
-            this.calcAQI();
             this.calcCenter();
         })
     }
@@ -61,21 +61,29 @@ export class MapComponent {
         if(!_.isEqual(this.clientInfo,this.tempClientInfo)) {
             this.loading = true;
             this.convertLatLngToNumber(this.clientInfo);
-            this.calcAQI();
             this.calcCenter();
+        }
+        if(!_.isEqual(this.mapMarkerText,this.tempMapMarkerText)){
+            this.tempMapMarkerText = _.cloneDeep(this.mapMarkerText);
+            this.loading = true;
+            this.calcAQI();
         }
     }
 
     calcAQI(){
-        this.mapMarkerText.forEach((value,index,array)=>{
-            let AQI = this._calcAQI.calc(value.pm25,value.pm10);
+        if(this.mapMarkerText!==undefined) {
+            this.mapMarkerText.forEach((value, index, array)=> {
+                let AQI = this._calcAQI.calc(value.pm25, value.pm10);
 
-            if(AQI>0 && AQI<=6) {
-                this.mapMarkerText[index].icon = this.icon[AQI-1];
-            }else{
-                console.log(`Calc AQI Level Error. PM2.5: ${value.pm25}, PM10: ${value.pm10}`);
-            }
-        });
+                if (AQI > 0 && AQI <= 6) {
+                    this.mapMarkerText[index].icon = this.icon[AQI - 1];
+                } else {
+                    console.log(`Calc AQI Level Error. PM2.5: ${value.pm25}, PM10: ${value.pm10}`);
+                }
+            });
+
+            this.loading = false;
+        }
     }
 
     //將資料內的數字字串轉為數字格式

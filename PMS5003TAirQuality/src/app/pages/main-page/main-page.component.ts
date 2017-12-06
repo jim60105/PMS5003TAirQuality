@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { HistoryPageComponent } from '../history-page/history-page.component';
-import { GetRealTimeDataService } from "../../services/get-real-time-data.service";
+import { GetSingleDataService } from "../../services/get-single-data.service";
 import { GetClientInfoService } from "../../services/get-client-info.service";
 
 import { CalcAQIComponent } from "../../calc-AQI.component";
@@ -12,7 +12,7 @@ import * as _ from "lodash";
     styleUrls: ['./main-page.component.css']
 })
 export class MainPageComponent {
-    constructor(public _getRealTimeDataService:GetRealTimeDataService,
+    constructor(public _getRealTimeDataService:GetSingleDataService,
                 public _getClientInfoService:GetClientInfoService) { }
 
     private _calcAQI = new CalcAQIComponent();
@@ -27,7 +27,7 @@ export class MainPageComponent {
     ngOnInit() {
         this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
             this.clientInfo = res;
-            this._getRealTimeDataService.getRealTimeAirDataHttpWithPromise().then((res)=>{
+            this._getRealTimeDataService.getSingleDataHttpWithPromise().then((res)=>{
                 this.realTimeAirData = this._getRealTimeDataService.data;
             });
         });

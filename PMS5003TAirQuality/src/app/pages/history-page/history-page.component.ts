@@ -14,7 +14,7 @@ import { BaseChartDirective } from 'ng2-charts/ng2-charts';
 
 import { DataTableComponent } from "../../data-table/data-table.component";
 
-import { GetRealTimeDataService } from "../../services/get-real-time-data.service";
+import { GetSingleDataService } from "../../services/get-single-data.service";
 import { GetClientInfoService } from "../../services/get-client-info.service";
 import { GetDataService } from "../../services/get-data.service";
 @Component({

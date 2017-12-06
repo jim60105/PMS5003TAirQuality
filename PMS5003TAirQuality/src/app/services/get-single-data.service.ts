@@ -3,15 +3,15 @@ import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import '../../../node_modules/rxjs/add/operator/toPromise';
 import { Observable } from 'rxjs/Observable';
 
-import { realTimeDATA } from 'assets/mock-realTimeData';
+import { realTimeDATA } from '../../assets/mock-singleData';
 
 @Injectable()
-export class GetRealTimeDataService {
+export class GetSingleDataService {
   constructor(private http:Http) {
-    this.getRealTimeAirDataHttpWithPromise();
+    this.getSingleDataHttpWithPromise();
     //重複獲取資料的定時器
     this.getDataInterval = setInterval(() => {
-      this.getRealTimeAirDataHttpWithPromise();
+      this.getSingleDataHttpWithPromise();
     }, 61000);
   }
 
@@ -20,7 +20,7 @@ export class GetRealTimeDataService {
   //重複獲取資料的定時器
   private getDataInterval: any;
   //php位置
-  private dbURL = "assets/php/getDBRealTime.php";
+  private dbURL = "assets/php/getDBByTimeSingleData.php";
 
   //生命週期結束時清理掉定時器
   ngOnDestroy() {
@@ -28,9 +28,9 @@ export class GetRealTimeDataService {
   }
 
   //獲取終端資料
-  public getRealTimeAirDataHttpWithPromise(){
-    //noinspection TypeScriptUnresolvedFunction
-    return this.http.get(this.dbURL).toPromise().then((res:Response) => {
+  public getSingleDataHttpWithPromise(params:any = new URLSearchParams()){
+    //noinspection TypeScriptUnresolvedFunction,TypeScriptValidateTypes
+    return this.http.get(this.dbURL, {search: params}).toPromise().then((res:Response) => {
       let body = res.json();
       return body || {};
     }).then((dataIn)=> {

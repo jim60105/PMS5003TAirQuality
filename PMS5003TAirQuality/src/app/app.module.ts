@@ -41,7 +41,7 @@ import { ComparePageComponent } from './pages/compare-page/compare-page.componen
 import { DataTableComponent } from './data-table/data-table.component';
 import { LoadingComponent } from './loading.component';
 
-import { GetRealTimeDataService } from './services/get-real-time-data.service';
+import { GetSingleDataService } from './services/get-single-data.service';
 import { GetClientInfoService } from "./services/get-client-info.service";
 import { GetDataService } from "./services/get-data.service";
 
@@ -87,7 +87,7 @@ import { GetDataService } from "./services/get-data.service";
   ],
   providers: [
     DynamicComponentService,
-    GetRealTimeDataService,
+    GetSingleDataService,
     GetClientInfoService,
     GetDataService,
     DaterangepickerConfig,
