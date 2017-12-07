@@ -6,7 +6,7 @@ $arr = array();
 //$minDate= $_GET["minDate"];
 
 $db = new PDO('mysql:host='.$dbhost.';dbname='.$dbname.';port='.$port,$dbuser,$dbpass);
-$stmt = $db->prepare("SELECT * FROM clientInfo");
+$stmt = $db->prepare("SELECT * FROM clientinfo");
 //$stmt->bindValue(':minDate',$minDate);
 $stmt->execute();
 

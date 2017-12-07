@@ -40,6 +40,8 @@ export class MapComponent {
     private tempClientInfo = this.clientInfo;
     //Loading蓋版
     public loading = true;
+    private calcCenterFinish = false;
+    private calcAQIFinish = false;
 
     //AQIIconUrl
     private icon:string[] = [
@@ -54,14 +56,12 @@ export class MapComponent {
     ngOnInit() {
         this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
             this.convertLatLngToNumber(this.clientInfo);
-            this.calcCenter();
         })
     }
     ngDoCheck() {
         if(!_.isEqual(this.clientInfo,this.tempClientInfo)) {
             this.loading = true;
             this.convertLatLngToNumber(this.clientInfo);
-            this.calcCenter();
         }
         if(!_.isEqual(this.mapMarkerText,this.tempMapMarkerText)){
             this.tempMapMarkerText = _.cloneDeep(this.mapMarkerText);
@@ -82,7 +82,8 @@ export class MapComponent {
                 }
             });
 
-            this.loading = false;
+            this.calcAQIFinish = true;
+            this.loading = !(this.calcAQIFinish && this.calcCenterFinish);
         }
     }
 
@@ -96,6 +97,7 @@ export class MapComponent {
 
         this.clientInfoNum = data;
         this.tempClientInfo = _.cloneDeep(this.clientInfo);
+        this.calcCenter();
     }
 
     //計算中心並調整縮放比例
@@ -114,7 +116,8 @@ export class MapComponent {
         this.lng = (lngMin+lngMax)/2;
 
         this.zoom = Math.round($(window).width()/700+12.8);
-        this.loading = false;
+        this.calcCenterFinish = true;
+        this.loading = !(this.calcAQIFinish && this.calcCenterFinish);
     }
 }
 

@@ -13,9 +13,9 @@ if(isset($_GET["client"])) {
 $arr = array();
 
 $db = new PDO('mysql:host='.$dbhost.';dbname='.$dbname.';port='.$port,$dbuser,$dbpass);
-$stmt = $db->prepare("SELECT * FROM airData WHERE time BETWEEN :minDate AND :maxDate");
+$stmt = $db->prepare("SELECT * FROM airdata WHERE time BETWEEN :minDate AND :maxDate");
 if($client>0){
-    $stmt = $db->prepare("SELECT * FROM airData WHERE (time BETWEEN :minDate AND :maxDate)AND(clientNum = :client)");
+    $stmt = $db->prepare("SELECT * FROM airdata WHERE (time BETWEEN :minDate AND :maxDate)AND(clientNum = :client)");
     $stmt->bindValue(':client',$client);
 }
 $stmt->bindValue(':minDate',$minDate);
