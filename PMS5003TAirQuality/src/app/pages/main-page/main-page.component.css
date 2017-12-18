@@ -28,3 +28,8 @@
     background-color: #7e0023;
     border-color: #7e0023;
 }
+.disabled{
+    color: #393939;
+    background-color: #d0d0d0;
+    border-color: #d0d0d0;
+}

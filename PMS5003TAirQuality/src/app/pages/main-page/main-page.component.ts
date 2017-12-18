@@ -6,6 +6,7 @@ import { GetClientInfoService } from "../../services/get-client-info.service";
 import { CalcAQIComponent } from "../../calc-AQI.component";
 //noinspection TypeScriptCheckImport
 import * as _ from "lodash";
+import * as moment from 'moment';
 @Component({
     selector: 'app-main-page',
     templateUrl: './main-page.component.html',
@@ -50,17 +51,22 @@ export class MainPageComponent {
         if(this.realTimeAirData[0]!==undefined){
             this.panelClass.length = 0;
             this.realTimeAirData.forEach((value,index,array)=>{
-                let AQI = this._calcAQI.calc(value.pm25,value.pm10);
+                //noinspection TypeScriptValidateTypes
+                if((moment().valueOf()-moment(value.time).valueOf())>3600000){
+                    this.panelClass[index] = "disabled";
+                }else {
+                    let AQI = this._calcAQI.calc(value.pm25, value.pm10);
 
-                if(AQI!=0) {
-                    if(AQI>=3){
-                        //震動特效
-                        this.panelClass[index] = `AQI${AQI} a-ring`;
-                    }else{
-                        this.panelClass[index] = "AQI" + AQI;
+                    if (AQI != 0) {
+                        if (AQI >= 3) {
+                            //震動特效
+                            this.panelClass[index] = `AQI${AQI} a-ring`;
+                        } else {
+                            this.panelClass[index] = "AQI" + AQI;
+                        }
+                    } else {
+                        console.log(`Calc AQI Level Error. PM2.5: ${value.pm25}, PM10: ${value.pm10}`);
                     }
-                }else{
-                    console.log(`Calc AQI Level Error. PM2.5: ${value.pm25}, PM10: ${value.pm10}`);
                 }
             });
         }
