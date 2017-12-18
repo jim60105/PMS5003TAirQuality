@@ -50,6 +50,8 @@ function doFlush($db,$clientNum){
     $stmt->execute();
     $row = $stmt->fetch();
 
+    updateThingSpeak($db,$row);
+
     $stmt = $db->prepare("INSERT INTO airdata (no, time, pm1, pm10, pm25, temp, humid, clientNum) VALUES (NULL, (SELECT TIMESTAMPADD(MINUTE, 5, :startRow)), :pm1, :pm10, :pm25, :temp, :humid, :clientNum);");
     $stmt->bindValue(':startRow',$startRow);
     $stmt->bindValue(':pm1',$row['pm1']);
@@ -64,6 +66,39 @@ function doFlush($db,$clientNum){
     $stmt->bindValue(':clientNum',$clientNum);
     $stmt->bindValue(':startRow',$startRow);
     $stmt->execute();
+}
+
+function updateThingSpeak($db,$row){
+    if(isset($_GET["clientNum"])) {
+        $stmt = $db->prepare("SELECT ThingSpeakWriteKey FROM clientinfo WHERE no = :clientNum");
+        $stmt->bindValue(':clientNum', $_GET["clientNum"]);
+        $stmt->execute();
+        $writeKey = $stmt->fetch();
+        $writeKey = $writeKey['ThingSpeakWriteKey'];
+
+        //echo $writeKey;
+        $url = "https://api.thingspeak.com/update?".
+            "api_key=" . $writeKey .
+            "&field1=" . $row['pm1'] .
+            "&field2=" . $row['pm25'] .
+            "&field3=" . $row['pm10'] .
+            "&field4=" . $row['temp'] .
+            "&field5=" . $row['humid'];
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_REFERER, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        $result = curl_exec($ch);
+
+        curl_close($ch);
+        if($result<1){
+            error_log("UpdateThingSpeak error: result=".$result." url=".$url." writeKey =".$writeKey);
+        }
+    }
 }
 ?>
 

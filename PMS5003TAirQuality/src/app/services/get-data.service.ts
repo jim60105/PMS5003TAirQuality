@@ -8,7 +8,6 @@ import { DATA } from '../../assets/mock-data';
 @Injectable()
 export class GetDataService {
   constructor(private http:Http) {
-    this.getDataHttpWithPromise();
   }
 
   //資料
