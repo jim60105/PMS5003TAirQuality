@@ -44,6 +44,7 @@ import { LoadingComponent } from './loading.component';
 import { GetSingleDataService } from './services/get-single-data.service';
 import { GetClientInfoService } from "./services/get-client-info.service";
 import { GetDataService } from "./services/get-data.service";
+import { GetThingspeakDataService } from "./services/get-thingspeak-data.service";
 
 @NgModule({
   declarations: [

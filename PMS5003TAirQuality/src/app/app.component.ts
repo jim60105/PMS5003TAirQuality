@@ -19,12 +19,15 @@ export class AppComponent{
 
   public loading;
   //Run at start
+  public comName = 'MainPageComponent';
+
   ngOnInit() {
-    this.displayComponent('MainPageComponent');
+    this.displayComponent(this.comName);
     this.setNavbarActive(0);
   }
 
   displayComponent(componentName: string) {
+    this.comName = componentName;
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(
         this.dynamicComponentService.getComponent(componentName));
     const viewContainerRef = this.componentHost.viewContainerRef;

@@ -5,6 +5,10 @@ body {
     font-family: "Noto Sans", "Noto Sans JP","Noto Sans TC","Noto Sans SC", "Microsoft JhengHei", "Heiti TC", sans-serif;
 }
 /*map css*/
+.noPadding{
+    padding: 0px 0px !important;
+}
+
 .si-content-wrapper{
     padding: 15px;
 }
