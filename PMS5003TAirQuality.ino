@@ -80,29 +80,15 @@ void setup() {
   if (fv != "1.1.0") {
     Serial.println("Please upgrade the firmware");
   }
-  // attempt to connect to Wifi network:
-  while (status != WL_CONNECTED) {
-    Serial.print("Attempting to connect to SSID: ");
-    Serial.println(ssid);
-    // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
-    status = WiFi.begin(ssid, pass);
-
-    // wait 10 seconds for connection:
-    delay(10000);
-  }
-  Serial.println("Connected to wifi");
-  printWifiStatus();
-  
-  //Serial.begin(57600);
   PMS5003Serial.begin(9600); // PMS 3003 UART has baud rate 9600
 }
 
 void loop() { // run over and over
-    Serial.println("v17.10.03.0");
-    client.stop();
-    Serial.println("disconnecting from server.");
-    Serial.println("Interval...");
-    delay(delayTime);
+    Serial.println("v17.12.25.0");
+    status = WiFi.status();
+    if(status != WL_CONNECTED) {
+      connectToWifi();
+    }
     
     //硬件初始化
     PMS5003Value = getPMS5003();
@@ -122,6 +108,12 @@ void loop() { // run over and over
     String jsonStr = (String)"pm1="+PMS5003Value.pm1+"&pm10="+PMS5003Value.pm10+"&pm25="+PMS5003Value.pm25+"&temp="+PMS5003Value.temp+"&humid="+PMS5003Value.humid+"&clientNum="+clientNum;
     
     connect2server(jsonStr);
+    Serial.println("Disconnecting from server...");
+    client.stop();
+    Serial.print("Interval ");
+    Serial.print(delayTime);
+    Serial.println(" ms...");
+    delay(delayTime);
 }
 
 struct SensorValuesBar getPMS5003(){
@@ -183,7 +175,19 @@ struct SensorValuesBar getPMS5003(){
   return result;
 }
 
-void printWifiStatus() {
+void connectToWifi() {
+  // attempt to connect to Wifi network:
+  while (status != WL_CONNECTED) {
+    Serial.print("Attempting to connect to SSID: ");
+    Serial.println(ssid);
+    // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
+    status = WiFi.begin(ssid, pass);
+
+    // wait 10 seconds for connection:
+    delay(10000);
+  }
+  Serial.println("Connected to wifi.");
+  
   // print the SSID of the network you're attached to:
   Serial.print("SSID: ");
   Serial.println(WiFi.SSID());

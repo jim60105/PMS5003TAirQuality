@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AppRoutingModule } from './app-routing.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -41,6 +41,7 @@ import { ComparePageComponent } from './pages/compare-page/compare-page.componen
 import { DataTableComponent } from './data-table/data-table.component';
 import { LoadingComponent } from './loading.component';
 
+
 import { GetSingleDataService } from './services/get-single-data.service';
 import { GetClientInfoService } from "./services/get-client-info.service";
 import { GetDataService } from "./services/get-data.service";
@@ -65,6 +66,7 @@ import { GetThingspeakDataService } from "./services/get-thingspeak-data.service
     AppRoutingModule,
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpModule,
 	NgbModule.forRoot(),
     BrowserAnimationsModule,

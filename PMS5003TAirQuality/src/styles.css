@@ -22,6 +22,11 @@ body {
     color: rgb(70, 70, 70);
 }
 
+.sebm-google-map-container {
+    height: 300px;
+}
+
+
 /*dateRangePicker Flash animation*/
 .flashing{
     color:#fff;

@@ -9,7 +9,7 @@
       "outDir": "dist",
       "assets": [
         "assets",
-        ".htaccess"
+        "favicon.ico"
       ],
       "index": "index.html",
       "main": "main.ts",
@@ -23,15 +23,12 @@
         "../node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
         "../node_modules/snazzy-info-window/dist/snazzy-info-window.css",
         "assets/template/sb-admin.css",
-        "assets/animation.css",
         "styles.css",
         "assets/fonts/notosanstc.css",
         "assets/fonts/notosanssc.css",
         "assets/fonts/css.css"
       ],
       "scripts": [
-        "../node_modules/jquery/dist/jquery.min.js",
-        "../node_modules/bootstrap/dist/js/bootstrap.min.js",
         "assets/rcolor.js",
         "assets/template/sb-admin.js"
       ],
