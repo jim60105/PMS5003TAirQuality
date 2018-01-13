@@ -23,6 +23,8 @@ https://github.com/x99wang/pm25/blob/master/pmtest.ino
  */
 #include <WiFi.h>
 #include <SoftwareSerial.h>
+#include <PubSubClient.h>
+#include <WiFiUdp.h>
 //#if defined(BOARD_RTL8195A)
 //SoftwareSerial mySerial(0, 1); // RX, TX
 //#elif defined(BOARD_RTL8710)
@@ -46,10 +48,36 @@ char server[] = "140.128.102.200";    // server address
 int port = 80;                    // server port, use 80 for defult
 
 //間隔時間
-int delayTime = 60000;              // interval for every http request
+int delayTime = 60000;              // interval for every http request (ms)
+
+//Fake GPS
+char gps_lat[] = "24.181598";   // device's gps latitude
+char gps_lon[] = "120.589623"; // device's gps longitude
+char gps_alt[] = "256";  // device's altitude above the sea level
+
+//LASS MQTT
+char mqttServer[] = "gpssensor.ddns.net";      // the MQTT server of LASS
+char clientId[17] = "";                    // client id for MQTT
+char outTopic[20] = "LASS/Test/PM25/live"; // MQTT publish topic
 //******************************************************************************************
 
-WiFiClient client;
+WiFiClient client, client2;
+PubSubClient mqttClient(client2);
+
+WiFiUDP Udp;
+const char ntpServer[] = "pool.ntp.org";
+
+const int NTP_PACKET_SIZE = 48; // NTP time stamp is in the first 48 bytes of the message
+const byte nptSendPacket[ NTP_PACKET_SIZE] = {
+  0xE3, 0x00, 0x06, 0xEC, 0x00, 0x00, 0x00, 0x00,  0x00, 0x00, 0x00, 0x00, 0x31, 0x4E, 0x31, 0x34,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+};
+byte ntpRecvBuffer[ NTP_PACKET_SIZE ];
+
+#define LEAP_YEAR(Y)     ( ((Y)>0) && !((Y)%4) && ( ((Y)%100) || !((Y)%400) ) )
+static  const uint8_t monthDays[]={31,28,31,30,31,30,31,31,30,31,30,31}; // API starts months from 1, this array starts from 0
+uint32_t epochSystem = 0; // timestamp of system boot up
 
 //Sensor資料格式宣告
 struct SensorValuesBar {
@@ -63,58 +91,6 @@ struct SensorValuesBar {
 struct SensorValuesBar PMS5003Value;
 long pmcf10, pmcf25, pmcf100, pmat10, pmat25, pmat100;
 long sch2o,stemp,shumid;
-
-void setup() {
-//Initialize serial and wait for port to open:
-  Serial.begin(38400);
-  while (!Serial) {
-    ;
-  }
-  // check for the presence of the shield:
-  if (WiFi.status() == WL_NO_SHIELD) {
-    Serial.println("WiFi shield not present");
-    // don't continue:
-    while (true);
-  }
-  String fv = WiFi.firmwareVersion();
-  if (fv != "1.1.0") {
-    Serial.println("Please upgrade the firmware");
-  }
-  PMS5003Serial.begin(9600); // PMS 3003 UART has baud rate 9600
-}
-
-void loop() { // run over and over
-    Serial.println("v17.12.25.0");
-    status = WiFi.status();
-    if(status != WL_CONNECTED) {
-      connectToWifi();
-    }
-    
-    //硬件初始化
-    PMS5003Value = getPMS5003();
-  
-    Serial.print("pm1:");
-    Serial.println(PMS5003Value.pm1);
-    Serial.print("pm10:");
-    Serial.println(PMS5003Value.pm10);
-    Serial.print("pm25:");
-    Serial.println(PMS5003Value.pm25);
-    Serial.print("temp:");
-    Serial.println(PMS5003Value.temp);
-    Serial.print("humid:");
-    Serial.println(PMS5003Value.humid);
-      
-    //組合資料
-    String jsonStr = (String)"pm1="+PMS5003Value.pm1+"&pm10="+PMS5003Value.pm10+"&pm25="+PMS5003Value.pm25+"&temp="+PMS5003Value.temp+"&humid="+PMS5003Value.humid+"&clientNum="+clientNum;
-    
-    connect2server(jsonStr);
-    Serial.println("Disconnecting from server...");
-    client.stop();
-    Serial.print("Interval ");
-    Serial.print(delayTime);
-    Serial.println(" ms...");
-    delay(delayTime);
-}
 
 struct SensorValuesBar getPMS5003(){
   struct SensorValuesBar result;
@@ -186,6 +162,7 @@ void connectToWifi() {
     // wait 10 seconds for connection:
     delay(10000);
   }
+  Serial.println();
   Serial.println("Connected to wifi.");
   
   // print the SSID of the network you're attached to:
@@ -202,6 +179,127 @@ void connectToWifi() {
   Serial.print("signal strength (RSSI):");
   Serial.print(rssi);
   Serial.println(" dBm");
+
+  // local port to listen for UDP packets
+  Udp.begin(2390);
+}
+
+
+// send an NTP request to the time server at the given address
+void retrieveNtpTime() {
+  for (int retry = 0; retry < 5; retry ++) {
+    Serial.println("Send NTP packet");
+    Udp.beginPacket(ntpServer, 123); //NTP requests are to port 123
+    Udp.write(nptSendPacket, NTP_PACKET_SIZE);
+    Udp.endPacket();
+  
+    delay(3000);
+    if(Udp.parsePacket()) {
+      Serial.println("NTP packet received");
+      Udp.read(ntpRecvBuffer, NTP_PACKET_SIZE); // read the packet into the buffer
+      
+      unsigned long highWord = word(ntpRecvBuffer[40], ntpRecvBuffer[41]);
+      unsigned long lowWord = word(ntpRecvBuffer[42], ntpRecvBuffer[43]);
+      unsigned long secsSince1900 = highWord << 16 | lowWord;
+      const unsigned long seventyYears = 2208988800UL;
+      unsigned long epoch = secsSince1900 - seventyYears;
+  
+      epochSystem = epoch - millis() / 1000;
+      break;
+    }
+  }
+}
+
+void getCurrentTime(unsigned long epoch, int *year, int *month, int *day, int *hour, int *minute, int *second) {
+  int tempDay = 0;
+
+  *hour = (epoch  % 86400L) / 3600;
+  *minute = (epoch  % 3600) / 60;
+  *second = epoch % 60;
+
+  *year = 1970; // epoch starts from 1970
+  *month = 0;
+  *day = epoch / 86400;
+
+  for (*year = 1970; ; (*year)++) {
+    tempDay += (LEAP_YEAR(*year) ? 366 : 365);
+    if (tempDay > *day) {
+      tempDay -= (LEAP_YEAR(*year) ? 366 : 365);
+      break;
+    }
+  }
+  tempDay = *day - tempDay; // the days left in a year
+  for ((*month) = 0; (*month) < 12; (*month)++) {
+    if ((*month) == 1) {
+      tempDay -= (LEAP_YEAR(*year) ? 29 : 28);
+      if (tempDay < 0) {
+        tempDay += (LEAP_YEAR(*year) ? 29 : 28);
+        break;
+      }
+    } else {
+      tempDay -= monthDays[(*month)];
+      if (tempDay < 0) {
+        tempDay += monthDays[(*month)];
+        break;
+      }
+    }
+  }
+  *day = tempDay+1; // one for base 1, one for current day
+  (*month)++;
+}
+
+void initializeMQTT() {
+  byte mac[6];
+
+  WiFi.macAddress(mac);
+  sprintf(clientId, "THU_%02X%02X%02X%02X", mac[2], mac[3], mac[4], mac[5]);
+
+  Serial.print("MQTT client id:");
+  Serial.println(clientId);
+  Serial.print("MQTT topic:");
+  Serial.println(outTopic);
+
+  mqttClient.setServer(mqttServer, 1883);
+}
+
+void sendMQTT(SensorValuesBar PMS5003Value) {
+  String payload;
+  char timeStr[30];
+  unsigned long epoch = epochSystem + millis() / 1000;
+  int year, month, day, hour, minute, second;
+  getCurrentTime(epoch, &year, &month, &day, &hour, &minute, &second);
+
+  sprintf(timeStr,"Current time: date=%4d-%02d-%02d time=%02d:%02d:%02d", year, month, day, hour, minute, second);
+  Serial.println(timeStr);
+  
+  if (!mqttClient.connected()) {
+    Serial.println("Attempting MQTT connection");
+    mqttClient.connect(clientId);
+  }
+
+  if (mqttClient.connected()) {
+    payload = "|ver_format=3|Fake_GPS=1|app=PM25|ver_app=live|device_id="+String(clientId)+"|tick="+millis()+"|date="+year+"-"+month+"-"+day+"|time="+hour+":"+minute+":"+second
+      +"|device=Ameba|s_d0="+PMS5003Value.pm25
+      +"|s_d1="+PMS5003Value.pm10
+      +"|s_d2="+PMS5003Value.pm1
+      +"|s_h0="+PMS5003Value.humid
+      +"|s_t0="+PMS5003Value.temp
+      +"|gps_lat="+gps_lat
+      +"|gps_lon="+gps_lon
+      +"|gps_fix=1|gps_alt="+gps_alt;
+    Serial.println(payload);
+
+    // Once connected, publish an announcement...
+    char companionchannel[50]="";
+    strcat(companionchannel,outTopic);
+    strcat(companionchannel,"/");
+    strcat(companionchannel,clientId);
+   
+    mqttClient.publish((char*)outTopic, payload.c_str());
+    mqttClient.publish((char*)companionchannel, payload.c_str());
+    mqttClient.disconnect();
+  }
+
 }
 
 String serverStr = String(server);
@@ -217,4 +315,68 @@ void connect2server(String jsonStr) {
     client.println("User-Agent: Arduino/1.0");
     client.println();
   }
+}
+
+void setup() {
+//Initialize serial and wait for port to open:
+  Serial.begin(38400);
+  while (!Serial) {
+    ;
+  }
+  
+  status = WiFi.status();
+  // check for the presence of the shield:
+  if (status == WL_NO_SHIELD) {
+    Serial.println("WiFi shield not present");
+    // don't continue:
+    while (true);
+  }
+  String fv = WiFi.firmwareVersion();
+  if (fv != "1.1.0") {
+    Serial.println("Please upgrade the firmware");
+  }
+  if(status != WL_CONNECTED) {
+    connectToWifi();
+  }
+  
+  PMS5003Serial.begin(9600); // PMS 3003 UART has baud rate 9600
+
+  retrieveNtpTime();
+  initializeMQTT();
+}
+
+void loop() { // run over and over
+    Serial.println("v17.01.14.0");
+    if(WiFi.status()!= WL_CONNECTED) {
+      connectToWifi();
+    }
+    
+    //硬件初始化
+    PMS5003Value = getPMS5003();
+  
+    Serial.print("pm1:");
+    Serial.println(PMS5003Value.pm1);
+    Serial.print("pm10:");
+    Serial.println(PMS5003Value.pm10);
+    Serial.print("pm25:");
+    Serial.println(PMS5003Value.pm25);
+    Serial.print("temp:");
+    Serial.println(PMS5003Value.temp);
+    Serial.print("humid:");
+    Serial.println(PMS5003Value.humid);
+      
+    //組合資料
+    String jsonStr = (String)"pm1="+PMS5003Value.pm1+"&pm10="+PMS5003Value.pm10+"&pm25="+PMS5003Value.pm25+"&temp="+PMS5003Value.temp+"&humid="+PMS5003Value.humid+"&clientNum="+clientNum;
+    
+    connect2server(jsonStr);
+      
+    sendMQTT(PMS5003Value);
+    mqttClient.loop();
+  
+    Serial.println("Disconnecting from server...");
+    client.stop();
+    Serial.print("Interval ");
+    Serial.print(delayTime);
+    Serial.println(" ms...");
+    delay(delayTime);
 }
