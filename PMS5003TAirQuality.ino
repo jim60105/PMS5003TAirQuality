@@ -57,7 +57,7 @@ char gps_alt[] = "256";  // device's altitude above the sea level
 
 //LASS MQTT
 char mqttServer[] = "gpssensor.ddns.net";      // the MQTT server of LASS
-char clientId[17] = "";                    // client id for MQTT
+char clientId[17] = "THU_001";                    // client id for MQTT
 char outTopic[20] = "LASS/Test/PM25/live"; // MQTT publish topic
 //******************************************************************************************
 
@@ -249,10 +249,11 @@ void getCurrentTime(unsigned long epoch, int *year, int *month, int *day, int *h
 }
 
 void initializeMQTT() {
-  byte mac[6];
+  //byte mac[6];
 
-  WiFi.macAddress(mac);
-  sprintf(clientId, "THU_%02X%02X%02X%02X", mac[2], mac[3], mac[4], mac[5]);
+  //WiFi.macAddress(mac);
+  //RTL-00 MAC addresses are all the same.
+  //sprintf(clientId, "THU_%02X%02X%02X%02X", mac[2], mac[3], mac[4], mac[5]);
 
   Serial.print("MQTT client id:");
   Serial.println(clientId);
@@ -346,7 +347,7 @@ void setup() {
 }
 
 void loop() { // run over and over
-    Serial.println("v17.01.14.0");
+    Serial.println("v18.01.14.1");
     if(WiFi.status()!= WL_CONNECTED) {
       connectToWifi();
     }
