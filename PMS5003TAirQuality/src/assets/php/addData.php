@@ -50,6 +50,12 @@ function doFlush($db,$clientNum){
     $stmt->execute();
     $row = $stmt->fetch();
 
+    foreach ($row as $key => $value){
+        if(empty($value)){
+            $row[$key] = 0;
+        }
+    }
+
     updateThingSpeak($db,$row);
 
     $stmt = $db->prepare("INSERT INTO airdata (no, time, pm1, pm10, pm25, temp, humid, clientNum) VALUES (NULL, (SELECT TIMESTAMPADD(MINUTE, 5, :startRow)), :pm1, :pm10, :pm25, :temp, :humid, :clientNum);");
