@@ -18,7 +18,7 @@ export class MapPageComponent {
 
     let params = new URLSearchParams();
     //TODO
-    params.set('time', '2017-11-05 11:04:00');
+    //params.set('time', '2017-11-05 11:04:00');
 
     this._realTimeDataService.getSingleDataHttpWithPromise(params).then((res)=>{
       this.airData = _.cloneDeep(res);
