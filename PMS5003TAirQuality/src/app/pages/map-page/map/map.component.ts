@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/map';
@@ -25,6 +25,9 @@ export class dataObject{
 export class MapComponent {
     //Marker顯示文字
     @Input() mapMarkerText;
+    //Loading蓋版
+    @Output() loadingOut = new EventEmitter();
+    loading = false;
     private tempMapMarkerText;
     constructor(private http:Http,
                 private _getClientInfoService:GetClientInfoService) {}
@@ -38,8 +41,6 @@ export class MapComponent {
     public clientInfo = this._getClientInfoService.clientInfo;
     public clientInfoNum;
     private tempClientInfo = this.clientInfo;
-    //Loading蓋版
-    public loading = true;
     private calcCenterFinish = false;
     private calcAQIFinish = false;
 
@@ -54,18 +55,23 @@ export class MapComponent {
     ];
 
     ngOnInit() {
+        this.loading = true;
+        this.loadingOut.emit(true);
         this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
-            this.convertLatLngToNumber(this.clientInfo);
+            this.convertLatLngToNumber(res);
+            this.clientInfo = res;
         })
     }
     ngDoCheck() {
         if(!_.isEqual(this.clientInfo,this.tempClientInfo)) {
             this.loading = true;
+            this.loadingOut.emit(true);
             this.convertLatLngToNumber(this.clientInfo);
         }
         if(!_.isEqual(this.mapMarkerText,this.tempMapMarkerText)){
             this.tempMapMarkerText = _.cloneDeep(this.mapMarkerText);
             this.loading = true;
+            this.loadingOut.emit(true);
             this.calcAQI();
         }
     }
@@ -73,17 +79,20 @@ export class MapComponent {
     calcAQI(){
         if(this.mapMarkerText!==undefined) {
             this.mapMarkerText.forEach((value, index, array)=> {
+                //noinspection TypeScriptUnresolvedVariable
                 let AQI = this._calcAQI.calc(value.pm25, value.pm10);
 
                 if (AQI > 0 && AQI <= 6) {
                     this.mapMarkerText[index].icon = this.icon[AQI - 1];
                 } else {
+                    //noinspection TypeScriptUnresolvedVariable
                     console.log(`Calc AQI Level Error. PM2.5: ${value.pm25}, PM10: ${value.pm10}`);
                 }
             });
 
             this.calcAQIFinish = true;
             this.loading = !(this.calcAQIFinish && this.calcCenterFinish);
+            this.loadingOut.emit(!(this.calcAQIFinish && this.calcCenterFinish));
         }
     }
 
@@ -107,9 +116,13 @@ export class MapComponent {
         let lngMin:number;
         let lngMax:number;
         this.clientInfoNum.forEach((value,index,array)=>{
+            //noinspection TypeScriptUnresolvedVariable
             latMin = (latMin<value.lat)?latMin:value.lat;
+            //noinspection TypeScriptUnresolvedVariable
             latMax = (latMax>value.lat)?latMax:value.lat;
+            //noinspection TypeScriptUnresolvedVariable
             lngMin = (lngMin<value.lng)?lngMin:value.lng;
+            //noinspection TypeScriptUnresolvedVariable
             lngMax = (lngMax>value.lng)?lngMax:value.lng;
         });
         this.lat = (latMin+latMax)/2;
@@ -118,6 +131,7 @@ export class MapComponent {
         this.zoom = Math.round($(window).width()/700+12.8);
         this.calcCenterFinish = true;
         this.loading = !(this.calcAQIFinish && this.calcCenterFinish);
+        this.loadingOut.emit(!(this.calcAQIFinish && this.calcCenterFinish));
     }
 }
 

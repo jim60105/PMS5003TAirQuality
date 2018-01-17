@@ -1,7 +1,5 @@
 import { Component, ComponentFactoryResolver, ViewChild } from '@angular/core';
-import { DynamicComponentService } from './dynamic-component.service';
-import { DynamicComponentDirective } from './dynamic-component.directive';
-import 'hammerjs';
+import { Routes, RouterModule, Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -9,31 +7,24 @@ import 'hammerjs';
   //styleUrls: ['./app.component.css']
 })
 export class AppComponent{
-  constructor(private dynamicComponentService: DynamicComponentService,
-              private componentFactoryResolver: ComponentFactoryResolver) {  }
-
-  @ViewChild(DynamicComponentDirective) componentHost: DynamicComponentDirective;
-
-  selectedComponentName: string;
-  navbarClass = ["disabled","","",""];
+  constructor(private router: Router){}
+  isCollapsed = true;
+  navbarClass = ["","","",""];
+  routeNum = {
+    "" : 0,
+    "#/" : 0,
+    "#/map" : 1,
+    "#/history" : 2,
+    "#/average" : 3,
+    "#/compare" : 4
+  };
 
   public loading;
-  //Run at start
-  public comName = 'MainPageComponent';
 
   ngOnInit() {
-    this.displayComponent(this.comName);
-    this.setNavbarActive(0);
-  }
 
-  displayComponent(componentName: string) {
-    this.comName = componentName;
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(
-        this.dynamicComponentService.getComponent(componentName));
-    const viewContainerRef = this.componentHost.viewContainerRef;
-
-    viewContainerRef.clear();
-    const componentRef = viewContainerRef.createComponent(componentFactory);
+    this.setNavbarActive(this.routeNum[window.location.hash]);
+    //this.router.navigate(['']);
   }
 
   public setNavbarActive(component:number){

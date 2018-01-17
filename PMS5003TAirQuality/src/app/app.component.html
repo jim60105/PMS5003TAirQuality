@@ -5,22 +5,22 @@
   <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse" (click)="isCollapsed = !isCollapsed">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="">樹梅派空汙監測專題</a>
+      <a class="navbar-brand" href="javascript:void(0);" routerLink="/" routerLinkActive="active">樹梅派空汙監測專題</a>
     </div>
 
     <!-- Top Menu Items -->
-    <ul class="nav navbar-right top-nav">
+    <ul class="nav navbar-right top-nav" *ngIf="false"> <!--//TODO-->
       <li ngbDropdown class="dropdown">
-        <a href="#" ngbDropdownToggle class="dropdown-toggle" data-toggle="dropdown">Message<b class="caret"></b></a>
+        <a href="javascript:void(0);" ngbDropdownToggle class="dropdown-toggle" data-toggle="dropdown">Message<b class="caret"></b></a>
         <ul ngbDropdownMenu class="dropdown-menu message-dropdown">
           <li class="message-preview">
-            <a href="#">
+            <a href="javascript:void(0);">
               <div class="media">
                                     <span class="pull-left">
                                         <img class="media-object" src="http://placehold.it/50x50" alt="">
@@ -35,48 +35,45 @@
             </a>
           </li>
           <li class="message-footer">
-            <a href="#">Read All New Messages</a>
+            <a href="javascript:void(0);">Read All New Messages</a>
           </li>
         </ul>
       </li>
       <li ngbDropdown class="dropdown">
-        <a href="#" ngbDropdownToggle class="dropdown-toggle" data-toggle="dropdown"> John Smith <b class="caret"></b></a>
+        <a href="javascript:void(0);" ngbDropdownToggle class="dropdown-toggle" data-toggle="dropdown"> John Smith <b class="caret"></b></a>
         <ul ngbDropdownMenu class="dropdown-menu">
           <li>
-            <a href="#">Profile</a>
+            <a href="javascript:void(0);">Profile</a>
           </li>
           <li>
-            <a href="#">Inbox</a>
+            <a href="javascript:void(0);">Inbox</a>
           </li>
           <li>
-            <a href="#">Settings</a>
+            <a href="javascript:void(0);">Settings</a>
           </li>
           <li class="divider"></li>
           <li>
-            <a href="#">Log Out</a>
+            <a href="javascript:void(0);" routerLink="/login" routerLinkActive="active">Log Out</a>
           </li>
         </ul>
       </li>
     </ul>
     <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse navbar-ex1-collapse">
-      <ul class="nav navbar-nav side-nav">
-        <li [ngClass]="navbarClass[0]" ><a href="#" (click)="setNavbarActive(0);displayComponent('MainPageComponent')">總覽</a></li>
-        <li [ngClass]="navbarClass[1]" ><a href="#" (click)="setNavbarActive(1);displayComponent('MapPageComponent')">測站地圖</a></li>
-        <li [ngClass]="navbarClass[2]" ><a href="#" (click)="setNavbarActive(2);displayComponent('HistoryPageComponent')">歷史數據</a></li>
-        <li [ngClass]="navbarClass[3]" ><a href="#" (click)="setNavbarActive(3);displayComponent('AveragePageComponent')">平均數據</a></li>
-        <li [ngClass]="navbarClass[4]" ><a href="#" (click)="setNavbarActive(4);displayComponent('ComparePageComponent')">比較工具</a></li>
+    <div class="collapse navbar-collapse navbar-ex1-collapse" [ngbCollapse]="isCollapsed">
+      <ul class="nav navbar-nav side-nav" (click)="isCollapsed=true">
+        <li [ngClass]="navbarClass[0]" ><a href="javascript:void(0);" (click)="setNavbarActive(0)" routerLink="/" routerLinkActive="active">總覽</a></li>
+        <li [ngClass]="navbarClass[1]" ><a href="javascript:void(0);" (click)="setNavbarActive(1)" routerLink="/map" routerLinkActive="active">測站地圖</a></li>
+        <li [ngClass]="navbarClass[2]" ><a href="javascript:void(0);" (click)="setNavbarActive(2)" routerLink="/history" routerLinkActive="active">歷史數據</a></li>
+        <li [ngClass]="navbarClass[3]" ><a href="javascript:void(0);" (click)="setNavbarActive(3)" routerLink="/average" routerLinkActive="active">平均數據</a></li>
+        <li [ngClass]="navbarClass[4]" ><a href="javascript:void(0);" (click)="setNavbarActive(4)" routerLink="/compare" routerLinkActive="active">比較工具</a></li>
         <div class="version">
-          <small>v18.01.16.0</small>
+          <small>v18.01.17.0</small>
         </div>
-      </ul>
-      <ul class="nav navbar-nav navbar-right navbar-user">
       </ul>
     </div><!-- /.navbar-collapse -->
   </nav>
 
-  <div id="page-wrapper" [ngClass]="(comName=='MapPageComponent')?'noPadding':''">
-      <!--動態page-->
-      <ng-template appDynamicComponent></ng-template>
+  <div id="page-wrapper" [ngClass]="(router.url=='/map')?'noPadding':''">
+        <router-outlet></router-outlet>
   </div>
 </div>

@@ -7,6 +7,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { Routes, RouterModule, Router } from '@angular/router';
 //Datepicker
 import { Daterangepicker, DaterangepickerConfig } from 'ng2-daterangepicker';
 
@@ -16,10 +17,6 @@ import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
 
 //innerHtml Safer
 import { Safe } from './safe-html.component';
-
-//Dynamic Change Component
-import { DynamicComponentService } from './dynamic-component.service';
-import { DynamicComponentDirective } from './dynamic-component.directive';
 
 //Charts
 import { ChartsModule } from 'ng2-charts';
@@ -38,6 +35,7 @@ import { MapComponent } from './pages/map-page/map/map.component';
 import { MapPageComponent } from './pages/map-page/map-page.component';
 import { AveragePageComponent } from './pages/average-page/average-page.component';
 import { ComparePageComponent } from './pages/compare-page/compare-page.component';
+import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { DataTableComponent } from './data-table/data-table.component';
 import { LoadingComponent } from './loading.component';
 
@@ -56,10 +54,10 @@ import { GetThingspeakDataService } from "./services/get-thingspeak-data.service
     DataTableComponent,
     MapComponent,
     Safe,
-    DynamicComponentDirective,
     AveragePageComponent,
     ComparePageComponent,
-    LoadingComponent
+    LoadingComponent,
+    LoginPageComponent
   ],
   imports: [
     BrowserModule,
@@ -81,15 +79,7 @@ import { GetThingspeakDataService } from "./services/get-thingspeak-data.service
     ChartsModule,
     Daterangepicker,
   ],
-  entryComponents: [
-    MainPageComponent,
-    MapPageComponent,
-    HistoryPageComponent,
-    AveragePageComponent,
-    ComparePageComponent
-  ],
   providers: [
-    DynamicComponentService,
     GetSingleDataService,
     GetClientInfoService,
     GetDataService,
@@ -97,4 +87,8 @@ import { GetThingspeakDataService } from "./services/get-thingspeak-data.service
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(router: Router) {
+    console.log('Routes: ', JSON.stringify(router.config, undefined, 2));
+  }
+}

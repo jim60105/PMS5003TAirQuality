@@ -2,11 +2,11 @@
 
     <div *ngIf="lineChartStandby">
         <ul class="nav nav-tabs">
-            <li role="presentation" [ngClass]="{'active': dataSet=='pm1'}"><a href="#" (click)="dataSet='pm1';setCharts();calcPercentageData()">PM1</a></li>
-            <li role="presentation" [ngClass]="{'active': dataSet=='pm25'}"><a href="#" (click)="dataSet='pm25';setCharts();calcPercentageData()">PM2.5</a></li>
-            <li role="presentation" [ngClass]="{'active': dataSet=='pm10'}"><a href="#" (click)="dataSet='pm10';setCharts();calcPercentageData()">PM10</a></li>
-            <li role="presentation" [ngClass]="{'active': dataSet=='temp'}"><a href="#" (click)="dataSet='temp';setCharts();calcPercentageData()">溫度</a></li>
-            <li role="presentation" [ngClass]="{'active': dataSet=='humid'}"><a href="#" (click)="dataSet='humid';setCharts();calcPercentageData()">濕度</a></li>
+            <li role="presentation" [ngClass]="{'active': dataSet=='pm1'}"><a href="javascript:void(0);" (click)="dataSet='pm1';setCharts();calcPercentageData()">PM1</a></li>
+            <li role="presentation" [ngClass]="{'active': dataSet=='pm25'}"><a href="javascript:void(0);" (click)="dataSet='pm25';setCharts();calcPercentageData()">PM2.5</a></li>
+            <li role="presentation" [ngClass]="{'active': dataSet=='pm10'}"><a href="javascript:void(0);" (click)="dataSet='pm10';setCharts();calcPercentageData()">PM10</a></li>
+            <li role="presentation" [ngClass]="{'active': dataSet=='temp'}"><a href="javascript:void(0);" (click)="dataSet='temp';setCharts();calcPercentageData()">溫度</a></li>
+            <li role="presentation" [ngClass]="{'active': dataSet=='humid'}"><a href="javascript:void(0);" (click)="dataSet='humid';setCharts();calcPercentageData()">濕度</a></li>
         </ul>
 
         <div *ngIf="lineChartStandby" style="display: block;">

@@ -8,7 +8,9 @@ import { CLIENTINFO } from 'assets/mock-clientInfo';
 @Injectable()
 export class GetClientInfoService {
   constructor(private http:Http) {
-    this.getClientDataHttpWithPromise();
+    this.getClientDataHttpWithPromise().then((res)=>{
+      this.clientInfo = res;
+    });
   }
 
   //資料
