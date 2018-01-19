@@ -5,7 +5,7 @@ import { HistoryPageComponent } from './pages/history-page/history-page.componen
 import { MapPageComponent } from './pages/map-page/map-page.component';
 import { AveragePageComponent } from './pages/average-page/average-page.component';
 import { ComparePageComponent } from './pages/compare-page/compare-page.component';
-import { LoginPageComponent } from './pages/login-page/login-page.component';
+import { LoginPageComponent } from './login/login.component';
 
 import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 

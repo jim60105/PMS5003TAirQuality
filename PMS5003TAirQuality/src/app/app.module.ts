@@ -35,7 +35,7 @@ import { MapComponent } from './pages/map-page/map/map.component';
 import { MapPageComponent } from './pages/map-page/map-page.component';
 import { AveragePageComponent } from './pages/average-page/average-page.component';
 import { ComparePageComponent } from './pages/compare-page/compare-page.component';
-import { LoginPageComponent } from './pages/login-page/login-page.component';
+import { LoginPageComponent } from './login/login.component';
 import { DataTableComponent } from './data-table/data-table.component';
 import { LoadingComponent } from './loading.component';
 
@@ -44,6 +44,7 @@ import { GetSingleDataService } from './services/get-single-data.service';
 import { GetClientInfoService } from "./services/get-client-info.service";
 import { GetDataService } from "./services/get-data.service";
 import { GetThingspeakDataService } from "./services/get-thingspeak-data.service";
+import { LoginService } from "./services/login.service";
 
 @NgModule({
   declarations: [
@@ -84,6 +85,7 @@ import { GetThingspeakDataService } from "./services/get-thingspeak-data.service
     GetClientInfoService,
     GetDataService,
     DaterangepickerConfig,
+    LoginService,
   ],
   bootstrap: [AppComponent]
 })

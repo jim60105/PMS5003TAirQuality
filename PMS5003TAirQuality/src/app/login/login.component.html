@@ -1,0 +1,61 @@
+<!-- Top Menu Items -->
+<ul class="nav navbar-right top-nav"> <!--*ngIf="false"--> <!--//TODO-->
+  <li ngbDropdown class="dropdown" *ngIf="isLogin">
+    <a href="javascript:void(0);" ngbDropdownToggle class="dropdown-toggle" data-toggle="dropdown">
+      <i class="glyphicon glyphicon-envelope"></i>Message<b class="caret"></b>
+    </a>
+    <ul ngbDropdownMenu class="dropdown-menu message-dropdown">
+      <li class="message-preview">
+        <a href="javascript:void(0);">
+          <div class="media">
+                                    <span class="pull-left">
+                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
+                                    </span>
+            <div class="media-body">
+              <h5 class="media-heading"><strong>John Smith</strong>
+              </h5>
+              <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
+              <p>Lorem ipsum dolor sit amet, consectetur...</p>
+            </div>
+          </div>
+        </a>
+      </li>
+      <li class="message-footer">
+        <a href="javascript:void(0);">Read All New Messages</a>
+      </li>
+    </ul>
+  </li>
+  <li ngbDropdown class="dropdown" *ngIf="isLogin">
+    <a href="javascript:void(0);" ngbDropdownToggle class="dropdown-toggle" data-toggle="dropdown">
+      <i class="glyphicon glyphicon-user"></i>User<b class="caret"></b>
+    </a>
+    <ul ngbDropdownMenu class="dropdown-menu">
+      <li>
+        <a href="javascript:void(0);">Profile</a>
+      </li>
+      <li>
+        <a href="javascript:void(0);">Inbox</a>
+      </li>
+      <li>
+        <a href="javascript:void(0);">Settings</a>
+      </li>
+      <li class="divider"></li>
+      <li>
+        <a href="javascript:void(0);" (click)="logout()">Log Out</a>
+      </li>
+    </ul>
+  </li>
+  <form id="signin" class="navbar-form navbar-right" role="form" *ngIf="!isLogin">
+    <div class="input-group">
+      <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+      <input id="email" type="email" class="form-control" placeholder="Email Address" name="_e"  [(ngModel)]="_e">
+    </div>
+
+    <div class="input-group">
+      <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+      <input id="password" type="password" class="form-control" placeholder="Password" name="_p" [(ngModel)]="_p">
+    </div>
+
+    <button type="submit" class="btn btn-primary" (click)="login()">Login</button>
+  </form>
+</ul>

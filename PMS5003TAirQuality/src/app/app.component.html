@@ -14,52 +14,9 @@
       <a class="navbar-brand" href="javascript:void(0);" routerLink="/" routerLinkActive="active">樹梅派空汙監測專題</a>
     </div>
 
-    <!-- Top Menu Items -->
-    <ul class="nav navbar-right top-nav" *ngIf="false"> <!--//TODO-->
-      <li ngbDropdown class="dropdown">
-        <a href="javascript:void(0);" ngbDropdownToggle class="dropdown-toggle" data-toggle="dropdown">Message<b class="caret"></b></a>
-        <ul ngbDropdownMenu class="dropdown-menu message-dropdown">
-          <li class="message-preview">
-            <a href="javascript:void(0);">
-              <div class="media">
-                                    <span class="pull-left">
-                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
-                                    </span>
-                <div class="media-body">
-                  <h5 class="media-heading"><strong>John Smith</strong>
-                  </h5>
-                  <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
-                  <p>Lorem ipsum dolor sit amet, consectetur...</p>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li class="message-footer">
-            <a href="javascript:void(0);">Read All New Messages</a>
-          </li>
-        </ul>
-      </li>
-      <li ngbDropdown class="dropdown">
-        <a href="javascript:void(0);" ngbDropdownToggle class="dropdown-toggle" data-toggle="dropdown"> John Smith <b class="caret"></b></a>
-        <ul ngbDropdownMenu class="dropdown-menu">
-          <li>
-            <a href="javascript:void(0);">Profile</a>
-          </li>
-          <li>
-            <a href="javascript:void(0);">Inbox</a>
-          </li>
-          <li>
-            <a href="javascript:void(0);">Settings</a>
-          </li>
-          <li class="divider"></li>
-          <li>
-            <a href="javascript:void(0);" routerLink="/login" routerLinkActive="active">Log Out</a>
-          </li>
-        </ul>
-      </li>
-    </ul>
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse navbar-ex1-collapse" [ngbCollapse]="isCollapsed">
+      <app-login-page (isLoginOut)="isLogin = $event;" style="visibility: hidden"></app-login-page>
       <ul class="nav navbar-nav side-nav" (click)="isCollapsed=true">
         <li [ngClass]="navbarClass[0]" ><a href="javascript:void(0);" (click)="setNavbarActive(0)" routerLink="/" routerLinkActive="active">總覽</a></li>
         <li [ngClass]="navbarClass[1]" ><a href="javascript:void(0);" (click)="setNavbarActive(1)" routerLink="/map" routerLinkActive="active">測站地圖</a></li>
@@ -67,7 +24,7 @@
         <li [ngClass]="navbarClass[3]" ><a href="javascript:void(0);" (click)="setNavbarActive(3)" routerLink="/average" routerLinkActive="active">平均數據</a></li>
         <li [ngClass]="navbarClass[4]" ><a href="javascript:void(0);" (click)="setNavbarActive(4)" routerLink="/compare" routerLinkActive="active">比較工具</a></li>
         <div class="version">
-          <small>v18.01.17.0</small>
+          <small>v18.01.19.0</small>
         </div>
       </ul>
     </div><!-- /.navbar-collapse -->
