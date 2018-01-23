@@ -8,9 +8,9 @@
       <li class="message-preview">
         <a href="javascript:void(0);">
           <div class="media">
-                                    <span class="pull-left">
-                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
-                                    </span>
+            <span class="pull-left">
+                <img class="media-object" src="http://placehold.it/50x50" alt="">
+            </span>
             <div class="media-body">
               <h5 class="media-heading"><strong>John Smith</strong>
               </h5>
@@ -27,7 +27,7 @@
   </li>
   <li ngbDropdown class="dropdown" *ngIf="isLogin">
     <a href="javascript:void(0);" ngbDropdownToggle class="dropdown-toggle" data-toggle="dropdown">
-      <i class="glyphicon glyphicon-user"></i>User<b class="caret"></b>
+      <i class="glyphicon glyphicon-user"></i>{{email}}<b class="caret"></b>
     </a>
     <ul ngbDropdownMenu class="dropdown-menu">
       <li>
@@ -47,7 +47,7 @@
   </li>
   <form id="signin" class="navbar-form navbar-right" role="form" *ngIf="!isLogin">
     <div class="input-group">
-      <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+      <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
       <input id="email" type="email" class="form-control" placeholder="Email Address" name="_e"  [(ngModel)]="_e">
     </div>
 
@@ -56,6 +56,7 @@
       <input id="password" type="password" class="form-control" placeholder="Password" name="_p" [(ngModel)]="_p">
     </div>
 
-    <button type="submit" class="btn btn-primary" (click)="login()">Login</button>
+    <button type="submit" class="btn btn-primary" (click)="login()">Log in</button>
+    <button type="button" class="btn btn-primary" routerLink="/signup" routerLinkActive="active">Sign up</button>
   </form>
 </ul>

@@ -35,7 +35,8 @@ import { MapComponent } from './pages/map-page/map/map.component';
 import { MapPageComponent } from './pages/map-page/map-page.component';
 import { AveragePageComponent } from './pages/average-page/average-page.component';
 import { ComparePageComponent } from './pages/compare-page/compare-page.component';
-import { LoginPageComponent } from './login/login.component';
+import { LoginComponent } from './login/login.component';
+import { SignupPageComponent } from './pages/signup-page/signup-page.component';
 import { DataTableComponent } from './data-table/data-table.component';
 import { LoadingComponent } from './loading.component';
 
@@ -58,7 +59,8 @@ import { LoginService } from "./services/login.service";
     AveragePageComponent,
     ComparePageComponent,
     LoadingComponent,
-    LoginPageComponent
+    LoginComponent,
+    SignupPageComponent,
   ],
   imports: [
     BrowserModule,
@@ -91,6 +93,6 @@ import { LoginService } from "./services/login.service";
 })
 export class AppModule {
   constructor(router: Router) {
-    console.log('Routes: ', JSON.stringify(router.config, undefined, 2));
+    //console.log('Routes: ', JSON.stringify(router.config, undefined, 2));
   }
 }

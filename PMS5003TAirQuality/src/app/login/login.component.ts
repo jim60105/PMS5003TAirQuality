@@ -9,12 +9,13 @@ import { LoginService } from "../services/login.service";
   templateUrl: './login.component.html',
   //styleUrls: ['./login.component.css']
 })
-export class LoginPageComponent{
+export class LoginComponent{
 
   constructor(private _loginService: LoginService) { }
 
   @Output() isLoginOut = new EventEmitter();
   public isLogin:boolean = false;
+  public email:string = "";
   private _e:string="";
   private _p:string="";
 
@@ -25,7 +26,7 @@ export class LoginPageComponent{
   //Cookie:id
   public isLoginCheck(){
     this.isLogin = (Cookie.check('_e') && Cookie.check('_p'))?(this.isLogin = true):(this.isLogin = false);
-
+    this.email = this._e;
     this.isLoginOut.emit(this.isLogin);
   }
 
@@ -33,15 +34,19 @@ export class LoginPageComponent{
     let params = new URLSearchParams();
     params.set('_e', this._e);
     params.set('_p', this._p);
+    params.set('type', '1');
 
     this._loginService.loginHttpWithPromise(params).then((res)=>{
-      if(res['_p']!==undefined){
+      if(res['_p']!==undefined) {
         //正常登入
-        Cookie.set('_e',res['_e']);
-        Cookie.set('_p',res['_p']);
+        Cookie.set('_e', res['_e']);
+        Cookie.set('_p', res['_p']);
         this._p = "";
         this.isLoginCheck();
+      }else if(res['_e']!==undefined){
+        alert("密碼輸入錯誤!");
       }else{
+        alert("帳號不存在!");
         console.warn("Login Error:"+res.toString);
       }
     });
