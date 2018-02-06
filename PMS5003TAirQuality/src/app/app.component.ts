@@ -32,4 +32,5 @@ export class AppComponent{
     }
     this.navbarClass[component] = "active";
   }
+
 }

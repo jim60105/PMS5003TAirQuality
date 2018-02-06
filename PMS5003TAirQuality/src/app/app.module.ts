@@ -41,11 +41,14 @@ import { DataTableComponent } from './data-table/data-table.component';
 import { LoadingComponent } from './loading.component';
 
 
-import { GetSingleDataService } from './services/get-single-data.service';
 import { GetClientInfoService } from "./services/get-client-info.service";
 import { GetDataService } from "./services/get-data.service";
+import { GetSingleDataService } from './services/get-single-data.service';
+import { GetLASSDataService } from "./services/get-lassdata.service";
+import { GetSingleLASSDataService } from "./services/get-single-lassdata.service";
 import { GetThingspeakDataService } from "./services/get-thingspeak-data.service";
 import { LoginService } from "./services/login.service";
+import { GetLassDeviceService } from "./services/get-lassdevice.service";
 
 @NgModule({
   declarations: [
@@ -60,7 +63,7 @@ import { LoginService } from "./services/login.service";
     ComparePageComponent,
     LoadingComponent,
     LoginComponent,
-    SignupPageComponent,
+    SignupPageComponent
   ],
   imports: [
     BrowserModule,
@@ -83,11 +86,14 @@ import { LoginService } from "./services/login.service";
     Daterangepicker,
   ],
   providers: [
-    GetSingleDataService,
     GetClientInfoService,
     GetDataService,
+    GetSingleDataService,
+    GetLASSDataService,
+    GetSingleLASSDataService,
     DaterangepickerConfig,
     LoginService,
+    GetLassDeviceService
   ],
   bootstrap: [AppComponent]
 })

@@ -12,7 +12,7 @@ export class GetSingleDataService {
     //重複獲取資料的定時器
     this.getDataInterval = setInterval(() => {
       this.getSingleDataHttpWithPromise();
-    }, 61000);
+    }, 35000);
   }
 
   //資料

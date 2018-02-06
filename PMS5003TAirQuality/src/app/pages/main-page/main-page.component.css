@@ -33,3 +33,11 @@
     background-color: #d0d0d0;
     border-color: #d0d0d0;
 }
+
+.row{
+    margin-bottom: 5px;
+}
+
+.panel{
+    margin-bottom: 5px;
+}

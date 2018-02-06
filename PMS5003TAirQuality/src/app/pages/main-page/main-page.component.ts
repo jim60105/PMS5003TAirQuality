@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { HistoryPageComponent } from '../history-page/history-page.component';
 import { GetSingleDataService } from "../../services/get-single-data.service";
 import { GetClientInfoService } from "../../services/get-client-info.service";
+import { GetSingleLASSDataService } from "../../services/get-single-lassdata.service";
+import { GetLassDeviceService } from "../../services/get-lassdevice.service";
 
 import { CalcAQIComponent } from "../../calc-AQI.component";
 //noinspection TypeScriptCheckImport
@@ -14,24 +16,33 @@ import * as moment from 'moment';
 })
 export class MainPageComponent {
     constructor(public _getRealTimeDataService:GetSingleDataService,
-                public _getClientInfoService:GetClientInfoService) { }
+                public _getLASSRealTimeDataService:GetSingleLASSDataService,
+                public _getClientInfoService:GetClientInfoService,
+                public _getLassDeviceService:GetLassDeviceService) { }
 
     private _calcAQI = new CalcAQIComponent();
-
     //資料
-    public realTimeAirData:Array<any> = this._getRealTimeDataService.data;
+    public realTimeAirData:Array<any> = this._getLASSRealTimeDataService.data;
     private tempRealTimeAirData:Array<any> = _.cloneDeep(this.realTimeAirData);
     public clientInfo = this._getClientInfoService.clientInfo;
     //panel的顏色class
     public panelClass:Array<string> = [];
-
+    public LASSDeviceList = this._getLassDeviceService.LASSDeviceList;
     ngOnInit() {
-        this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
-            this.clientInfo = res;
-            this._getRealTimeDataService.getSingleDataHttpWithPromise().then((res)=>{
-                this.realTimeAirData = this._getRealTimeDataService.data;
-            });
-        });
+        //this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
+        //    this.clientInfo = res;
+        //    this._getRealTimeDataService.getSingleDataHttpWithPromise().then((res)=>{
+        //        this.realTimeAirData = this._getRealTimeDataService.data;
+        //    });
+        //});
+        let interval = setInterval(() => {
+            this.LASSDeviceList = this._getLassDeviceService.LASSDeviceList;
+            if(this.LASSDeviceList.length!=0) {
+                this.getLASSRealTimeData();
+                clearTimeout(interval);
+            }
+        }, 500);
+
         if(_.isEqual(this.realTimeAirData,this.tempRealTimeAirData)&&this.realTimeAirData.length!=0) {
             this.calcAQI();
         }
@@ -41,8 +52,13 @@ export class MainPageComponent {
         //realTime改變時觸發AQI計算
         //noinspection TypeScriptValidateJSTypes
         if(!_.isEqual(this.realTimeAirData,this.tempRealTimeAirData)) {
-            this.tempRealTimeAirData = _.cloneDeep(this.realTimeAirData);
+            this.realTimeAirData.forEach((value,index,array)=>{
+                let tt = moment.utc(value.time);
+                //noinspection TypeScriptUnresolvedVariable
+                value.time = tt.local().format('YYYY-MM-DD HH:mm:ss');
+            });
             this.calcAQI();
+            this.tempRealTimeAirData = _.cloneDeep(this.realTimeAirData);
         }
     }
 
@@ -70,5 +86,12 @@ export class MainPageComponent {
                 }
             });
         }
+    }
+
+    private getLASSRealTimeData(){
+        this._getLASSRealTimeDataService.setParam(this.LASSDeviceList);
+        this._getLASSRealTimeDataService.getSingleDataHttpWithPromise().then((res)=>{
+            this.realTimeAirData = this._getLASSRealTimeDataService.data;
+        });
     }
 }
