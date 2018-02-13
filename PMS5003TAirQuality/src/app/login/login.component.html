@@ -1,6 +1,6 @@
 <!-- Top Menu Items -->
 <ul class="nav navbar-right top-nav"> <!--*ngIf="false"--> <!--//TODO-->
-  <li ngbDropdown class="dropdown" *ngIf="isLogin">
+  <li ngbDropdown class="dropdown" *ngIf="isLogin" style="display: none">
     <a href="javascript:void(0);" ngbDropdownToggle class="dropdown-toggle" data-toggle="dropdown">
       <i class="glyphicon glyphicon-envelope"></i>Message<b class="caret"></b>
     </a>
@@ -31,13 +31,7 @@
     </a>
     <ul ngbDropdownMenu class="dropdown-menu">
       <li>
-        <a href="javascript:void(0);">Profile</a>
-      </li>
-      <li>
-        <a href="javascript:void(0);">Inbox</a>
-      </li>
-      <li>
-        <a href="javascript:void(0);">Settings</a>
+        <a href="javascript:void(0);" routerLink="/setting" routerLinkActive="active">Settings</a>
       </li>
       <li class="divider"></li>
       <li>
@@ -48,12 +42,12 @@
   <form id="signin" class="navbar-form navbar-right" role="form" *ngIf="!isLogin">
     <div class="input-group">
       <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-      <input id="email" type="email" class="form-control" placeholder="Email Address" name="_e"  [(ngModel)]="_e">
+      <input type="email" class="form-control" placeholder="Email Address" name="_e"  [(ngModel)]="_e">
     </div>
 
     <div class="input-group">
       <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-      <input id="password" type="password" class="form-control" placeholder="Password" name="_p" [(ngModel)]="_p">
+      <input type="password" class="form-control" placeholder="Password" name="_p" [(ngModel)]="_p">
     </div>
 
     <button type="submit" class="btn btn-primary" (click)="login()">Log in</button>

@@ -1,0 +1,69 @@
+<div class="container-fluid">
+
+  <!-- Page Heading -->
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="page-header">
+        設定
+      </h1>
+    </div>
+  </div>
+  <!-- /.row -->
+
+  <div class="row">
+    <div class="col-lg-6">
+      <form role="form">
+        <div class="form-group" [ngClass]="{'has-error': false}" style="display: none">
+          <label>重設密碼</label>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+            <input id="password" type="password" class="form-control" placeholder="●●●●●●" name="_p"  [(ngModel)]="_p">
+          </div>
+          <p class="help-block">若不變更密碼，請保持此欄空白<br>請輸入6位以上密碼，接受英數符號</p>
+        </div>
+
+
+        <div class="form-group" [ngClass]="{'has-error': _p2!=_p}" style="display: none">
+          <label>重複密碼</label>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+            <input id="rePassword" type="password" class="form-control" placeholder="●●●●●●" name="_p2" [(ngModel)]="_p2">
+          </div>
+          <p class="help-block">請重複輸入密碼</p>
+        </div>
+
+        <div class="form-group">
+          <label>顯示附近測站</label>
+          <div class="checkbox">
+            <label><input type="checkbox" value="" [(ngModel)]="displayNearest" name="displayNearest">顯示最靠近之三個測站</label>
+          </div>
+        </div>
+
+
+        <div class="form-group">
+          <label>監視測站</label>
+          <div ngbDropdown class="dropdown" *ngFor="let userDevice of userDevices; let i = index">
+            <button class="btn btn-default dropdown-toggle" type="button" ngbDropdownToggle data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              {{userDevices[i]}}
+              <span class="caret"></span>
+            </button>
+            <ul ngbDropdownMenu class="dropdown-menu">
+              <li (click)="deviceChange(i,'請選擇測站')"><a href="javascript:void(0);">請選擇測站</a></li>
+              <li role="separator" class="divider"></li>
+              <li *ngFor="let device of LASSDeviceList" (click)="deviceChange(i,device.device_id)"><a href="javascript:void(0);">{{device.device_id}}</a></li>
+            </ul>
+          </div>
+          <p class="help-block" style="display:none">請設定你的使用測站，這將會顯示在首頁</p>
+        </div>
+
+        <button type="reset" class="btn btn-default" (click)="reset()">清空</button>
+        <button type="submit" class="btn btn-primary" (click)="saveSettings()">儲存</button>
+
+      </form>
+
+    </div>
+  </div>
+  <!-- /.row -->
+
+</div>
+<!-- /.container-fluid -->

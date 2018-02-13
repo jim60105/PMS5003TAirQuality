@@ -50,6 +50,9 @@ int port = 80;                    // server port, use 80 for defult
 //間隔時間
 int delayTime = 60000;              // interval for every http request (ms)
 
+//送出計數
+int count = 0;
+
 //Fake GPS
 char gps_lat[] = "24.181598";   // device's gps latitude
 char gps_lon[] = "120.589623"; // device's gps longitude
@@ -347,9 +350,16 @@ void setup() {
 }
 
 void loop() { // run over and over
-    Serial.println("v18.01.14.1");
+    Serial.println("v18.02.12.0");
+    //斷線重連
     if(WiFi.status()!= WL_CONNECTED) {
       connectToWifi();
+      retrieveNtpTime();
+    }
+
+    //每60次送出校時一次
+    if((count%60)==0){
+      retrieveNtpTime();
     }
     
     //硬件初始化
@@ -379,5 +389,6 @@ void loop() { // run over and over
     Serial.print("Interval ");
     Serial.print(delayTime);
     Serial.println(" ms...");
+    count++;
     delay(delayTime);
 }

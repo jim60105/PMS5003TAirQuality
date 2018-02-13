@@ -3,7 +3,7 @@ include('setMySQL.php');
 include('encrypt.php');
 
 $email = isset($_POST['_e']) ? strip_tags($_POST['_e']) : '';
-$password = isset($_POST['_p']) ? encrypt(strip_tags($_POST["_p"])) : '';
+$password = isset($_POST['_p']) ? encrypt(strip_tags($_POST["_p"]),$key) : '';
 
 //檢查重複id
 $db = new PDO('mysql:host='.$dbhost.';dbname='.$dbname,$dbuser,$dbpass);

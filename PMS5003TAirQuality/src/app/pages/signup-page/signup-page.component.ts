@@ -21,8 +21,9 @@ export class SignupPageComponent{
   public data:Array<any> = [];
   //php位置
   private dbURL = "assets/php/registration.php";
-  private _e;
-  private _p;
+  private _e = "";
+  private _p = "";
+  private _p2 = "";
 
   public signUp(){
     let params = new URLSearchParams();

@@ -7,7 +7,6 @@ import { Cookie } from 'ng2-cookies';
 @Injectable()
 export class GetLassDeviceService {
   constructor(private http:Http) {
-    this.getGeolocation();
   }
 
   //資料
@@ -17,6 +16,17 @@ export class GetLassDeviceService {
 
   public LASSDeviceList:String[] = [];
 
+  public setLASSDeviceList(list?:String[]){
+    this.LASSDeviceList = [];
+    if(typeof list!=='undefined'){
+      this.LASSDeviceList = list;
+    }
+
+    if(Cookie.get('displayNearest')!='0' || this.LASSDeviceList.length==0){
+      this.getGeolocation();
+    }
+  }
+
   public getGeolocation(){
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position)=>{
@@ -24,29 +34,13 @@ export class GetLassDeviceService {
         Cookie.set('lon',String(position.coords.longitude));
         console.log(position.coords.latitude + "," + position.coords.longitude);
         this.getNearest3LassDevice();
+      },(err)=>{
+        console.warn('ERROR getting location(' + err.code + '): ' + err.message);
+        this.LASSDeviceList = ["THU_000","THU_001","THU_002"];
       });
     } else {
       console.warn("Geolocation is not supported by this browser.");
     }
-  }
-
-
-  //獲取LASS測站資料
-  public getLassDeviceWithPromise(){
-    //noinspection TypeScriptUnresolvedFunction,TypeScriptValidateTypes
-    return this.http.get(this.dbURL).toPromise().then((res:Response) => {
-      let body = res.json();
-      return body || {};
-    }).then((dataIn)=> {
-      //成功取得資料
-      this.data = dataIn;
-      return Promise.resolve(this.data);
-    }).catch((err)=> {
-      //失敗取得資料
-      console.warn("Warn: Cannot get Lass Devices.");
-      this.data = ["THU_000","THU_001","THU_002"];
-      return Promise.resolve(this.data);
-    });
   }
 
   public getNearest3LassDevice(lat:number = Number(Cookie.get("lat")),lon:number = Number(Cookie.get("lon"))){
@@ -56,7 +50,6 @@ export class GetLassDeviceService {
     this.getLassDeviceWithPromise().then((res)=>{
       //Calc Nearest 3 points
       let nearestIndex:number = 0;
-      this.LASSDeviceList = [];
       for(let i=0;i<res.length;i++){
         if(res[i].gps_lat<lat){
           nearestIndex++;
@@ -103,6 +96,24 @@ export class GetLassDeviceService {
       }
 
       console.log(JSON.stringify(this.LASSDeviceList));
+    });
+  }
+
+  //獲取LASS測站資料
+  public getLassDeviceWithPromise(){
+    //noinspection TypeScriptUnresolvedFunction,TypeScriptValidateTypes
+    return this.http.get(this.dbURL).toPromise().then((res:Response) => {
+      let body = res.json();
+      return body || {};
+    }).then((dataIn)=> {
+      //成功取得資料
+      this.data = dataIn;
+      return Promise.resolve(this.data);
+    }).catch((err)=> {
+      //失敗取得資料
+      console.warn("Warn: Cannot get Lass Devices.");
+      this.data = ["THU_000","THU_001","THU_002"];
+      return Promise.resolve(this.data);
     });
   }
 

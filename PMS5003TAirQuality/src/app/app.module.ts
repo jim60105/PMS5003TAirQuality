@@ -31,15 +31,16 @@ import { MatSliderModule } from '@angular/material';
 import { AppComponent } from './app.component';
 import { MainPageComponent } from './pages/main-page/main-page.component';
 import { HistoryPageComponent } from './pages/history-page/history-page.component';
-import { MapComponent } from './pages/map-page/map/map.component';
 import { MapPageComponent } from './pages/map-page/map-page.component';
 import { AveragePageComponent } from './pages/average-page/average-page.component';
 import { ComparePageComponent } from './pages/compare-page/compare-page.component';
-import { LoginComponent } from './login/login.component';
 import { SignupPageComponent } from './pages/signup-page/signup-page.component';
+import { SettingPageComponent } from './pages/setting-page/setting-page.component';
+
 import { DataTableComponent } from './data-table/data-table.component';
 import { LoadingComponent } from './loading.component';
-
+import { LoginComponent } from './login/login.component';
+import { MapComponent } from './pages/map-page/map/map.component';
 
 import { GetClientInfoService } from "./services/get-client-info.service";
 import { GetDataService } from "./services/get-data.service";
@@ -49,6 +50,8 @@ import { GetSingleLASSDataService } from "./services/get-single-lassdata.service
 import { GetThingspeakDataService } from "./services/get-thingspeak-data.service";
 import { LoginService } from "./services/login.service";
 import { GetLassDeviceService } from "./services/get-lassdevice.service";
+import { GetUserDeviceService } from "./services/get-user-device.service";
+import { SetUserDeviceService } from "./services/set-user-device.service";
 
 @NgModule({
   declarations: [
@@ -63,7 +66,8 @@ import { GetLassDeviceService } from "./services/get-lassdevice.service";
     ComparePageComponent,
     LoadingComponent,
     LoginComponent,
-    SignupPageComponent
+    SignupPageComponent,
+    SettingPageComponent
   ],
   imports: [
     BrowserModule,
@@ -93,7 +97,9 @@ import { GetLassDeviceService } from "./services/get-lassdevice.service";
     GetSingleLASSDataService,
     DaterangepickerConfig,
     LoginService,
-    GetLassDeviceService
+    GetLassDeviceService,
+    GetUserDeviceService,
+    SetUserDeviceService
   ],
   bootstrap: [AppComponent]
 })

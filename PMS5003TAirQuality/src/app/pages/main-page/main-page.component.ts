@@ -4,8 +4,10 @@ import { GetSingleDataService } from "../../services/get-single-data.service";
 import { GetClientInfoService } from "../../services/get-client-info.service";
 import { GetSingleLASSDataService } from "../../services/get-single-lassdata.service";
 import { GetLassDeviceService } from "../../services/get-lassdevice.service";
+import { GetUserDeviceService } from "../../services/get-user-device.service";
 
 import { CalcAQIComponent } from "../../calc-AQI.component";
+import { Cookie } from 'ng2-cookies';
 //noinspection TypeScriptCheckImport
 import * as _ from "lodash";
 import * as moment from 'moment';
@@ -18,6 +20,7 @@ export class MainPageComponent {
     constructor(public _getRealTimeDataService:GetSingleDataService,
                 public _getLASSRealTimeDataService:GetSingleLASSDataService,
                 public _getClientInfoService:GetClientInfoService,
+                public _getUserDeviceService:GetUserDeviceService,
                 public _getLassDeviceService:GetLassDeviceService) { }
 
     private _calcAQI = new CalcAQIComponent();
@@ -35,6 +38,17 @@ export class MainPageComponent {
         //        this.realTimeAirData = this._getRealTimeDataService.data;
         //    });
         //});
+        if(Cookie.check("_p")){
+            //已登入
+            //TODO 抓取使用者的測站ID
+            this._getUserDeviceService.getUserDevicesHttpWithPromise().then((res)=>{
+                this._getLassDeviceService.setLASSDeviceList(res);
+            });
+
+        }else {
+            //未登入
+            this._getLassDeviceService.setLASSDeviceList();
+        }
         let interval = setInterval(() => {
             this.LASSDeviceList = this._getLassDeviceService.LASSDeviceList;
             if(this.LASSDeviceList.length!=0) {

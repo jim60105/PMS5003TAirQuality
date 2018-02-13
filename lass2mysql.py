@@ -157,6 +157,7 @@ def on_disconnect(client, userdata,rc=0):
     client.loop_stop()
     cur.close()
     conn.close()
+    mqtt_client.connect(MQTT_SERVER, MQTT_PORT, MQTT_ALIVE)
 
 mqtt_client = mqtt.Client()
 mqtt_client.on_connect = on_connect

@@ -6,10 +6,10 @@
                     <p *ngIf="data.clientNum!==undefined && clientInfo!==undefined" style="font-size: 30px;margin: 0px auto;">{{clientInfo[data.clientNum].name}}</p>
                     <p *ngIf="data.device_id!==undefined" style="font-size: 26px;margin: 0px auto;font-weight: bold;">{{data.device_id}}</p>
                     PM1: {{data.pm1||"無數據"}}<br>
-                    PM2.5: {{data.pm25}}<br>
-                    PM10: {{data.pm10}}<br>
-                    溫度: {{data.temp}}<br>
-                    濕度: {{data.humid}}<br>
+                    PM2.5: {{data.pm25||"無數據"}}<br>
+                    PM10: {{data.pm10||"無數據"}}<br>
+                    溫度: {{data.temp||"無數據"}}<br>
+                    濕度: {{data.humid||"無數據"}}<br>
                     {{data.time}}
                 </div>
             </div>

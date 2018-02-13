@@ -7,7 +7,7 @@ import { LoginService } from "../services/login.service";
 @Component({
   selector: 'app-login-page',
   templateUrl: './login.component.html',
-  //styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent{
 
@@ -24,17 +24,23 @@ export class LoginComponent{
   }
 
   //Cookie:id
-  public isLoginCheck(){
+  public isLoginCheck(callback?){
     this.isLogin = (Cookie.check('_e') && Cookie.check('_p'))?(this.isLogin = true):(this.isLogin = false);
-    this.email = this._e;
+
+    //如果在註冊頁進行登入，則跳轉到首頁
+    if(this.isLogin==true && window.location.hash=='#/signup'){
+      window.location.hash='#';
+    }
+
+    this.email = Cookie.get('_e');
     this.isLoginOut.emit(this.isLogin);
+    (callback && typeof(callback) === "function") && callback();
   }
 
   public login(){
     let params = new URLSearchParams();
     params.set('_e', this._e);
     params.set('_p', this._p);
-    params.set('type', '1');
 
     this._loginService.loginHttpWithPromise(params).then((res)=>{
       if(res['_p']!==undefined) {
@@ -42,11 +48,13 @@ export class LoginComponent{
         Cookie.set('_e', res['_e']);
         Cookie.set('_p', res['_p']);
         this._p = "";
-        this.isLoginCheck();
+        this.isLoginCheck(()=>{window.location.reload();});
       }else if(res['_e']!==undefined){
         alert("密碼輸入錯誤!");
+        this._p = "";
       }else{
         alert("帳號不存在!");
+        this._e = this._p = "";
         console.warn("Login Error:"+res.toString);
       }
     });
@@ -57,5 +65,7 @@ export class LoginComponent{
     this.isLogin = false;
     Cookie.delete('_e');
     Cookie.delete('_p');
+    Cookie.delete('displayNearest');
+    location.reload();
   }
 }
