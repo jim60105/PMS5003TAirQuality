@@ -10,36 +10,39 @@ $displayNearest = 0;
 
 if ($type == 1) {
     //Plain text login
-    $password = isset($_POST['_p']) ? encrypt(strip_tags($_POST["_p"]), $key) : '';
+    $password = isset($_POST['_p']) ? strip_tags($_POST["_p"]) : '';
     checkLogin(true);
 } else if ($type == 2) {
     //Cookie login
-    $password = isset($_POST['_p']) ? strip_tags($_POST["_p"]) : '';
+    $password = isset($_POST['_p']) ? decrypt(strip_tags($_POST["_p"]), $key) : '';
     checkLogin(false);
 }
 
 function checkLogin($doEcho)
 {
-//登入
+
+    //登入
     $db = new PDO('mysql:host=' . $GLOBALS['dbhost'] . ';dbname=' . $GLOBALS['dbname'], $GLOBALS['dbuser'], $GLOBALS['dbpass']);
     $db->query('set names utf8;');
-    $stmt = $db->prepare("SELECT * FROM user WHERE email = :email && password = :password ;");
+    $stmt = $db->prepare("SELECT * FROM user WHERE email = :email;");
     $stmt->bindValue(':email', $GLOBALS['email']);
-    $stmt->bindValue(':password', $GLOBALS['password']);
+    //$stmt->bindValue(':password', $GLOBALS['password']);
     $stmt->execute();
     $row = $stmt->fetch();
+
     if ($row != []) {
-        $GLOBALS['user_no'] = $row['no'];
-        $row['_p'] = $row['password'];
-        unset($row['password']);
-        $row['_e'] = $row['email'];
-        unset($row['email']);
-    } else {
-        $stmt = $db->prepare("SELECT email FROM user WHERE email = :email ;");
-        $stmt->bindValue(':email', $GLOBALS['email']);
-        $stmt->execute();
-        $row = $stmt->fetch();
-        if ($row != []) {
+
+        $dePas = decrypt($row['password'],$GLOBALS['key']);
+        //比對密碼
+        if($dePas==$GLOBALS['$password']){
+            //成功登入
+            $GLOBALS['user_no'] = $row['no'];
+            $row['_p'] = encrypt($dePas,$GLOBALS['key']);
+            unset($row['password']);
+            $row['_e'] = $row['email'];
+            unset($row['email']);
+        }else{
+            //密碼錯誤
             $row['_e'] = $row['email'];
             unset($row['email']);
         }

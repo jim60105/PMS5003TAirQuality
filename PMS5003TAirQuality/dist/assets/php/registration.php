@@ -17,7 +17,7 @@ if($row!=[]){
     //寫入註冊資料
     $stmt = $db->prepare("INSERT INTO user (no, email, password) VALUES (NULL, :email, :password)");
     $stmt->bindValue(':email',$email);
-    $stmt->bindValue(':password',$password);
+    $stmt->bindValue(':password',encrypt($password,$key));
     $stmt->execute();
     if($stmt->rowCount() == 1){
         echo 'true';
