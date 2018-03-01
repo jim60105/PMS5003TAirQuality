@@ -1,0 +1,6 @@
+[Unit]
+Description=lass2mysql
+[Service]
+ExecStart=/htdocs/PMS5003TAirQuality/lass2mysql.sh
+[Install]
+WantedBy=multi-user.target
