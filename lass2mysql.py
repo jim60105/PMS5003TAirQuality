@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Author: jim60105@gmail.com
-# Version: v18.02.02.0
+# Version: v18.03.02.1
 
 import paho.mqtt.client as mqtt
 import re
@@ -138,14 +138,13 @@ def on_message(client, userdata, msg):
             conn.commit()
             if len(rows) == 0:
                 query = ('INSERT INTO `lassdevice` '
-                '(`device_id`, `app`, `device`, `gps_lat`, `gps_lon`, `gps_alt`) '
-                'VALUES ({device_id}, {app}, {device}, {gps_lat}, {gps_lon}, {gps_alt})').format(**tempDict)
+                '(`device_id`, `app`, `device`, `gps_lat`, `gps_lon`, `gps_alt`, `time`, `pm1`, `pm10`, `pm25`, `temp`, `humid`, `co2`) '
+                'VALUES ({device_id}, {app}, {device}, {gps_lat}, {gps_lon}, {gps_alt}, {time}, {s_d2}, {s_d1}, {s_d0}, {temp}, {humid}, {s_g8})').format(**tempDict)
             else:
-                tempDict['no'] = rows[0]['no']
+                # tempDict['no'] = rows[0]['no']
                 query = ('UPDATE `lassdevice` '
-                'SET `app` = {app}, `device` = {device}, `gps_lat` = {gps_lat}, `gps_lon` = {gps_lon}, `gps_alt` = {gps_alt} '
+                'SET `app` = {app}, `device` = {device}, `gps_lat` = {gps_lat}, `gps_lon` = {gps_lon}, `gps_alt` = {gps_alt}, `time` = {time}, `pm1` = {s_d2}, `pm10` = {s_d1}, `pm25` = {s_d0}, `temp` = {temp}, `humid` = {humid}, `co2` = {s_g8} '
                 'WHERE `lassdevice`.`device_id` = {device_id}').format(**tempDict)
-            
             cur.execute(query)
             conn.commit()
         tempDict = {}
