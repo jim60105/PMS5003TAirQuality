@@ -1,6 +1,10 @@
 [Unit]
 Description=lass2mysql
+Requires=mariadb.service
+After=mariadb.service
 [Service]
 ExecStart=/htdocs/PMS5003TAirQuality/lass2mysql.sh
+Restart=always
+RestartSec=30
 [Install]
 WantedBy=multi-user.target
