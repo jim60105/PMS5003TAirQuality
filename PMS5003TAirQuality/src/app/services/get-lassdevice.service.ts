@@ -36,10 +36,20 @@ export class GetLassDeviceService {
         this.getNearest3LassDevice();
       },(err)=>{
         console.warn('ERROR getting location(' + err.code + '): ' + err.message);
-        this.LASSDeviceList = ["THU_000","THU_001","THU_002"];
+        setLocToTHU();
+        this.getNearest3LassDevice();
       });
     } else {
       console.warn("Geolocation is not supported by this browser.");
+      setLocToTHU();
+      this.getNearest3LassDevice();
+    }
+
+    function setLocToTHU(){
+      console.warn('Set default location to THU.');
+      Cookie.set('lat','24.1824695');
+      Cookie.set('lon','120.6025716');
+      console.log('24.1824695,120.6025716');
     }
   }
 
