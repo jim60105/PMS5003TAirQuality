@@ -46,56 +46,59 @@ export class GetLassDeviceService {
   public getNearest3LassDevice(lat:number = Number(Cookie.get("lat")),lon:number = Number(Cookie.get("lon"))){
     Cookie.set("lat",String(lat));
     Cookie.set("lon",String(lon));
-
     this.getLassDeviceWithPromise().then((res)=>{
-      //Calc Nearest 3 points
-      let nearestIndex:number = 0;
-      for(let i=0;i<res.length;i++){
-        if(res[i].gps_lat<lat){
-          nearestIndex++;
-        }else{
-          break;
-        }
-      }
-
-      for(let j=0;j<3;j++) {
-        let nearestL = res[nearestIndex-1];
-        let nearestR = res[nearestIndex];
-        let nearestIndexA = [nearestIndex-1,nearestIndex];
-        for (let i = (nearestIndexA[0] - 1); i >= 0; i--) {
-          if (Math.abs(lon - res[i].gps_lon) < Math.abs(lon - nearestL.gps_lon)) {
-            if (Math.abs(lat - res[i].gps_lat) + Math.abs(lon - res[i].gps_lon) < Math.abs(lat - nearestL.gps_lat) + Math.abs(lon - nearestL.gps_lon)) {
-              nearestL = res[i];
-              nearestIndexA[0] = i;
-            }
-          }
-          if (Math.abs(lat - res[i].gps_lat) > Math.abs(lon - nearestL.gps_lon)) {
+      if(res.length>0) {
+        //Calc Nearest 3 points
+        let nearestIndex:number = 0;
+        for (let i = 0; i < res.length; i++) {
+          if (res[i].gps_lat < lat) {
+            nearestIndex++;
+          } else {
             break;
           }
         }
-        for (let i = (nearestIndexA[1] + 1); i < res.length; i++) {
-          if (Math.abs(lon - res[i].gps_lon) < Math.abs(lon - nearestR.gps_lon)) {
-            if (Math.abs(lat - res[i].gps_lat) + Math.abs(lon - res[i].gps_lon) < Math.abs(lat - nearestR.gps_lat) + Math.abs(lon - nearestR.gps_lon)) {
-              nearestR = res[i];
-              nearestIndexA[1] = i;
+
+        for (let j = 0; j < 3; j++) {
+          let nearestL = res[nearestIndex - 1];
+          let nearestR = res[nearestIndex];
+          let nearestIndexA = [nearestIndex - 1, nearestIndex];
+          for (let i = (nearestIndexA[0] - 1); i >= 0; i--) {
+            if (Math.abs(lon - res[i].gps_lon) < Math.abs(lon - nearestL.gps_lon)) {
+              if (Math.abs(lat - res[i].gps_lat) + Math.abs(lon - res[i].gps_lon) < Math.abs(lat - nearestL.gps_lat) + Math.abs(lon - nearestL.gps_lon)) {
+                nearestL = res[i];
+                nearestIndexA[0] = i;
+              }
+            }
+            if (Math.abs(lat - res[i].gps_lat) > Math.abs(lon - nearestL.gps_lon)) {
+              break;
             }
           }
-          if (Math.abs(lat - res[i].gps_lat) > Math.abs(lon - nearestR.gps_lon)) {
-            break;
+          for (let i = (nearestIndexA[1] + 1); i < res.length; i++) {
+            if (Math.abs(lon - res[i].gps_lon) < Math.abs(lon - nearestR.gps_lon)) {
+              if (Math.abs(lat - res[i].gps_lat) + Math.abs(lon - res[i].gps_lon) < Math.abs(lat - nearestR.gps_lat) + Math.abs(lon - nearestR.gps_lon)) {
+                nearestR = res[i];
+                nearestIndexA[1] = i;
+              }
+            }
+            if (Math.abs(lat - res[i].gps_lat) > Math.abs(lon - nearestR.gps_lon)) {
+              break;
+            }
+          }
+          if (Math.abs(lat - nearestL.gps_lat) + Math.abs(lon - nearestL.gps_lon) < Math.abs(lat - nearestR.gps_lat) + Math.abs(lon - nearestR.gps_lon)) {
+            this.LASSDeviceList.push(nearestL.device_id);
+            res.splice(nearestIndexA[0], 1);
+            nearestIndex--;
+            nearestIndexA[1]--;
+          } else {
+            this.LASSDeviceList.push(nearestR.device_id);
+            res.splice(nearestIndexA[1], 1);
           }
         }
-        if (Math.abs(lat - nearestL.gps_lat) + Math.abs(lon - nearestL.gps_lon) < Math.abs(lat - nearestR.gps_lat) + Math.abs(lon - nearestR.gps_lon)) {
-          this.LASSDeviceList.push(nearestL.device_id);
-          res.splice(nearestIndexA[0],1);
-          nearestIndex--;
-          nearestIndexA[1]--;
-        } else {
-          this.LASSDeviceList.push(nearestR.device_id);
-          res.splice(nearestIndexA[1],1);
-        }
-      }
 
-      console.log(JSON.stringify(this.LASSDeviceList));
+        console.log(JSON.stringify(this.LASSDeviceList));
+      }else{
+        console.error("LASS Devices Empty! Please make sure python script is running.");
+      }
     });
   }
 

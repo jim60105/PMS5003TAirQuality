@@ -1,6 +1,6 @@
 RewriteEngine on
 RewriteBase /
-RewriteCond %{SERVER_PORT} !^443$
+RewriteCond %{SERVER_PORT} !^443$ [OR]
 RewriteCond %{SERVER_NAME} !^rpiarch\.ddns\.net$
 RewriteRule ^.*$ https://rpiarch.ddns.net%{REQUEST_URI} [R=301]
 

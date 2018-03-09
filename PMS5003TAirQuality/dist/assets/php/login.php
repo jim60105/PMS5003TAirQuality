@@ -1,6 +1,6 @@
 <?php
-include('encrypt.php');
 include('setMySQL.php');
+include('encrypt.php');
 
 $email = isset($_POST['_e']) ? strip_tags($_POST['_e']) : '';
 $type = isset($type) ? $type: (isset($_POST['type']) ? $_POST['type']:1);
@@ -26,30 +26,31 @@ function checkLogin($doEcho)
     $db->query('set names utf8;');
     $stmt = $db->prepare("SELECT * FROM user WHERE email = :email;");
     $stmt->bindValue(':email', $GLOBALS['email']);
-    //$stmt->bindValue(':password', $GLOBALS['password']);
     $stmt->execute();
     $row = $stmt->fetch();
 
     if ($row != []) {
 
-        $dePas = decrypt($row['password'],$GLOBALS['key']);
-        //比對密碼
-        if($dePas==$GLOBALS['$password']){
-            //成功登入
+        if (password_verify($GLOBALS['password'], $row['password'])) {
             $GLOBALS['user_no'] = $row['no'];
-            $row['_p'] = encrypt($dePas,$GLOBALS['key']);
+            $row['_p'] = encrypt($GLOBALS['password'],$GLOBALS['key']);
             unset($row['password']);
             $row['_e'] = $row['email'];
             unset($row['email']);
-        }else{
+
+            $GLOBALS['loginSuccess'] = true;
+            $GLOBALS['displayNearest'] = $row['useNearest'];
+        } else {
             //密碼錯誤
             $row['_e'] = $row['email'];
             unset($row['email']);
+            unset($row['password']);
+
+            $GLOBALS['loginSuccess'] = false;
+            $GLOBALS['displayNearest'] = 0;
         }
     }
 
     if($doEcho){echo json_encode($row);}
-    $GLOBALS['loginSuccess'] = true;
-    $GLOBALS['displayNearest'] = $row['useNearest'];
 }
 ?>

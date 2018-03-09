@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 
 import { GetLassDeviceService } from "../../services/get-lassdevice.service";
 import { GetUserDeviceService } from "../../services/get-user-device.service";
@@ -15,7 +15,8 @@ export class SettingPageComponent {
 
   constructor(public _getLassDeviceService:GetLassDeviceService,
               public _getUserDeviceService:GetUserDeviceService,
-              public _setUserDeviceService:SetUserDeviceService) { }
+              public _setUserDeviceService:SetUserDeviceService,
+              private zone:NgZone) { }
 
   public LASSDeviceList = this._getLassDeviceService.LASSDeviceList;
   public userDevices:String[] = [];
@@ -67,7 +68,7 @@ export class SettingPageComponent {
       if (res[0] == 'true') {
         //Success
         console.log('Set user device successful.');
-        document.location.hash = "#";
+        this.zone.run(()=>{window.location.hash = "#";});
       } else if (res[0] == 'insertError') {
         console.error('User devices insert error.');
       } else if (res[0] == 'loginError') {

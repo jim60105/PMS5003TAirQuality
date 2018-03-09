@@ -31,6 +31,9 @@ export class MainPageComponent {
     //panel的顏色class
     public panelClass:Array<string> = [];
     public LASSDeviceList = this._getLassDeviceService.LASSDeviceList;
+
+    //Loading蓋版
+    public loading = true;
     ngOnInit() {
         //this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
         //    this.clientInfo = res;
@@ -38,9 +41,9 @@ export class MainPageComponent {
         //        this.realTimeAirData = this._getRealTimeDataService.data;
         //    });
         //});
+        this.loading = true;
         if(Cookie.check("_p")){
             //已登入
-            //TODO 抓取使用者的測站ID
             this._getUserDeviceService.getUserDevicesHttpWithPromise().then((res)=>{
                 this._getLassDeviceService.setLASSDeviceList(res);
             });
@@ -100,6 +103,7 @@ export class MainPageComponent {
                 }
             });
         }
+        this.loading = false;
     }
 
     private getLASSRealTimeData(){

@@ -16,6 +16,10 @@ if($loginSuccess) {
     }
 
     //輸出
-    echo json_encode($arr);
+    if(sizeof($arr)==0) {
+        echo '[]';
+    }else{
+        echo json_encode($arr);
+    }
 }
 ?>
