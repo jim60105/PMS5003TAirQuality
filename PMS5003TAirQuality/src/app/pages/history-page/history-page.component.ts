@@ -17,6 +17,10 @@ import { DataTableComponent } from "../../data-table/data-table.component";
 import { GetSingleDataService } from "../../services/get-single-data.service";
 import { GetClientInfoService } from "../../services/get-client-info.service";
 import { GetDataService } from "../../services/get-data.service";
+import { GetLassDeviceService } from "../../services/get-lassdevice.service";
+import { GetUserDeviceService } from "../../services/get-user-device.service";
+import { GetLASSDataService } from "../../services/get-lassdata.service";
+import { Cookie } from 'ng2-cookies';
 @Component({
   selector: 'app-history-page',
   templateUrl: './history-page.component.html',
@@ -27,7 +31,10 @@ export class HistoryPageComponent {
   @Input() tableVisible:boolean = true;
   constructor(private _getClientInfoService:GetClientInfoService,
               private _getDataService:GetDataService,
-              private daterangepickerOptions: DaterangepickerConfig) {}
+              private daterangepickerOptions: DaterangepickerConfig,
+              private _getLassDeviceService:GetLassDeviceService,
+              private _getUserDeviceService:GetUserDeviceService,
+              private _getLassDataService:GetLASSDataService) {}
   //日期選擇器
   public _DaterangepickerComponent = new DaterangepickerComponent();
   public rangeValue:Date[] = this._DaterangepickerComponent.getTimeByDate();
@@ -37,7 +44,7 @@ export class HistoryPageComponent {
 
   //資料
   public data:Object[] = [];
-  public clientInfo:any = [];
+  public devices:any = [];
 
   //Loading蓋版
   public loading = true;
@@ -48,7 +55,7 @@ export class HistoryPageComponent {
   //AQI表格
   public percentageData:Object[] = [];
   public percentageTitle = ['位置','良好 0～50','普通 51～100','對敏感族群不健康 101～150','對所有族群不健康 151～200','非常不健康 201～300','危害 301～400','危害 401～500'];
-  public percentageProperty = ['clientNum',0,1,2,3,4,5,6];
+  public percentageProperty = ['device_id',0,1,2,3,4,5,6];
   public percentageSortable = ["","","","","","","",""];
   public percentageTitleClass = ['','AQI1','AQI2','AQI3','AQI4','AQI5','AQI6','AQI6'];
       //列數
@@ -118,13 +125,34 @@ export class HistoryPageComponent {
   //}
 
   ngOnInit() {
-    this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
-      this.clientInfo = res;
-      //設定列數為client數量
-      this.tableRowLimit = this.clientInfo.length;
-      this.setChartsColor();
-    });
+    //this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
+    //  this.devices = res;
+    //  //設定列數為client數量
+    //  this.tableRowLimit = this.devices.length;
+    //  this.setChartsColor();
+    //});
+
+    this.loading = true;
+    if(Cookie.check("_p")){
+      //已登入
+      this._getUserDeviceService.getUserDevicesHttpWithPromise().then((res)=>{
+        this._getLassDeviceService.setLASSDeviceList(res);
+      });
+
+    }else {
+      //未登入
+      this._getLassDeviceService.setLASSDeviceList();
+    }
     this.daterangepickerOptions.settings = this._DaterangepickerComponent.settings;
+    let interval = setInterval(() => {
+      this.devices = this._getLassDeviceService.LASSDeviceList;
+      if(this.devices.length!=0) {
+          //設定列數為client數量
+          this.tableRowLimit = this.devices.length;
+          this.setChartsColor();
+        clearTimeout(interval);
+      }
+    }, 500);
   }
 
   private selectedDate(value: any, dateInput: any) {
@@ -134,14 +162,14 @@ export class HistoryPageComponent {
     //日期選擇改變時觸發getDataHttp
     this._DaterangepickerComponent.setTimeByDate(this.rangeValue[0],this.rangeValue[1]);
     this.loading = true;
-    this.getDataHttp();
+    this.getLASSDataHttp();
   }
 
   private setChartsColor(){
-    //Generate Radom Color
+    //Generate Random Color
     let color = new RColor;
     this.colorList = [];
-    for(let i=0;i<this.clientInfo.length;i++){
+    for(let i=0; i<this.devices.length; i++){
       this.colorList.push(color.get());
     }
 
@@ -162,26 +190,39 @@ export class HistoryPageComponent {
   private setLineChartDataTemplate(){
     let lineChartDataTemplate:Array<any> = [];
 
-    this.clientInfo.forEach(function(value,index,array){
+    this.devices.forEach(function(value, index, array){
       lineChartDataTemplate.push(
-          {data: [], label: value['name'],fill:false}
+          {data: [], label: value,fill:false}
       );
     });
 
     this.lineChartDataTemplate = _.cloneDeep(lineChartDataTemplate);
     this.loadedLineChartDataTemplate = true;
-    this.getDataHttp();
+    this.getLASSDataHttp();
   }
 
   //獲取空汙資料
-  public getDataHttp(){
+  //public getDataHttp(){
+  //  this.lineChartStandby = false;
+  //  let params = new URLSearchParams();
+  //
+  //  params.set('minDate', this._DaterangepickerComponent.getSQLString()[0]);
+  //  params.set('maxDate', this._DaterangepickerComponent.getSQLString()[1]);
+  //
+  //  this._getDataService.getDataHttpWithPromise(params).then((res)=>{
+  //    this.data = res;
+  //    if(this.loadedLineChartDataTemplate){
+  //      this.setCharts();
+  //      this.calcPercentageData();
+  //    }
+  //  });
+  //}
+
+  //獲取空汙資料
+  public getLASSDataHttp(){
     this.lineChartStandby = false;
-    let params = new URLSearchParams();
-
-    params.set('minDate', this._DaterangepickerComponent.getSQLString()[0]);
-    params.set('maxDate', this._DaterangepickerComponent.getSQLString()[1]);
-
-    this._getDataService.getDataHttpWithPromise(params).then((res)=>{
+    this._getLassDataService.setParam(this.devices,this._DaterangepickerComponent.getSQLString()[0],this._DaterangepickerComponent.getSQLString()[1]);
+    this._getLassDataService.getDataHttpWithPromise().then((res)=>{
       this.data = res;
       if(this.loadedLineChartDataTemplate){
         this.setCharts();
@@ -193,7 +234,7 @@ export class HistoryPageComponent {
   public setCharts(){
     this.lineChartData = _.cloneDeep(this.lineChartDataTemplate);
     this.data.forEach((value: Object, index, array)=>{
-      this.lineChartData[value['clientNum']].data.push({x:value['time'],y:value[this.dataSet]});
+      this.lineChartData[this.devices.indexOf(value['device_id'])].data.push({x:value['time'],y:value[this.dataSet]});
     });
     this.lineChartStandby = false;
     this.lineChartStandby = true;
@@ -207,43 +248,43 @@ export class HistoryPageComponent {
     let level10 = [55,126,255,355,425,505,605];
     let level:number[]=(this.dataSet=='pm25')?level25:level10;
 
-    this.clientInfo.forEach((value: Object, i, array)=>{
+    this.devices.forEach((value: String, i, array)=>{
       percentageCount[i] = [0,0,0,0,0,0,0];
       dataCount[i] = 0;
-      this.percentageData[i] = {};
+      this.percentageData[i] = {device_id:value};
     });
 
     this.data.forEach((value: Object, index, array)=>{
       switch (true){
         case (value[this.dataSet]<level[0]):
-          percentageCount[value['clientNum']][0]++;
+          percentageCount[this.devices.indexOf(value['device_id'])][0]++;
           break;
         case (value[this.dataSet]<level[1]):
-          percentageCount[value['clientNum']][1]++;
+          percentageCount[this.devices.indexOf(value['device_id'])][1]++;
           break;
         case (value[this.dataSet]<level[2]):
-          percentageCount[value['clientNum']][2]++;
+          percentageCount[this.devices.indexOf(value['device_id'])][2]++;
           break;
         case (value[this.dataSet]<level[3]):
-          percentageCount[value['clientNum']][3]++;
+          percentageCount[this.devices.indexOf(value['device_id'])][3]++;
           break;
         case (value[this.dataSet]<level[4]):
-          percentageCount[value['clientNum']][4]++;
+          percentageCount[this.devices.indexOf(value['device_id'])][4]++;
           break;
         case (value[this.dataSet]<level[5]):
-          percentageCount[value['clientNum']][5]++;
+          percentageCount[this.devices.indexOf(value['device_id'])][5]++;
           break;
         case (value[this.dataSet]<level[6]):
-          percentageCount[value['clientNum']][6]++;
+          percentageCount[this.devices.indexOf(value['device_id'])][6]++;
           break;
       }
-      dataCount[value['clientNum']]++;
+      dataCount[this.devices.indexOf(value['device_id'])]++;
     });
     percentageCount.forEach((value, index, array)=>{
       for(let i=0;i<7;i++){
         this.percentageData[index][i] = Math.round(percentageCount[index][i]/dataCount[index]*100*100)/100 + '%';
       }
-      this.percentageData[index]['clientNum'] = index;
+      //this.percentageData[index][this.devices.indexOf(value['device_id'])] = index;
     });
   }
 

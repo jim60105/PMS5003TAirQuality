@@ -30,7 +30,7 @@
       <app-data-table
               *ngIf="tableVisible && (dataSet=='pm25' || dataSet=='pm10')"
               [data]="percentageData"
-              [clientInfo]="clientInfo"
+              [devices]="devices"
               [limit]="tableRowLimit"
               [property]="percentageProperty"
               [title]="percentageTitle"
@@ -44,7 +44,7 @@
         <h2>數據總覽</h2>
       <app-data-table
               [data]="data"
-              [clientInfo]="clientInfo" >
+              [devices]="devices" >
       </app-data-table>
     </div>
     <app-loading [loading]="loading"></app-loading>

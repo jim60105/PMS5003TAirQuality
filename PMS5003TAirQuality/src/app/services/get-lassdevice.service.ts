@@ -105,6 +105,10 @@ export class GetLassDeviceService {
           }
         }
 
+        //unique
+        this.LASSDeviceList = this.LASSDeviceList.filter( (value, index, self) =>{
+          return self.indexOf(value) === index;
+        });
         console.log(JSON.stringify(this.LASSDeviceList));
       }else{
         console.error("LASS Devices Empty! Please make sure python script is running.");

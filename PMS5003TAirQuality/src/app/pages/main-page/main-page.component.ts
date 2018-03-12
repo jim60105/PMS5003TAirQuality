@@ -36,7 +36,7 @@ export class MainPageComponent {
     public loading = true;
     ngOnInit() {
         //this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
-        //    this.clientInfo = res;
+        //    this.devices = res;
         //    this._getRealTimeDataService.getSingleDataHttpWithPromise().then((res)=>{
         //        this.realTimeAirData = this._getRealTimeDataService.data;
         //    });

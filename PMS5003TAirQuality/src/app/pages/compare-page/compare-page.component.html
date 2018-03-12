@@ -25,7 +25,7 @@
                 <label for="clientChooser">選擇測站</label>
                 <br>
                 <div class="btn-group" data-toggle="buttons" id="clientChooser" >
-                    <label class="btn btn-default" (click)="client = idx" *ngFor="let c of clientInfo;let idx = index">
+                    <label class="btn btn-default" (click)="client = idx" *ngFor="let c of devices;let idx = index">
                         <input type="radio" name="client" autocomplete="off"> {{c.name}}
                     </label>
                 </div>

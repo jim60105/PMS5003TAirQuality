@@ -25,7 +25,7 @@ export class ComparePageComponent{
   public ready = false;//Submit Btn disable
   private overBound = false;
   public errDate:boolean[] = [true,true];
-  public clientInfo;
+  public devices;
   public duration:number = 6;
   public client:number = -1;
   public data:Object[] = [];
@@ -127,7 +127,7 @@ export class ComparePageComponent{
     this.daterangepickerOptions.settings.singleDatePicker = true;
 
     this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
-      this.clientInfo = res;
+      this.devices = res;
       this.setChartsColor();
 
     });
@@ -192,7 +192,7 @@ export class ComparePageComponent{
     //Generate Radom Color
     let color = new RColor;
     this.colorList = [];
-    for(let i=0;i<this.clientInfo.length;i++){
+    for(let i=0;i<this.devices.length;i++){
       this.colorList.push(color.get());
     }
 

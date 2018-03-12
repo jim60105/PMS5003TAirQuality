@@ -55,12 +55,12 @@ export class SettingPageComponent {
 
   public saveSettings(){
     //測站設定
+    //unique
+    this.userDevices = this.userDevices.filter( (value, index, self) =>{
+      return self.indexOf(value) === index;
+    });
     //去掉'請選擇測站'選項
-    let index = this.userDevices.indexOf('請選擇測站');
-    while (index > -1) {
-      this.userDevices.splice(index, 1);
-      index = this.userDevices.indexOf('請選擇測站');
-    }
+    this.userDevices.splice(this.userDevices.indexOf('請選擇測站'), 1);
 
     //送出
     this._setUserDeviceService.setUserDevicesHttpWithPromise(this.userDevices,this.displayNearest).then((res)=> {

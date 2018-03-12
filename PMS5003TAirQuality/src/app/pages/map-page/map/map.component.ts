@@ -99,7 +99,7 @@ export class MapComponent {
     //將資料內的數字字串轉為數字格式
     convertLatLngToNumber(data: dataObject[]){
         data.forEach(function(value,index,array){
-            //console.log(clientInfo[index].lat);
+            //console.log(devices[index].lat);
             data[index].lat = Number(data[index].lat);
             data[index].lng = Number(data[index].lng);
         });

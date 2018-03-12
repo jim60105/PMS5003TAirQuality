@@ -27,7 +27,7 @@ export class AveragePageComponent {
   //資料
   public data:Object[] = [];
   public avgData:Object[] = [];
-  public clientInfo:any = [];
+  public devices:any = [];
 
   //日期選擇器
   public _DaterangepickerComponent = new DaterangepickerComponent();
@@ -73,11 +73,11 @@ export class AveragePageComponent {
   //}
   
   ngOnInit() {
-    //獲取clientInfo
+    //獲取devices
     this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
-      this.clientInfo = res;
+      this.devices = res;
       //設定列數為client數量
-      this.tableRowLimit = this.clientInfo.length;
+      this.tableRowLimit = this.devices.length;
       this.setChartsColor();
     });
     this.daterangepickerOptions.settings = this._DaterangepickerComponent.settings;
@@ -97,7 +97,7 @@ export class AveragePageComponent {
     //Generate Radom Color
     let color = new RColor;
     this.colorList = [];
-    for(let i=0;i<this.clientInfo.length;i++){
+    for(let i=0;i<this.devices.length;i++){
       this.colorList.push(color.get());
     }
 
@@ -115,7 +115,7 @@ export class AveragePageComponent {
   setBarChartDataTemplate(){
     let barChartDataTemplate:Array<any> = [];
 
-    this.clientInfo.forEach(function(value,index,array){
+    this.devices.forEach(function(value,index,array){
       barChartDataTemplate.push(
           {data: [], label: value['name']}
       );
@@ -139,7 +139,7 @@ export class AveragePageComponent {
 
       //計算平均
       let temp:Object[] = [];
-      for(let i=0;i<this.clientInfo.length;i++){
+      for(let i=0;i<this.devices.length;i++){
         temp.push({'count': 0});
       }
       res.forEach((value,index,array)=>{
@@ -151,7 +151,7 @@ export class AveragePageComponent {
         temp[value.clientNum]['count'] ++;
       });
 
-      this.clientInfo.forEach((value,index,array)=>{
+      this.devices.forEach((value,index,array)=>{
         temp[index]['clientNum'] = index;
       });
       temp.forEach((value,index,array)=>{
