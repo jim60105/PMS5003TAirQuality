@@ -4,7 +4,7 @@ import { Daterangepicker } from 'ng2-daterangepicker';
 
 export class DaterangepickerComponent {
   constructor(
-      minDate = (Cookie.check('minDate'))?(moment(Cookie.get('minDate'))):(moment().subtract(7, 'day').startOf('day')),
+      minDate = (Cookie.check('minDate'))?(moment(Cookie.get('minDate'))):(moment()),
       maxDate = (Cookie.check('maxDate'))?(moment(Cookie.get('maxDate'))):(moment().endOf('day'))
   ) {
     this.rangeValue = [moment(minDate),moment(maxDate)];
@@ -22,7 +22,7 @@ export class DaterangepickerComponent {
       'Last 2 Weeks': [moment().subtract(14, 'day'), moment()],
       'Last Month': [moment().subtract(1, 'month'), moment()],
     },
-    startDate: moment().subtract(7, 'day'),
+    startDate: moment(),
     endDate: moment(),
     minDate: moment('2017/10/02','YYYY/MM/DD'),
     maxDate: moment(),

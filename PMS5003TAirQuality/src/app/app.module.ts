@@ -40,7 +40,6 @@ import { SettingPageComponent } from './pages/setting-page/setting-page.componen
 import { DataTableComponent } from './data-table/data-table.component';
 import { LoadingComponent } from './loading.component';
 import { LoginComponent } from './login/login.component';
-import { MapComponent } from './pages/map-page/map/map.component';
 
 import { GetClientInfoService } from "./services/get-client-info.service";
 import { GetDataService } from "./services/get-data.service";
@@ -60,7 +59,6 @@ import { SetUserDeviceService } from "./services/set-user-device.service";
     MapPageComponent,
     HistoryPageComponent,
     DataTableComponent,
-    MapComponent,
     Safe,
     AveragePageComponent,
     ComparePageComponent,

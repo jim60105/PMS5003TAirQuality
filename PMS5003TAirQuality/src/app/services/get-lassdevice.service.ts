@@ -4,6 +4,8 @@ import '../../../node_modules/rxjs/add/operator/toPromise';
 import { Observable } from 'rxjs/Observable';
 
 import { Cookie } from 'ng2-cookies';
+//noinspection TypeScriptCheckImport
+import * as _ from "lodash";
 @Injectable()
 export class GetLassDeviceService {
   constructor(private http:Http) {
@@ -124,14 +126,22 @@ export class GetLassDeviceService {
       return body || {};
     }).then((dataIn)=> {
       //成功取得資料
-      this.data = dataIn;
-      return Promise.resolve(this.data);
+      this.data = _.cloneDeep(dataIn);
+      return Promise.resolve(dataIn);
     }).catch((err)=> {
       //失敗取得資料
       console.warn("Warn: Cannot get Lass Devices.");
-      this.data = ["THU_000","THU_001","THU_002"];
-      return Promise.resolve(this.data);
+      this.LASSDeviceList = [];
+      return Promise.resolve([]);
     });
+  }
+
+  public getLassDeviceById(id:String){
+    for(let key in this.data){
+      if(this.data[key]['device_id']==id){
+        return this.data[key];
+      }
+    }
   }
 
 }
