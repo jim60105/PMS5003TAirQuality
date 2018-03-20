@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Author: jim60105@gmail.com
-# Version: v18.03.02.1
+# Version: v18.03.20.0
 
 import paho.mqtt.client as mqtt
 import re
@@ -22,7 +22,7 @@ conn = mysql.connector.connect(
          host='127.0.0.1',
          database='air')
  
-cur = conn.cursor()
+cur = conn.cursor(dictionary=True)
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
@@ -124,13 +124,57 @@ def on_message(client, userdata, msg):
         rows = cur.fetchall()
         conn.commit()
         if len(rows) == 0:
-            # 插入資料
-            query = ('INSERT INTO `lassdata` '
+            # 插入隊列
+            query = ('INSERT INTO `lassdataqueue` '
                 '(`no`, `device_id`, `time`, `pm1`, `pm10`, `pm25`, `temp`, `humid`, `co2`) '
                 'VALUES (NULL, {device_id}, {time}, {s_d2}, {s_d1}, {s_d0}, {temp}, {humid}, {s_g8})').format(**tempDict)
             cur.execute(query)
             conn.commit()
             
+            def checkFlush():
+                query = ('SELECT TIMESTAMPDIFF(MINUTE,'
+                    '(SELECT time FROM lassdataqueue WHERE device_id = {device_id} ORDER BY time ASC LIMIT 1),'
+                    '(SELECT time FROM lassdataqueue WHERE device_id = {device_id} ORDER BY time DESC LIMIT 1)'
+                    ') AS timediff;').format(**tempDict)
+                cur.execute(query)
+                row = cur.fetchone()
+                conn.commit()
+                return row['timediff']
+                
+            def doFlush():
+                query = ('SELECT time FROM lassdataqueue WHERE device_id = {device_id} ORDER BY time ASC LIMIT 1;').format(**tempDict)
+                cur.execute(query)
+                row = cur.fetchone()
+                conn.commit()
+                tempDict['startRow'] = row['time']
+                
+                query = ('SELECT AVG(pm1) AS pm1, AVG(pm10) AS pm10, AVG(pm25) AS pm25, AVG(temp) AS temp, AVG(humid) AS humid, AVG(co2) AS co2 FROM lassdataqueue WHERE device_id = {device_id} AND time BETWEEN "{startRow}" AND (SELECT TIMESTAMPADD(MINUTE, 10, "{startRow}"));').format(**tempDict)
+                cur.execute(query)
+                rows = cur.fetchall()
+                conn.commit()
+                
+                row = rows[0]
+                row['device_id'] = tempDict['device_id']
+                row['time'] = tempDict['startRow']
+            
+                for k,v in row.items():
+                    if v == None:
+                        row[k] = 'Null'
+                        
+                #print(*rows, sep='\n', flush=True)
+                query = ('INSERT INTO lassdata (`no`, `device_id`, `time`, `pm1`, `pm10`, `pm25`, `temp`, `humid`, `co2`) '
+                'VALUES (NULL, {device_id}, (SELECT TIMESTAMPADD(MINUTE, 5, "{time}")), {pm1}, {pm10}, {pm25}, {temp}, {humid}, {co2})').format(**rows[0])
+                cur.execute(query)
+                conn.commit()
+                
+                query = ('DELETE FROM lassdataqueue WHERE device_id = {device_id} AND time BETWEEN "{startRow}" AND (SELECT TIMESTAMPADD(MINUTE, 10, "{startRow}"));').format(**tempDict)
+                cur.execute(query)
+                conn.commit()
+            
+            # check & flush
+            while checkFlush()>10:
+                doFlush()
+                
             # 寫入測站資料    
             query = ('SELECT `device_id` FROM `lassdevice` WHERE `device_id` = {device_id}').format(**tempDict)
             cur.execute(query)
