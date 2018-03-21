@@ -69,11 +69,6 @@ export class MainPageComponent {
         //realTime改變時觸發AQI計算
         //noinspection TypeScriptValidateJSTypes
         if(!_.isEqual(this.realTimeAirData,this.tempRealTimeAirData)) {
-            this.realTimeAirData.forEach((value,index,array)=>{
-                let tt = moment.utc(value.time);
-                //noinspection TypeScriptUnresolvedVariable
-                value.time = tt.local().format('YYYY-MM-DD HH:mm:ss');
-            });
             this.calcAQI();
             this.tempRealTimeAirData = _.cloneDeep(this.realTimeAirData);
         }
