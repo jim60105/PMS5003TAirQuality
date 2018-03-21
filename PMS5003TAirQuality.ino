@@ -60,7 +60,7 @@ char gps_alt[] = "256";  // device's altitude above the sea level
 
 //LASS MQTT
 char mqttServer[] = "gpssensor.ddns.net";      // the MQTT server of LASS
-char clientId[17] = "THU_001";                    // client id for MQTT
+char clientId[17] = "THU_000";                    // client id for MQTT
 char outTopic[20] = "LASS/Test/PM25/live"; // MQTT publish topic
 //******************************************************************************************
 
@@ -318,6 +318,8 @@ void connect2server(String jsonStr) {
     client.println("Host: "+serverStr+":"+port);
     client.println("User-Agent: Arduino/1.0");
     client.println();
+  }else{
+    Serial.println("\nFailed to connect to the server.");
   }
 }
 
@@ -350,7 +352,7 @@ void setup() {
 }
 
 void loop() { // run over and over
-    Serial.println("v18.02.12.0");
+    Serial.println("v18.03.21.0");
     //斷線重連
     if(WiFi.status()!= WL_CONNECTED) {
       connectToWifi();
