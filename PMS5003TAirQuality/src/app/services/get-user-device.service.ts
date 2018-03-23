@@ -35,7 +35,7 @@ export class GetUserDeviceService {
       dataIn.forEach((value)=>{
         //noinspection TypeScriptUnresolvedVariable
         if(typeof value.device_id==='undefined'){
-          Cookie.set('displayNearest',JSON.stringify(value));
+          Cookie.set('displayNearest',value);
         }else {
           //noinspection TypeScriptUnresolvedVariable
           this.data.push(value.device_id);

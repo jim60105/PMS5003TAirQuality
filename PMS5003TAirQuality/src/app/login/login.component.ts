@@ -15,24 +15,24 @@ export class LoginComponent{
 
   @Output() isLoginOut = new EventEmitter();
   public isLogin:boolean = false;
-  public email:string = "";
   private _e:string="";
   private _p:string="";
 
   ngOnInit() {
     this.isLoginCheck();
+    if(Cookie.check("_e")){
+      this._e = Cookie.get("_e");
+    }
   }
 
-  //Cookie:id
   public isLoginCheck(callback?){
     this.isLogin = (Cookie.check('_e') && Cookie.check('_p'))?(this.isLogin = true):(this.isLogin = false);
 
-    //如果在註冊頁進行登入，則跳轉到首頁
-    if(this.isLogin==true && window.location.hash=='#/signup'){
+    //如果在其他頁進行登入，則跳轉到首頁
+    if(this.isLogin && window.location.hash!='#'){
       window.location.hash='#';
     }
 
-    this.email = Cookie.get('_e');
     this.isLoginOut.emit(this.isLogin);
     (callback && typeof(callback) === "function") && callback();
   }
@@ -48,13 +48,17 @@ export class LoginComponent{
         Cookie.set('_e', res['_e']);
         Cookie.set('_p', res['_p']);
         this._p = "";
-        this.isLoginCheck(()=>{window.location.reload();});
+        this.isLoginCheck(()=>{
+          //location.reload();
+        });
       }else if(res['_e']!==undefined){
         alert("密碼輸入錯誤!");
         this._p = "";
       }else{
         alert("帳號不存在!");
+        Cookie.set('_e', this._e);
         this._e = this._p = "";
+        document.location.hash="#/signup";
         console.warn("Login Error:"+res.toString);
       }
     });
@@ -66,6 +70,10 @@ export class LoginComponent{
     Cookie.delete('_e');
     Cookie.delete('_p');
     Cookie.delete('displayNearest');
-    location.reload();
+    //location.reload();
+    //如果在其他頁進行登出，則跳轉到首頁
+    if(window.location.hash!='#'){
+      window.location.hash='#';
+    }
   }
 }

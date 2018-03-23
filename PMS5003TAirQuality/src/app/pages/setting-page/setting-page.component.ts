@@ -24,8 +24,10 @@ export class SettingPageComponent {
   private _p:String = '';
   private _p2:String = '';
   private displayNearest = true;
+  private loading = false;
 
   ngOnInit() {
+    this.loading = true;
     if(!Cookie.check("_p")) {
       document.location.hash="#";
     }
@@ -42,6 +44,7 @@ export class SettingPageComponent {
       this.userDevices = res;
       this.userDevices.push('請選擇測站');
       this.userDevicesTemp = _.cloneDeep(this.userDevices);
+      this.loading = false;
     });
   }
 
@@ -54,6 +57,7 @@ export class SettingPageComponent {
   }
 
   public saveSettings(){
+    this.loading = true;
     //測站設定
     //unique
     this.userDevices = this.userDevices.filter( (value, index, self) =>{
@@ -64,7 +68,7 @@ export class SettingPageComponent {
 
     //送出
     this._setUserDeviceService.setUserDevicesHttpWithPromise(this.userDevices,this.displayNearest).then((res)=> {
-
+      this.loading = false;
       if (res[0] == 'true') {
         //Success
         console.log('Set user device successful.');

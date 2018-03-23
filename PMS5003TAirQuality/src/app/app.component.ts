@@ -10,6 +10,7 @@ export class AppComponent{
   constructor(private router: Router){}
   isCollapsed = true;
   navbarClass = ["","","",""];
+  private tempLoc = window.location.hash;
   routeNum = {
     "" : 0,
     "#/" : 0,
@@ -24,6 +25,13 @@ export class AppComponent{
 
   ngOnInit() {
     this.setNavbarActive(this.routeNum[window.location.hash]);
+  }
+
+  ngDoCheck() {
+    if(this.tempLoc!=window.location.hash){
+      this.tempLoc = window.location.hash;
+      this.setNavbarActive(this.routeNum[window.location.hash]);
+    }
   }
 
   public setNavbarActive(component:number){

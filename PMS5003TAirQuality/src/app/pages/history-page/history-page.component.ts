@@ -133,26 +133,16 @@ export class HistoryPageComponent {
     //});
 
     this.loading = true;
-    if(Cookie.check("_p")){
-      //已登入
-      this._getUserDeviceService.getUserDevicesHttpWithPromise().then((res)=>{
-        this._getLassDeviceService.setLASSDeviceList(res);
-      });
 
-    }else {
-      //未登入
-      this._getLassDeviceService.setLASSDeviceList();
-    }
+
+    this._getUserDeviceService.getDevices((res)=> {
+      this.devices = _.cloneDeep(res);
+      //設定列數為client數量
+      this.tableRowLimit = this.devices.length;
+      this.setChartsColor();
+    });
+
     this.daterangepickerOptions.settings = this._DaterangepickerComponent.settings;
-    let interval = setInterval(() => {
-      this.devices = this._getLassDeviceService.LASSDeviceList;
-      if(this.devices.length!=0) {
-          //設定列數為client數量
-          this.tableRowLimit = this.devices.length;
-          this.setChartsColor();
-        clearTimeout(interval);
-      }
-    }, 500);
   }
 
   private selectedDate(value: any, dateInput: any) {

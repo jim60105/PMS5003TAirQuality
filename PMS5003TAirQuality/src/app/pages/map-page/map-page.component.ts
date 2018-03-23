@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
+import { LatLngLiteral, LatLngBoundsLiteral, LatLngBounds } from "@agm/core/map-types";
 import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
@@ -36,11 +36,13 @@ export class MapPageComponent {
   public lon: number = 120.6053346;
   public zoom: number = 14;
   //測站資料
-  public devices = this._getLassDeviceService.LASSDeviceList;
+  public devices = [];
   public deviceDetail :Array<any> = [];
   private tempDevices = this.devices;
   private calcCenterFinish = false;
   private calcAQIFinish = false;
+  protected map:any;
+  public bounds:LatLngBoundsLiteral = {north:24.1824695,south:24.1824695,east:120.6025716,west:120.6025716};
 
   //AQIIconUrl
   private icon:string[] = [
@@ -56,7 +58,6 @@ export class MapPageComponent {
     this.loading = true;
     this._getUserDeviceService.getDevices((res)=> {
       this.devices = _.cloneDeep(res);
-      this.getLassDeviceDetail();
     });
   }
 
@@ -68,14 +69,27 @@ export class MapPageComponent {
     }
   }
 
+  protected mapReady(map) {
+    this.map = map;
+    this.map.fitBounds(this.bounds);
+  }
+
+  public markerClicked(markerObj){
+    if (this.map) {
+      this.map.setCenter({lat: markerObj[0], lng: markerObj[1]});
+    }
+  }
 
   private getLassDeviceDetail(){
     this.deviceDetail.length = 0;
     this.devices.forEach((value,index,array)=>{
-      this.deviceDetail.push(this._getLassDeviceService.getLassDeviceById(value));
-      //this.deviceDetail[index].device_id = this._getLassDeviceService.getLassDeviceById(value)['device_id'];
+      this._getLassDeviceService.getLassDeviceById(value,(res)=>{
+        this.deviceDetail.push(res);
+        if(index==this.devices.length-1){
+          this.convertLatLngToNumber();
+        }
+      });
     });
-    this.convertLatLngToNumber();
   }
 
   //將資料內的數字字串轉為數字格式
@@ -86,7 +100,7 @@ export class MapPageComponent {
       data[index].gps_lon = Number(data[index].gps_lon);
     });
 
-    this.deviceDetail = data;
+    this.deviceDetail = _.cloneDeep(data);
     this.tempDevices = _.cloneDeep(this.devices);
     this.calcCenter();
     this.calcAQI();
@@ -104,10 +118,10 @@ export class MapPageComponent {
       lngMin = (lngMin<value.gps_lon)?lngMin:value.gps_lon;
       lngMax = (lngMax>value.gps_lon)?lngMax:value.gps_lon;
     });
-    this.lat = (latMin+latMax)/2;
-    this.lon = (lngMin+lngMax)/2;
-
-    this.zoom = Math.round(Math.min($(window).width()/700+12.8,$(window).height()/700+11.8));
+    this.bounds.south = latMax+0.005;
+    this.bounds.west = lngMin-0.002;
+    this.bounds.north = latMin-0.005;
+    this.bounds.east = lngMax+0.002;
     this.calcCenterFinish = true;
     this.loading = !(this.calcAQIFinish && this.calcCenterFinish);
   }

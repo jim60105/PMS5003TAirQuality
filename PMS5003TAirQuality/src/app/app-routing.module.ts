@@ -18,9 +18,10 @@ const routes: Routes = <Routes>[
     {path: 'signup', component: SignupPageComponent},
     {path: 'history', component: HistoryPageComponent},
     {path: 'map', component: MapPageComponent},
-    {path: 'average', component: AveragePageComponent},
-    {path: 'compare', component: ComparePageComponent},
-    {path: '', component: MainPageComponent}
+    //{path: 'average', component: AveragePageComponent},
+    //{path: 'compare', component: ComparePageComponent},
+    {path: '', component: MainPageComponent},
+    {path: '**', redirectTo:''}
   ]}
 ];
 

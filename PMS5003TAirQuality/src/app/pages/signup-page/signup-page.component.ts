@@ -15,6 +15,9 @@ export class SignupPageComponent{
   constructor(private http:Http) { }
 
   ngOnInit() {
+    if(Cookie.check("_e")){
+      this._e = Cookie.get("_e");
+    }
   }
 
   //資料
@@ -34,9 +37,11 @@ export class SignupPageComponent{
       if(res=='true'){
         //註冊成功
         alert("註冊成功，請重新登入");
+        Cookie.set('_e', this._e);
         document.location.hash="#";
       }else if(res=='email'){
         alert("帳號已存在");
+        this._e = this._p = this._p2 = "";
       }else{
         console.warn("signUp Error:"+res.toString);
       }

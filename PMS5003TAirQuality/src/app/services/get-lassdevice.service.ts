@@ -22,24 +22,48 @@ export class GetLassDeviceService {
     this.LASSDeviceList = [];
     if(typeof list!=='undefined'){
       this.LASSDeviceList = list;
+      console.log(JSON.stringify(this.LASSDeviceList));
     }
 
-    if(Cookie.get('displayNearest')!='0' || this.LASSDeviceList.length==0){
+    if(Cookie.get('displayNearest')=='1' || this.LASSDeviceList.length==0){
       this.getGeolocation();
     }
   }
 
   public getGeolocation(){
     if (navigator.geolocation) {
+      let timeoutId = setInterval(() => {
+        //等待過長時彈跳對話框
+        if (!confirm("裝置位置取得中\n是否要繼續等待?")){
+          clearInterval(timeoutId);
+          timeoutId = 0;
+          console.warn('Cancel getting location.');
+          setLocToTHU();
+          this.getNearest3LassDevice();
+        }
+      }, 5000);
+
       navigator.geolocation.getCurrentPosition((position)=>{
-        Cookie.set('lat',String(position.coords.latitude));
-        Cookie.set('lon',String(position.coords.longitude));
-        console.log(position.coords.latitude + "," + position.coords.longitude);
-        this.getNearest3LassDevice();
+        if(timeoutId) {
+          clearInterval(timeoutId);
+          timeoutId = 0;
+          Cookie.set('lat', String(position.coords.latitude));
+          Cookie.set('lon', String(position.coords.longitude));
+          console.log(position.coords.latitude + "," + position.coords.longitude);
+          this.getNearest3LassDevice();
+        }
       },(err)=>{
-        console.warn('ERROR getting location(' + err.code + '): ' + err.message);
-        setLocToTHU();
-        this.getNearest3LassDevice();
+        if(timeoutId) {
+          clearInterval(timeoutId);
+          timeoutId = 0;
+          console.warn('ERROR getting location(' + err.code + '): ' + err.message);
+          setLocToTHU();
+          this.getNearest3LassDevice();
+        }
+      }, {
+        enableHighAccuracy: false,
+        maximumAge:60000,
+        timeout:Infinity
       });
     } else {
       console.warn("Geolocation is not supported by this browser.");
@@ -136,12 +160,25 @@ export class GetLassDeviceService {
     });
   }
 
-  public getLassDeviceById(id:String){
-    for(let key in this.data){
-      if(this.data[key]['device_id']==id){
-        return this.data[key];
+  public getLassDeviceById(id:String,callback?:Function){
+      if(this.data.length==0){
+        this.getLassDeviceWithPromise().then((res)=>{
+          for (let key in this.data) {
+            if (this.data[key]['device_id'] == id) {
+              (callback && typeof(callback) === "function") && callback(this.data[key]);
+              break;
+            }
+          }
+        });
+      }else{
+        for (let key in this.data) {
+          if (this.data[key]['device_id'] == id) {
+            (callback && typeof(callback) === "function") && callback(this.data[key]);
+            break;
+          }
+        }
       }
-    }
+
   }
 
 }

@@ -31,6 +31,7 @@ export class MainPageComponent {
     //panel的顏色class
     public panelClass:Array<string> = [];
     public LASSDeviceList = this._getLassDeviceService.LASSDeviceList;
+    private tempEmail = Cookie.get("_e");
 
     //Loading蓋版
     public loading = true;
@@ -42,23 +43,12 @@ export class MainPageComponent {
         //    });
         //});
         this.loading = true;
-        if(Cookie.check("_p")){
-            //已登入
-            this._getUserDeviceService.getUserDevicesHttpWithPromise().then((res)=>{
-                this._getLassDeviceService.setLASSDeviceList(res);
-            });
 
-        }else {
-            //未登入
-            this._getLassDeviceService.setLASSDeviceList();
-        }
-        let interval = setInterval(() => {
-            this.LASSDeviceList = this._getLassDeviceService.LASSDeviceList;
-            if(this.LASSDeviceList.length!=0) {
-                this.getLASSRealTimeData();
-                clearTimeout(interval);
-            }
-        }, 500);
+        this.tempEmail = Cookie.get("_e");
+        this._getUserDeviceService.getDevices((res)=> {
+            this.LASSDeviceList = _.cloneDeep(res);
+            this.getLASSRealTimeData();
+        });
 
         if(_.isEqual(this.realTimeAirData,this.tempRealTimeAirData)&&this.realTimeAirData.length!=0) {
             this.calcAQI();
@@ -72,10 +62,30 @@ export class MainPageComponent {
             this.calcAQI();
             this.tempRealTimeAirData = _.cloneDeep(this.realTimeAirData);
         }
+
+        if(Cookie.get("_e")!=this.tempEmail){
+            this.tempEmail = Cookie.get("_e");
+
+            this.loading = true;
+            this._getUserDeviceService.getDevices((res)=> {
+                this.LASSDeviceList = _.cloneDeep(res);
+                this.getLASSRealTimeData();
+            });
+        }
+    }
+
+    private getLASSRealTimeData(){
+        this._getLASSRealTimeDataService.setParam(this.LASSDeviceList);
+        this._getLASSRealTimeDataService.getSingleDataHttpWithPromise().then((res)=>{
+            this.realTimeAirData = this._getLASSRealTimeDataService.data;
+        });
+
+        this.loading = false;
     }
 
     //計算AQI顏色
     private calcAQI(){
+        this.loading = true;
         if(this.realTimeAirData[0]!==undefined){
             this.panelClass.length = 0;
             this.realTimeAirData.forEach((value,index,array)=>{
@@ -101,10 +111,4 @@ export class MainPageComponent {
         this.loading = false;
     }
 
-    private getLASSRealTimeData(){
-        this._getLASSRealTimeDataService.setParam(this.LASSDeviceList);
-        this._getLASSRealTimeDataService.getSingleDataHttpWithPromise().then((res)=>{
-            this.realTimeAirData = this._getLASSRealTimeDataService.data;
-        });
-    }
 }
