@@ -180,7 +180,7 @@ def on_message(client, userdata, msg):
                 conn.commit()
                 diff = row['timediff']
                 
-                if diff>9:
+                if diff>10:
                     doFlush()
             
             # check & flush
