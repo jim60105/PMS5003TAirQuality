@@ -14,24 +14,24 @@ export class GetLASSDataService {
   //php位置
   private dbURL = "assets/php/getLASSByTimeById.php";
   //查詢參數
-  public device_idList:String[] = [];
-  public minDate:String = "";
-  public maxDate:String = moment().endOf('day').format('YYYY-MM-DD HH:mm:ss');
+  public device_idList:string[] = [];
+  public minDate:string = "";
+  public maxDate:string = "";
   //是否已設定查詢對象
   public isSetParam = false;
   //getParam
   private params:any = new URLSearchParams();
 
   //設定查詢對象
-  public setParam(device:String[] = this.device_idList,minDate:String = this.minDate,maxDate:String = this.maxDate){
+  public setParam(device:string[] = this.device_idList,minDate:string,maxDate:string){
     this.data = [];
     this.params = new URLSearchParams();
     this.device_idList = device;
     this.params.set('device_id', JSON.stringify(device));
-    this.minDate = minDate;
-    this.params.set('minDate', minDate);
-    this.maxDate = maxDate;
-    this.params.set('maxDate', maxDate);
+    this.minDate = moment(minDate).utc().format('YYYY-MM-DD HH:mm:ss');
+    this.params.set('minDate', this.minDate);
+    this.maxDate = moment(maxDate).utc().format('YYYY-MM-DD HH:mm:ss');
+    this.params.set('maxDate', this.maxDate);
     this.isSetParam = true;
   }
 
