@@ -170,6 +170,18 @@ def on_message(client, userdata, msg):
                 query = ('DELETE FROM lassdataqueue WHERE device_id = {device_id} AND time BETWEEN "{startRow}" AND (SELECT TIMESTAMPADD(MINUTE, 10, "{startRow}"));').format(**tempDict)
                 cur.execute(query)
                 conn.commit()
+                
+                query = ('SELECT TIMESTAMPDIFF(MINUTE,'
+                    '"{startRow}",'
+                    '(SELECT time FROM lassdataqueue WHERE device_id = {device_id} ORDER BY time ASC LIMIT 1)'
+                    ') AS timediff;').format(**tempDict)
+                cur.execute(query)
+                row = cur.fetchone()
+                conn.commit()
+                diff = row['timediff']
+                
+                if diff>9:
+                    doFlush()
             
             # check & flush
             while checkFlush()>10:
