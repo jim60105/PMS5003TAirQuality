@@ -35,6 +35,7 @@ export class AppComponent{
   }
 
   public setNavbarActive(component:number){
+    this.isCollapsed=true;
     for(let i=0;i<this.navbarClass.length;i++){
       this.navbarClass[i] = "";
     }

@@ -1,6 +1,15 @@
 a i{
     margin: 5px;
 }
+
 .navbar-form{
-    margin-bottom: 0px;
+    margin: 5px;
+}
+
+ul, li{
+    width: 100%;
+}
+
+.navbar-nav{
+    margin-left: 0px;
 }

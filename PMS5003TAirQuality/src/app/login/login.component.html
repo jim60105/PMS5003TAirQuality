@@ -1,35 +1,11 @@
 <!-- Top Menu Items -->
-<ul class="nav navbar-right top-nav">
-  <li ngbDropdown class="dropdown" *ngIf="isLogin" style="display: none">
-    <a href="javascript:void(0);" ngbDropdownToggle class="dropdown-toggle" data-toggle="dropdown">
-      <i class="glyphicon glyphicon-envelope"></i>Message<b class="caret"></b>
+<!-- ul class="nav navbar-right top-nav"-->
+<ul class="nav navbar-nav">
+  <li *ngIf="isLogin" (mouseover)="userCollapse = true" (mouseleave)="userCollapse = false">
+    <a href="javascript:void(0);">
+      <i class="glyphicon glyphicon-user"></i>{{_e}} <b class="caret"></b>
     </a>
-    <ul ngbDropdownMenu class="dropdown-menu message-dropdown">
-      <li class="message-preview">
-        <a href="javascript:void(0);">
-          <div class="media">
-            <span class="pull-left">
-                <img class="media-object" src="https://placehold.it/50x50" alt="">
-            </span>
-            <div class="media-body">
-              <h5 class="media-heading"><strong>John Smith</strong>
-              </h5>
-              <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
-              <p>Lorem ipsum dolor sit amet, consectetur...</p>
-            </div>
-          </div>
-        </a>
-      </li>
-      <li class="message-footer">
-        <a href="javascript:void(0);">Read All New Messages</a>
-      </li>
-    </ul>
-  </li>
-  <li ngbDropdown class="dropdown" *ngIf="isLogin">
-    <a href="javascript:void(0);" ngbDropdownToggle class="dropdown-toggle" data-toggle="dropdown">
-      <i class="glyphicon glyphicon-user"></i>{{_e}}<b class="caret"></b>
-    </a>
-    <ul ngbDropdownMenu class="dropdown-menu">
+    <ul class="nav navbar-nav nav-second-level" *ngIf="userCollapse">
       <li>
         <a href="javascript:void(0);" routerLink="/setting" routerLinkActive="active">Settings</a>
       </li>

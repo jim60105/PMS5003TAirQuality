@@ -33,20 +33,20 @@ body {
     border:solid 1px black;
     border-radius: 4px;
     animation-name: flash;
-    animation-duration: 2s;
+    animation-duration: 4s;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
 
     /* Chrome 4+, Safari 4+, Opera 15+ */
     -webkit-animation-name: flash;
-    -webkit-animation-duration: 2s;
+    -webkit-animation-duration: 4s;
     -webkit-animation-timing-function: linear;
     -webkit-animation-iteration-count: infinite;
     -webkit-box-shadow: 0 0 8px #000000;
 
     /* Firefox 5+ */
     -moz-animation-name: flash;
-    -moz-animation-duration: 2s;
+    -moz-animation-duration: 4s;
     -moz-animation-timing-function: linear;
     -moz-animation-iteration-count: infinite;
     -moz-box-shadow: 0 0 8px #000000;

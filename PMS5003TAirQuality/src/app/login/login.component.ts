@@ -17,6 +17,7 @@ export class LoginComponent{
   public isLogin:boolean = false;
   private _e:string="";
   private _p:string="";
+  public userCollapse = false;
 
   ngOnInit() {
     this.isLoginCheck();

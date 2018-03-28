@@ -27,8 +27,7 @@
         "styles.css"
       ],
       "scripts": [
-        "assets/rcolor.js",
-        "assets/template/sb-admin.js"
+        "assets/rcolor.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

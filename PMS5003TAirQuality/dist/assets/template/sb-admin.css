@@ -150,6 +150,11 @@ ul.alert-dropdown {
     width: 200px;
 }
 
+ul.nav-second-level{
+    font-size: 0.95em;
+    padding-left: 15px;
+}
+
 /* Edit Below to Customize Widths > 768px */
 @media (min-width:768px) {
 
