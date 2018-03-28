@@ -31,35 +31,41 @@ export class GetLassDeviceService {
   }
 
   public getGeolocation(){
+    if(Cookie.check('lat') && Cookie.check('lon')){
+      this.getNearest3LassDevice();
+    }
+
     if (navigator.geolocation) {
-      let timeoutId = setInterval(() => {
-        //等待過長時彈跳對話框
-        if (!confirm("裝置位置取得中\n是否要繼續等待?")){
-          clearInterval(timeoutId);
-          timeoutId = 0;
-          console.warn('Cancel getting location.');
-          setLocToTHU();
-          this.getNearest3LassDevice();
-        }
-      }, 5000);
+      //let timeoutId = setInterval(() => {
+      //  //等待過長時彈跳對話框
+      //  if (!confirm("裝置位置取得中\n是否要繼續等待?")){
+      //    clearInterval(timeoutId);
+      //    timeoutId = 0;
+      //    console.warn('Cancel getting location.');
+      //    setLocToTHU();
+      //    this.getNearest3LassDevice();
+      //  }
+      //}, 5000);
 
       navigator.geolocation.getCurrentPosition((position)=>{
-        if(timeoutId) {
-          clearInterval(timeoutId);
-          timeoutId = 0;
+        //if(timeoutId) {
+        //  clearInterval(timeoutId);
+        //  timeoutId = 0;
           Cookie.set('lat', String(position.coords.latitude));
           Cookie.set('lon', String(position.coords.longitude));
           console.log(position.coords.latitude + "," + position.coords.longitude);
           this.getNearest3LassDevice();
-        }
+        //}
       },(err)=>{
-        if(timeoutId) {
-          clearInterval(timeoutId);
-          timeoutId = 0;
+        //if(timeoutId) {
+        //  clearInterval(timeoutId);
+        //  timeoutId = 0;
           console.warn('ERROR getting location(' + err.code + '): ' + err.message);
-          setLocToTHU();
+          if(!Cookie.check('lat') && !Cookie.check('lon')) {
+            setLocToTHU();
+          }
           this.getNearest3LassDevice();
-        }
+        //}
       }, {
         enableHighAccuracy: false,
         maximumAge:60000,
@@ -67,7 +73,9 @@ export class GetLassDeviceService {
       });
     } else {
       console.warn("Geolocation is not supported by this browser.");
-      setLocToTHU();
+      if(!Cookie.check('lat') && !Cookie.check('lon')) {
+        setLocToTHU();
+      }
       this.getNearest3LassDevice();
     }
 
@@ -138,6 +146,7 @@ export class GetLassDeviceService {
         console.log(JSON.stringify(this.LASSDeviceList));
       }else{
         console.error("LASS Devices Empty! Please make sure python script is running.");
+        alert('Server Error! Please reload or contact server admin!');
       }
     });
   }

@@ -44,7 +44,7 @@ export class HistoryPageComponent {
 
   //資料
   public data:Object[] = [];
-  public devices:any = [];
+  public devices:any = (Cookie.get('devices'))?JSON.parse(Cookie.get('devices')):[];
 
   //Loading蓋版
   public loading = true;
@@ -134,7 +134,6 @@ export class HistoryPageComponent {
 
     this.loading = true;
 
-
     this._getUserDeviceService.getDevices((res)=> {
       this.devices = _.cloneDeep(res);
       //設定列數為client數量
@@ -143,6 +142,15 @@ export class HistoryPageComponent {
     });
 
     this.daterangepickerOptions.settings = this._DaterangepickerComponent.settings;
+  }
+
+  ngDoCheck() {
+    if(!_.isEqual(this.devices,JSON.parse(Cookie.get('devices')))) {
+      this.devices = _.cloneDeep(JSON.parse(Cookie.get('devices')));
+      //設定列數為client數量
+      this.tableRowLimit = this.devices.length;
+      this.setChartsColor();
+    }
   }
 
   private selectedDate(value: any, dateInput: any) {
