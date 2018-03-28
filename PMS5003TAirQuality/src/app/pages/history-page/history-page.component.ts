@@ -145,11 +145,16 @@ export class HistoryPageComponent {
   }
 
   ngDoCheck() {
-    if(!_.isEqual(this.devices,JSON.parse(Cookie.get('devices')))) {
-      this.devices = _.cloneDeep(JSON.parse(Cookie.get('devices')));
-      //設定列數為client數量
-      this.tableRowLimit = this.devices.length;
-      this.setChartsColor();
+    try {
+      if (Cookie.get('devices')!="" && !_.isEqual(this.devices, JSON.parse(Cookie.get('devices')))) {
+        this.loading = true;
+        this.devices = _.cloneDeep(JSON.parse(Cookie.get('devices')));
+        //設定列數為client數量
+        this.tableRowLimit = this.devices.length;
+        this.setChartsColor();
+      }
+    }catch(e){
+      console.warn("Devices compare error. Error:"+e);
     }
   }
 

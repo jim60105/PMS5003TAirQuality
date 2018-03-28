@@ -61,7 +61,7 @@ export class GetLassDeviceService {
         //  clearInterval(timeoutId);
         //  timeoutId = 0;
           console.warn('ERROR getting location(' + err.code + '): ' + err.message);
-          if(!Cookie.check('lat') && !Cookie.check('lon')) {
+          if(!Cookie.check('lat') || !Cookie.check('lon')) {
             setLocToTHU();
           }
           this.getNearest3LassDevice();
