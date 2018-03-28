@@ -1,8 +1,8 @@
 <!-- Top Menu Items -->
 <!-- ul class="nav navbar-right top-nav"-->
 <ul class="nav navbar-nav">
-  <li *ngIf="isLogin" (mouseover)="userCollapse = true" (mouseleave)="userCollapse = false">
-    <a href="javascript:void(0);">
+  <li *ngIf="isLogin">
+    <a href="javascript:void(0);" (click)="userCollapse = !userCollapse">
       <i class="glyphicon glyphicon-user"></i>{{_e}} <b class="caret"></b>
     </a>
     <ul class="nav navbar-nav nav-second-level" *ngIf="userCollapse">
