@@ -44,14 +44,14 @@ export class GetLASSDataService {
         return body || {};
       }).then((dataIn)=> {
         //成功取得資料
-        this.data = dataIn;
         //轉換UTC時間為本地時間
         dataIn.forEach((value,index,array)=>{
           //noinspection TypeScriptUnresolvedVariable
           let tt = moment.utc(value.time);
           //noinspection TypeScriptUnresolvedVariable
-          value.time = tt.local().format('YYYY-MM-DD HH:mm:ss');
+          array[index].time = tt.local().format('YYYY-MM-DD HH:mm:ss');
         });
+        this.data = dataIn;
         return Promise.resolve(this.data);
       }).catch((err)=> {
         //失敗取得資料

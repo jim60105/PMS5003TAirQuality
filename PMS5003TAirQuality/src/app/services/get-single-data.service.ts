@@ -37,6 +37,7 @@ export class GetSingleDataService {
       //成功取得資料
       this.data.length = 0;
       dataIn.forEach((value,index,array)=>{
+        //noinspection TypeScriptUnresolvedVariable
         this.data[value.clientNum] = value;
       });
       return Promise.resolve(this.data);

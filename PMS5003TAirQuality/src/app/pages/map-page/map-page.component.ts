@@ -38,6 +38,7 @@ export class MapPageComponent {
   //測站資料
   public devices = [];
   public deviceDetail :Array<any> = [];
+  public allDevicesDetails :Array<any> = [];
   private tempDevices = this.devices;
   private calcCenterFinish = false;
   private calcAQIFinish = false;
@@ -58,6 +59,12 @@ export class MapPageComponent {
     this.loading = true;
     this._getUserDeviceService.getDevices((res)=> {
       this.devices = _.cloneDeep(res);
+    });
+    this._getLassDeviceService.getLassDeviceWithPromise().then((res)=>{
+      this.allDevicesDetails = _.cloneDeep(res);
+      this.convertLatLngToNumber(this.allDevicesDetails,()=>{
+        this.calcAQI();
+      });
     });
   }
 
@@ -86,24 +93,28 @@ export class MapPageComponent {
       this._getLassDeviceService.getLassDeviceById(value,(res)=>{
         this.deviceDetail.push(res);
         if(index==this.devices.length-1){
-          this.convertLatLngToNumber();
+          this.convertLatLngToNumber(this.deviceDetail,()=>{
+            this.tempDevices = _.cloneDeep(this.deviceDetail);
+            this.calcCenter();
+          });
         }
       });
     });
   }
 
   //將資料內的數字字串轉為數字格式
-  private convertLatLngToNumber(data : Array<any> = this.deviceDetail){
-    data.forEach(function(value,index,array){
-      //console.log(devices[index].lat);
-      data[index].gps_lat = Number(data[index].gps_lat);
-      data[index].gps_lon = Number(data[index].gps_lon);
-    });
+  private convertLatLngToNumber(data : Array<any>,callback?:Function){
+    try {
+      data.forEach(function (value, index, array) {
+        //console.log(devices[index].lat);
+        array[index].gps_lat = Number(value.gps_lat);
+        array[index].gps_lon = Number(value.gps_lon);
+      });
+    }catch(e){
+      console.error("Converting error data to numbers.");
+    }
 
-    this.deviceDetail = _.cloneDeep(data);
-    this.tempDevices = _.cloneDeep(this.devices);
-    this.calcCenter();
-    this.calcAQI();
+    (callback && typeof(callback) === "function") && callback();
   }
 
   //計算中心並調整縮放比例
@@ -127,13 +138,13 @@ export class MapPageComponent {
   }
 
   private calcAQI(){
-    if(this.deviceDetail!==undefined) {
-      this.deviceDetail.forEach((value, index, array)=> {
+    if(this.allDevicesDetails!==undefined) {
+      this.allDevicesDetails.forEach((value, index, array)=> {
         //noinspection TypeScriptUnresolvedVariable
         let AQI = this._calcAQI.calc(value.pm25, value.pm10);
 
         if (AQI > 0 && AQI <= 6) {
-          this.deviceDetail[index].icon = this.icon[AQI - 1];
+          array[index].icon = this.icon[AQI - 1];
         } else {
           //noinspection TypeScriptUnresolvedVariable
           console.log(`Calc AQI Level Error. PM2.5: ${value.pm25}, PM10: ${value.pm10}`);

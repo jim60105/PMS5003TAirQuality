@@ -3,6 +3,7 @@ import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import '../../../node_modules/rxjs/add/operator/toPromise';
 import { Observable } from 'rxjs/Observable';
 
+import * as moment from 'moment';
 import { Cookie } from 'ng2-cookies';
 //noinspection TypeScriptCheckImport
 import * as _ from "lodash";
@@ -159,6 +160,14 @@ export class GetLassDeviceService {
       return body || {};
     }).then((dataIn)=> {
       //成功取得資料
+      //轉換UTC時間為本地時間
+      dataIn.forEach((value,index,array)=>{
+        //noinspection TypeScriptUnresolvedVariable
+        let tt = moment.utc(value.time);
+        //noinspection TypeScriptUnresolvedVariable
+        array[index].time = tt.local().format('YYYY-MM-DD HH:mm:ss');
+      });
+
       this.data = _.cloneDeep(dataIn);
       return Promise.resolve(dataIn);
     }).catch((err)=> {
