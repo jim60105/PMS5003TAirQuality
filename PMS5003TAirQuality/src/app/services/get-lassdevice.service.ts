@@ -3,6 +3,8 @@ import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import '../../../node_modules/rxjs/add/operator/toPromise';
 import { Observable } from 'rxjs/Observable';
 
+import * as LatLon from 'geodesy/latlon-vincenty';
+
 import * as moment from 'moment';
 import { Cookie } from 'ng2-cookies';
 //noinspection TypeScriptCheckImport
@@ -88,67 +90,44 @@ export class GetLassDeviceService {
     }
   }
 
+  //Calc 3 Nearest points
   public getNearest3LassDevice(lat:number = Number(Cookie.get("lat")),lon:number = Number(Cookie.get("lon"))){
     Cookie.set("lat",String(lat));
     Cookie.set("lon",String(lon));
-    this.getLassDeviceWithPromise().then((res)=>{
-      if(res.length>0) {
-        //Calc Nearest 3 points
-        let nearestIndex:number = 0;
-        for (let i = 0; i < res.length; i++) {
-          if (res[i].gps_lat < lat) {
-            nearestIndex++;
-          } else {
-            break;
-          }
-        }
 
-        for (let j = 0; j < 3; j++) {
-          let nearestL = res[nearestIndex - 1];
-          let nearestR = res[nearestIndex];
-          let nearestIndexA = [nearestIndex - 1, nearestIndex];
-          for (let i = (nearestIndexA[0] - 1); i >= 0; i--) {
-            if (Math.abs(lon - res[i].gps_lon) < Math.abs(lon - nearestL.gps_lon)) {
-              if (Math.abs(lat - res[i].gps_lat) + Math.abs(lon - res[i].gps_lon) < Math.abs(lat - nearestL.gps_lat) + Math.abs(lon - nearestL.gps_lon)) {
-                nearestL = res[i];
-                nearestIndexA[0] = i;
-              }
-            }
-            if (Math.abs(lat - res[i].gps_lat) > Math.abs(lon - nearestL.gps_lon)) {
-              break;
-            }
-          }
-          for (let i = (nearestIndexA[1] + 1); i < res.length; i++) {
-            if (Math.abs(lon - res[i].gps_lon) < Math.abs(lon - nearestR.gps_lon)) {
-              if (Math.abs(lat - res[i].gps_lat) + Math.abs(lon - res[i].gps_lon) < Math.abs(lat - nearestR.gps_lat) + Math.abs(lon - nearestR.gps_lon)) {
-                nearestR = res[i];
-                nearestIndexA[1] = i;
-              }
-            }
-            if (Math.abs(lat - res[i].gps_lat) > Math.abs(lon - nearestR.gps_lon)) {
-              break;
-            }
-          }
-          if (Math.abs(lat - nearestL.gps_lat) + Math.abs(lon - nearestL.gps_lon) < Math.abs(lat - nearestR.gps_lat) + Math.abs(lon - nearestR.gps_lon)) {
-            this.LASSDeviceList.push(nearestL.device_id);
-            res.splice(nearestIndexA[0], 1);
-            nearestIndex--;
-            nearestIndexA[1]--;
-          } else {
-            this.LASSDeviceList.push(nearestR.device_id);
-            res.splice(nearestIndexA[1], 1);
-          }
+    let here = new LatLon(lat, lon);
+
+    this.getLassDeviceWithPromise().then((res)=>{
+      //排除三點狀況
+      if(res.length==0) {
+        console.error("LASS Devices Empty! Please make sure python script is running.");
+        alert('Server Error! Please reload or contact server admin!');
+      }else{
+        //建立LatLon物件，並計算距離
+        res.forEach((value,index,array)=>{
+          //noinspection TypeScriptUnresolvedVariable
+          array[index].latlon = new LatLon(value.gps_lat, value.gps_lon);
+          //noinspection TypeScriptUnresolvedVariable
+          array[index].distance = here.distanceTo(value.latlon);
+        });
+
+        //進行排序
+        res.sort((a,b)=>{
+          return a.distance - b.distance;
+        });
+
+        //從第一個物件開始push到LASSDeviceList
+        for(let i=0;i<3;i++){
+          this.LASSDeviceList.push(res[i].device_id);
+          console.log(res[i].distance);
         }
 
         //unique
         this.LASSDeviceList = this.LASSDeviceList.filter( (value, index, self) =>{
           return self.indexOf(value) === index;
         });
-        console.log(JSON.stringify(this.LASSDeviceList));
-      }else{
-        console.error("LASS Devices Empty! Please make sure python script is running.");
-        alert('Server Error! Please reload or contact server admin!');
       }
+      console.log(JSON.stringify(this.LASSDeviceList));
     });
   }
 

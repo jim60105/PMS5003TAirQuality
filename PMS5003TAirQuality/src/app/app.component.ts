@@ -21,7 +21,6 @@ export class AppComponent{
   };
 
   public loading;
-  public isLogin = false;
 
   ngOnInit() {
     this.setNavbarActive(this.routeNum[window.location.hash]);

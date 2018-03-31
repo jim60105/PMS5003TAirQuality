@@ -19,8 +19,9 @@ body {
 }
 
 #page-wrapper {
-  width: 100%;
   padding: 5px 10px;
+  min-height: calc(100vh - 55.8px);
+  min-width: calc(100vw - 50px);
 }
 
 /* Nav Messages */
@@ -166,6 +167,7 @@ ul.nav-second-level{
 
   #page-wrapper {
 	padding: 10px 25px 10px;
+    min-width: 100%;
   }
 
   /* Side Nav */

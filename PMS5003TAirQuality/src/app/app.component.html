@@ -18,14 +18,14 @@
     <div class="collapse navbar-collapse navbar-ex1-collapse" [ngbCollapse]="isCollapsed" >
 
       <ul class="nav navbar-nav side-nav">
-        <app-login-page (isLoginOut)="isLogin = $event;"></app-login-page>
+        <app-login-page (isCollapsedOut)="isCollapsed = $event;"></app-login-page>
         <li [ngClass]="navbarClass[0]" ><a href="javascript:void(0);" (click)="setNavbarActive(0)" routerLink="/" routerLinkActive="active">總覽</a></li>
         <li [ngClass]="navbarClass[1]" ><a href="javascript:void(0);" (click)="setNavbarActive(1)" routerLink="/map" routerLinkActive="active">測站地圖</a></li>
         <li [ngClass]="navbarClass[2]" ><a href="javascript:void(0);" (click)="setNavbarActive(2)" routerLink="/history" routerLinkActive="active">歷史數據</a></li>
         <li [ngClass]="navbarClass[3]" style="display: none"><a href="javascript:void(0);" (click)="setNavbarActive(3)" routerLink="/average" routerLinkActive="active">平均數據</a></li>
         <li [ngClass]="navbarClass[4]" style="display: none"><a href="javascript:void(0);" (click)="setNavbarActive(4)" routerLink="/compare" routerLinkActive="active">比較工具</a></li>
         <div class="version">
-          <small>v18.03.28.4</small>
+          <small>v18.03.31.0</small>
         </div>
       </ul>
     </div><!-- /.navbar-collapse -->

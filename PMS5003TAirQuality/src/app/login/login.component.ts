@@ -13,7 +13,7 @@ export class LoginComponent{
 
   constructor(private _loginService: LoginService) { }
 
-  @Output() isLoginOut = new EventEmitter();
+  @Output() isCollapsedOut = new EventEmitter();
   public isLogin:boolean = false;
   private _e:string="";
   private _p:string="";
@@ -34,7 +34,6 @@ export class LoginComponent{
       window.location.hash='#';
     }
 
-    this.isLoginOut.emit(this.isLogin);
     (callback && typeof(callback) === "function") && callback();
   }
 
