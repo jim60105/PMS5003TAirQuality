@@ -19,19 +19,19 @@
 
       <ul class="nav navbar-nav side-nav">
         <app-login-page (isCollapsedOut)="isCollapsed = $event;"></app-login-page>
-        <li [ngClass]="navbarClass[0]" ><a href="javascript:void(0);" (click)="setNavbarActive(0)" routerLink="/" routerLinkActive="active">總覽</a></li>
-        <li [ngClass]="navbarClass[1]" ><a href="javascript:void(0);" (click)="setNavbarActive(1)" routerLink="/map" routerLinkActive="active">測站地圖</a></li>
+        <li [ngClass]="navbarClass[0]" ><a href="javascript:void(0);" (click)="setNavbarActive(0)" routerLink="/" routerLinkActive="active">首頁</a></li>
+        <li [ngClass]="navbarClass[1]" ><a href="javascript:void(0);" (click)="setNavbarActive(1)" routerLink="/main" routerLinkActive="active">總覽</a></li>
         <li [ngClass]="navbarClass[2]" ><a href="javascript:void(0);" (click)="setNavbarActive(2)" routerLink="/history" routerLinkActive="active">歷史數據</a></li>
         <li [ngClass]="navbarClass[3]" style="display: none"><a href="javascript:void(0);" (click)="setNavbarActive(3)" routerLink="/average" routerLinkActive="active">平均數據</a></li>
         <li [ngClass]="navbarClass[4]" style="display: none"><a href="javascript:void(0);" (click)="setNavbarActive(4)" routerLink="/compare" routerLinkActive="active">比較工具</a></li>
         <div class="version">
-          <small>v18.03.31.0</small>
+          <small>v18.04.11.0</small>
         </div>
       </ul>
     </div><!-- /.navbar-collapse -->
   </nav>
 
-  <div id="page-wrapper" [ngClass]="(router.url=='/map')?'noPadding':''" (click)="isCollapsed=true">
+  <div id="page-wrapper" [ngClass]="(router.url=='/')?'noPadding':''" (click)="isCollapsed=true">
         <router-outlet></router-outlet>
   </div>
 </div>

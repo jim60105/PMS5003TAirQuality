@@ -33,20 +33,20 @@ body {
     border:solid 1px black;
     border-radius: 4px;
     animation-name: flash;
-    animation-duration: 4s;
+    animation-duration: 2s;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
 
     /* Chrome 4+, Safari 4+, Opera 15+ */
     -webkit-animation-name: flash;
-    -webkit-animation-duration: 4s;
+    -webkit-animation-duration: 2s;
     -webkit-animation-timing-function: linear;
     -webkit-animation-iteration-count: infinite;
     -webkit-box-shadow: 0 0 8px #000000;
 
     /* Firefox 5+ */
     -moz-animation-name: flash;
-    -moz-animation-duration: 4s;
+    -moz-animation-duration: 2s;
     -moz-animation-timing-function: linear;
     -moz-animation-iteration-count: infinite;
     -moz-box-shadow: 0 0 8px #000000;
@@ -74,4 +74,36 @@ body {
 
 .form-control{
     height: 34.4px
+}
+
+
+.AQI1{
+    color: #103b04;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+.AQI2{
+    color: #6d301d;
+    background-color: #fff4c6;
+    border-color: #fff4c6;;
+}
+.AQI3{
+    color: rgb(255, 255, 255);
+    background-color: rgb(243, 85, 17);
+    border-color: rgb(243, 85, 17);
+}
+.AQI4{
+    color: #ffffff;
+    background-color: #a94442;
+    border-color: #a94442;
+}
+.AQI5{
+    color: #ffffff;
+    background-color: #7e0023;
+    border-color: #7e0023;
+}
+.AQI6{
+    color: #ffffff;
+    background-color: #6d301d;
+    border-color: #6d301d;
 }

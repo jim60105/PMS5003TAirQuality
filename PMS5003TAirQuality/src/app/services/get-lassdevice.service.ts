@@ -20,9 +20,10 @@ export class GetLassDeviceService {
   private dbURL = "assets/php/getLASSDevices.php";
 
   public LASSDeviceList:String[] = [];
-
-  public setLASSDeviceList(list?:String[]){
+private nearestAmount = 3;
+  public setLASSDeviceList(list?:String[], amount:number = this.nearestAmount){
     this.LASSDeviceList = [];
+    this.nearestAmount = amount;
     if(typeof list!=='undefined'){
       this.LASSDeviceList = list;
       console.log(JSON.stringify(this.LASSDeviceList));
@@ -35,7 +36,7 @@ export class GetLassDeviceService {
 
   public getGeolocation(){
     if(Cookie.check('lat') && Cookie.check('lon')){
-      this.getNearest3LassDevice();
+      this.getNearestLassDevice();
     }
 
     if (navigator.geolocation) {
@@ -46,7 +47,7 @@ export class GetLassDeviceService {
       //    timeoutId = 0;
       //    console.warn('Cancel getting location.');
       //    setLocToTHU();
-      //    this.getNearest3LassDevice();
+      //    this.getNearestLassDevice();
       //  }
       //}, 5000);
 
@@ -57,7 +58,7 @@ export class GetLassDeviceService {
           Cookie.set('lat', String(position.coords.latitude));
           Cookie.set('lon', String(position.coords.longitude));
           console.log(position.coords.latitude + "," + position.coords.longitude);
-          this.getNearest3LassDevice();
+          this.getNearestLassDevice();
         //}
       },(err)=>{
         //if(timeoutId) {
@@ -67,7 +68,7 @@ export class GetLassDeviceService {
           if(!Cookie.check('lat') || !Cookie.check('lon')) {
             setLocToTHU();
           }
-          this.getNearest3LassDevice();
+          this.getNearestLassDevice();
         //}
       }, {
         enableHighAccuracy: false,
@@ -79,7 +80,7 @@ export class GetLassDeviceService {
       if(!Cookie.check('lat') && !Cookie.check('lon')) {
         setLocToTHU();
       }
-      this.getNearest3LassDevice();
+      this.getNearestLassDevice();
     }
 
     function setLocToTHU(){
@@ -90,8 +91,8 @@ export class GetLassDeviceService {
     }
   }
 
-  //Calc 3 Nearest points
-  public getNearest3LassDevice(lat:number = Number(Cookie.get("lat")),lon:number = Number(Cookie.get("lon"))){
+  //Calc Nearest points
+  public getNearestLassDevice(lat:number = Number(Cookie.get("lat")), lon:number = Number(Cookie.get("lon"))){
     Cookie.set("lat",String(lat));
     Cookie.set("lon",String(lon));
 
@@ -117,7 +118,7 @@ export class GetLassDeviceService {
         });
 
         //從第一個物件開始push到LASSDeviceList
-        for(let i=0;i<3;i++){
+        for(let i=0;i<this.nearestAmount;i++){
           this.LASSDeviceList.push(res[i].device_id);
           console.log(res[i].distance);
         }

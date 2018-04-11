@@ -45,7 +45,7 @@ export class MainPageComponent {
         this.loading = true;
 
         this.tempEmail = Cookie.get("_e");
-        this._getUserDeviceService.getDevices((res)=> {
+        this._getUserDeviceService.getDevices(3,(res)=> {
             this.LASSDeviceList = _.cloneDeep(res);
             this.getLASSRealTimeData();
         });
@@ -67,7 +67,7 @@ export class MainPageComponent {
             this.tempEmail = Cookie.get("_e");
 
             this.loading = true;
-            this._getUserDeviceService.getDevices((res)=> {
+            this._getUserDeviceService.getDevices(3,(res)=> {
                 this.LASSDeviceList = _.cloneDeep(res);
                 this.getLASSRealTimeData();
             });
@@ -102,6 +102,7 @@ export class MainPageComponent {
                         } else {
                             this.panelClass[index] = "AQI" + AQI;
                         }
+
                     } else {
                         console.log(`Calc AQI Level Error. PM2.5: ${value.pm25}, PM10: ${value.pm10}`);
                     }

@@ -16,11 +16,11 @@ const routes: Routes = <Routes>[
   {path: '', children: [
     {path: 'setting', component: SettingPageComponent},
     {path: 'signup', component: SignupPageComponent},
+    {path: 'main', component: MainPageComponent},
     {path: 'history', component: HistoryPageComponent},
-    {path: 'map', component: MapPageComponent},
+    {path: '', component: MapPageComponent},
     //{path: 'average', component: AveragePageComponent},
     //{path: 'compare', component: ComparePageComponent},
-    {path: '', component: MainPageComponent},
     {path: '**', redirectTo:''}
   ]}
 ];

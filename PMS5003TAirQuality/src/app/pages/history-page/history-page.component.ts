@@ -134,7 +134,7 @@ export class HistoryPageComponent {
 
     this.loading = true;
 
-    this._getUserDeviceService.getDevices((res)=> {
+    this._getUserDeviceService.getDevices(3,(res)=> {
       this.devices = _.cloneDeep(res);
       //設定列數為client數量
       this.tableRowLimit = this.devices.length;

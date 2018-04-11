@@ -19,9 +19,8 @@ body {
 }
 
 #page-wrapper {
+  width: 100%;
   padding: 5px 10px;
-  min-height: calc(100vh - 55.8px);
-  min-width: calc(100vw - 50px);
 }
 
 /* Nav Messages */
@@ -151,9 +150,8 @@ ul.alert-dropdown {
     width: 200px;
 }
 
-ul.nav-second-level{
-    font-size: 0.95em;
-    padding-left: 15px;
+.nav-second-level{
+    font-size: 0.8em;
 }
 
 /* Edit Below to Customize Widths > 768px */
@@ -167,7 +165,6 @@ ul.nav-second-level{
 
   #page-wrapper {
 	padding: 10px 25px 10px;
-    min-width: 100%;
   }
 
   /* Side Nav */

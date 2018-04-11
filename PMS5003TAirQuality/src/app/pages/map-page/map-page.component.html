@@ -1,22 +1,34 @@
 <div class="a-fadein">
     <div *ngIf="!loading">
-        <agm-map [usePanning]="true" (mapReady)="mapReady($event)">
-            <agm-marker *ngFor="let data of allDevicesDetails" [latitude]="data.gps_lat" [longitude]="data.gps_lon" [iconUrl]="data.icon" (markerClick)='markerClicked([data.gps_lat,data.gps_lon])'>
-                <agm-snazzy-info-window [isOpen]="false" [maxWidth]="300" [closeOnMapClick]="true" [closeWhenOthersOpen]="true" class="myClass">
+        <agm-map [clickableIcons]="false" (mapReady)="mapReady($event)" *ngIf="mapDisplay">
+            <agm-marker *ngFor="let data of allDevicesDetails" [latitude]="data.gps_lat" [longitude]="data.gps_lon" [iconUrl]="data.icon" (markerClick)='markerClicked([data.device_id,data.gps_lat,data.gps_lon])'>
+                <agm-snazzy-info-window [isOpen]="data.open" [showCloseButton]="false" [closeOnMapClick]="false" [maxWidth]="300">
                     <ng-template>
-                        Name: {{data.device_id}}
-                        <div *ngIf="data">
-                            PM1: {{data.pm1}}<br>
-                            PM2.5: {{data.pm25}}<br>
-                            PM10: {{data.pm10}}<br>
-                            溫度: {{data.temp}}<br>
-                            濕度: {{data.humid}}<br>
-                            時間: {{data.time}}
-                        </div>
+                        {{data.device_id}}
                     </ng-template>
                 </agm-snazzy-info-window>
             </agm-marker>
         </agm-map>
+        <div id="panelContainer">
+            <div class="row">
+                <div class="col-md">
+                    <div class="panel floatPanel" [ngClass]="device.AQI" *ngFor="let device of deviceDetail">
+                        <div class="panel-heading" style="text-align: center">
+                            <p *ngIf="device.clientNum!==undefined && clientInfo!==undefined" style="font-size: 30px;margin: 0px auto;">{{clientInfo[device.clientNum].name}}</p>
+                            <p *ngIf="device.device_id!==undefined" style="font-size: 26px;margin: 0px auto;font-weight: bold;">{{device.device_id}}</p>
+                            PM1: {{device.pm1||"無數據"}}<br>
+                            PM2.5: {{device.pm25||"無數據"}}<br>
+                            PM10: {{device.pm10||"無數據"}}<br>
+                            溫度: {{device.temp||"無數據"}}<br>
+                            濕度: {{device.humid||"無數據"}}<br>
+                            {{device.time}}<br>
+                            <b>空氣品質: {{device.airQuality}}</b>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
     <app-loading [loading]="loading"></app-loading>
 </div>

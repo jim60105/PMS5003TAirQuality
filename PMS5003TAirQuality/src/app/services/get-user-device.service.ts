@@ -50,16 +50,16 @@ export class GetUserDeviceService {
     });
   }
 
-  public getDevices(callback?:Function){
+  public getDevices(nearestAmount:number, callback?:Function){
     if(Cookie.check("_p")){
       //已登入
       this.getUserDevicesHttpWithPromise().then((res)=>{
-        this._getLassDeviceService.setLASSDeviceList(res);
+        this._getLassDeviceService.setLASSDeviceList(res,nearestAmount);
       });
 
     }else {
       //未登入
-      this._getLassDeviceService.setLASSDeviceList();
+      this._getLassDeviceService.setLASSDeviceList([],nearestAmount);
     }
     let interval = setInterval(() => {
       this.devices = this._getLassDeviceService.LASSDeviceList;

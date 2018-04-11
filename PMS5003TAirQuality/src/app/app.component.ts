@@ -14,7 +14,7 @@ export class AppComponent{
   routeNum = {
     "" : 0,
     "#/" : 0,
-    "#/map" : 1,
+    "#/main" : 1,
     "#/history" : 2,
     "#/average" : 3,
     "#/compare" : 4

@@ -1,3 +1,5 @@
+@import "../../../assets/animation.css";
+
 /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
 agm-map {
@@ -6,8 +8,32 @@ agm-map {
     margin: 0;
     padding: 0;
 }
+
+#panelContainer{
+    position: fixed;
+    overflow-x: visible;
+    overflow-y: auto;
+    max-height: 220px;
+    min-width: 20vw;
+    max-width: 80vw;
+    top: 60.8px;
+    right: 10px;
+    background-color: transparent;
+    padding: 0px 20px 0px 20px;
+}
+
+
 @media (min-width:768px) {
     agm-map {
         width: calc(100vw - 225px);
     }
+
+    #panelContainer{
+        max-height: calc(100vh - 70.8px);
+    }
+}
+
+.panel{
+    margin-top: 0px;
+    margin-bottom: 10px;
 }
