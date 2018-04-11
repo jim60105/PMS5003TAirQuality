@@ -1,6 +1,6 @@
 <div class="a-fadein">
     <div class="row" *ngIf="realTimeAirData!==undefined">
-        <span class="col-md-4" *ngFor="let data of realTimeAirData;let idx = index">
+        <div class="col-xs-6 col-sm-4" *ngFor="let data of realTimeAirData;let idx = index">
             <div class="panel" *ngIf="panelClass" [ngClass]="panelClass[idx]">
                 <div class="panel-heading" style="text-align: center">
                     <p *ngIf="data.clientNum!==undefined && clientInfo!==undefined" style="font-size: 30px;margin: 0px auto;">{{clientInfo[data.clientNum].name}}</p>
@@ -14,7 +14,7 @@
                     <b>空氣品質: {{data.airQuality}}</b>
                 </div>
             </div>
-        </span>
+        </div>
     </div>
     <app-history-page [tableVisible]="false"></app-history-page>
     <app-loading [loading]="loading"></app-loading>

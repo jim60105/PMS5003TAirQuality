@@ -154,6 +154,10 @@ ul.alert-dropdown {
     font-size: 0.8em;
 }
 
+.navbar-collapse {
+    overflow-y: auto;
+    max-height: calc(100vh - 60px) !important;
+}
 /* Edit Below to Customize Widths > 768px */
 @media (min-width:768px) {
 
