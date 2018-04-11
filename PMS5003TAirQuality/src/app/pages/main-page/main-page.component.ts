@@ -102,7 +102,26 @@ export class MainPageComponent {
                         } else {
                             this.panelClass[index] = "AQI" + AQI;
                         }
-
+                        switch (AQI) {
+                            case 1:
+                                array[index].airQuality = "良好";
+                                break;
+                            case 2:
+                                array[index].airQuality = "普通";
+                                break;
+                            case 3:
+                                array[index].airQuality = "對敏感族群不健康 ";
+                                break;
+                            case 4:
+                                array[index].airQuality = "對所有族群不健康 ";
+                                break;
+                            case 5:
+                                array[index].airQuality = "非常不健康";
+                                break;
+                            case 6:
+                                array[index].airQuality = "危害";
+                                break;
+                        }
                     } else {
                         console.log(`Calc AQI Level Error. PM2.5: ${value.pm25}, PM10: ${value.pm10}`);
                     }
