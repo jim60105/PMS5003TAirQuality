@@ -39,6 +39,7 @@ import { SettingPageComponent } from './pages/setting-page/setting-page.componen
 
 import { DataTableComponent } from './data-table/data-table.component';
 import { LoadingComponent } from './loading.component';
+import { PortraitWarningComponent } from './portraitWarning.component';
 import { LoginComponent } from './login/login.component';
 
 import { GetClientInfoService } from "./services/get-client-info.service";
@@ -63,6 +64,7 @@ import { SetUserDeviceService } from "./services/set-user-device.service";
     AveragePageComponent,
     ComparePageComponent,
     LoadingComponent,
+    PortraitWarningComponent,
     LoginComponent,
     SignupPageComponent,
     SettingPageComponent

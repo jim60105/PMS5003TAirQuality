@@ -16,7 +16,7 @@ import { Component, Input } from '@angular/core';
     height: 100%;
     background-color: #f5f5f5;
     opacity:0.5;
-    z-index: 1000;
+    z-index: 900;
 }
 
 .layout {
@@ -24,7 +24,7 @@ import { Component, Input } from '@angular/core';
     top: 50%;
     left: 50%;
     transform:translate(-50%,-50%);
-    z-index: 1001;
+    z-index: 901;
     text-align: center;
 }
 
