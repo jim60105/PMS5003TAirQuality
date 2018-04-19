@@ -8,11 +8,13 @@ import { Daterangepicker, DaterangepickerConfig } from 'ng2-daterangepicker';
 import * as _ from "lodash";
 
 import { GetDataService } from "../../services/get-data.service";
+import { GetLASSDataService } from "../../services/get-lassdata.service";
 import { GetClientInfoService } from "../../services/get-client-info.service";
 import { DataTableComponent } from "../../data-table/data-table.component";
+import { GetUserDeviceService } from "../../services/get-user-device.service";
 
 declare var RColor:any;
-
+import { Cookie } from 'ng2-cookies';
 @Component({
   selector: 'app-average-page',
   templateUrl: './average-page.component.html',
@@ -23,11 +25,13 @@ export class AveragePageComponent {
   @Input() tableVisible:boolean = true;
   constructor(private _getClientInfoService:GetClientInfoService,
               private _getDataService:GetDataService,
-              private daterangepickerOptions: DaterangepickerConfig) {}
+              private daterangepickerOptions: DaterangepickerConfig,
+              private _getUserDeviceService:GetUserDeviceService,
+              private _getLassDataService:GetLASSDataService) {}
   //資料
   public data:Object[] = [];
   public avgData:Object[] = [];
-  public devices:any = [];
+  public devices:any = (Cookie.get('devices'))?JSON.parse(Cookie.get('devices')):[];
 
   //日期選擇器
   public _DaterangepickerComponent = new DaterangepickerComponent();
@@ -45,9 +49,7 @@ export class AveragePageComponent {
   // barChart
   private loadedBarChartDataTemplate:Boolean = false;
   private barChartDataTemplate:Array<any> = [
-    {data: [], label: 'Client 0'},
-    {data: [], label: 'Client 1'},
-    {data: [], label: 'Client 2'}
+    {data: [], label: 'Client 0'}
   ];
   public barChartData:Array<any> = _.cloneDeep(this.barChartDataTemplate);
   public barChartLabels:string[] = ['Pm1', 'Pm2.5', 'Pm10', '濕度', '溫度'];
@@ -74,12 +76,22 @@ export class AveragePageComponent {
   
   ngOnInit() {
     //獲取devices
-    this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
-      this.devices = res;
+    //this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
+    //  this.devices = res;
+    //  //設定列數為client數量
+    //  this.tableRowLimit = this.devices.length;
+    //  this.setChartsColor();
+    //});
+
+    this.loading = true;
+
+    this._getUserDeviceService.getDevices(3,(res)=> {
+      this.devices = _.cloneDeep(res);
       //設定列數為client數量
       this.tableRowLimit = this.devices.length;
       this.setChartsColor();
     });
+
     this.daterangepickerOptions.settings = this._DaterangepickerComponent.settings;
   }
 
@@ -90,10 +102,10 @@ export class AveragePageComponent {
     //日期選擇改變時觸發getDataHttp
     this._DaterangepickerComponent.setTimeByDate(this.rangeValue[0],this.rangeValue[1]);
     this.loading = true;
-    this.getDataHttp();
+    this.getLASSDataHttp();
   }
 
-  setChartsColor(){
+  private setChartsColor(){
     //Generate Radom Color
     let color = new RColor;
     this.colorList = [];
@@ -112,7 +124,7 @@ export class AveragePageComponent {
     this.setBarChartDataTemplate();
   }
 
-  setBarChartDataTemplate(){
+  private setBarChartDataTemplate(){
     let barChartDataTemplate:Array<any> = [];
 
     this.devices.forEach(function(value,index,array){
@@ -123,42 +135,79 @@ export class AveragePageComponent {
 
     this.barChartDataTemplate = _.cloneDeep(barChartDataTemplate);
     this.loadedBarChartDataTemplate = true;
-    this.getDataHttp();
+    this.getLASSDataHttp();
   }
 
+  ////獲取空汙資料
+  //public getDataHttp(){
+  //  this.barChartStandby = false;
+  //  let params = new URLSearchParams();
+  //
+  //  params.set('minDate', this._DaterangepickerComponent.getSQLString()[0]);
+  //  params.set('maxDate', this._DaterangepickerComponent.getSQLString()[1]);
+  //
+  //  this._getDataService.getDataHttpWithPromise(params).then((res)=>{
+  //    this.data = res;
+  //
+  //    //計算平均
+  //    let temp:Object[] = [];
+  //    for(let i=0;i<this.devices.length;i++){
+  //      temp.push({'count': 0});
+  //    }
+  //    res.forEach((value,index,array)=>{
+  //      temp[value.clientNum]['pm1'] = ((temp[value.clientNum]['pm1'])?temp[value.clientNum]['pm1']:0) + Number(value['pm1']);
+  //      temp[value.clientNum]['pm25'] = ((temp[value.clientNum]['pm25'])?temp[value.clientNum]['pm25']:0) + Number(value['pm25']);
+  //      temp[value.clientNum]['pm10'] = ((temp[value.clientNum]['pm10'])?temp[value.clientNum]['pm10']:0) + Number(value['pm10']);
+  //      temp[value.clientNum]['temp'] = ((temp[value.clientNum]['temp'])?temp[value.clientNum]['temp']:0) + Number(value['temp']);
+  //      temp[value.clientNum]['humid'] = ((temp[value.clientNum]['humid'])?temp[value.clientNum]['humid']:0) + Number(value['humid']);
+  //      temp[value.clientNum]['count'] ++;
+  //    });
+  //
+  //    this.devices.forEach((value,index,array)=>{
+  //      temp[index]['clientNum'] = index;
+  //    });
+  //    temp.forEach((value,index,array)=>{
+  //      Object.keys(value).forEach((key)=> {
+  //        if(key!='count' && key!='clientNum') {
+  //          temp[index][key] = Math.round((temp[index][key]/temp[index]['count'])*100)/100;
+  //        }
+  //      });
+  //    });
+  //    this.avgData = _.cloneDeep(temp);
+  //    this.setCharts();
+  //  });
+  //}
+
   //獲取空汙資料
-  public getDataHttp(){
+  public getLASSDataHttp(){
     this.barChartStandby = false;
-    let params = new URLSearchParams();
-
-    params.set('minDate', this._DaterangepickerComponent.getSQLString()[0]);
-    params.set('maxDate', this._DaterangepickerComponent.getSQLString()[1]);
-
-    this._getDataService.getDataHttpWithPromise(params).then((res)=>{
+    this._getLassDataService.setParam(this.devices,this._DaterangepickerComponent.getSQLString()[0],this._DaterangepickerComponent.getSQLString()[1]);
+    this._getLassDataService.getDataHttpWithPromise().then((res)=>{
       this.data = res;
-
+      let dataSet = ['pm1','pm25','pm10','temp','humid'];
       //計算平均
       let temp:Object[] = [];
       for(let i=0;i<this.devices.length;i++){
-        temp.push({'count': 0});
+        temp.push({
+          'count': 0,
+          'device_id':this.devices[i]
+        });
       }
+
       res.forEach((value,index,array)=>{
-        temp[value.clientNum]['pm1'] = ((temp[value.clientNum]['pm1'])?temp[value.clientNum]['pm1']:0) + Number(value['pm1']);
-        temp[value.clientNum]['pm25'] = ((temp[value.clientNum]['pm25'])?temp[value.clientNum]['pm25']:0) + Number(value['pm25']);
-        temp[value.clientNum]['pm10'] = ((temp[value.clientNum]['pm10'])?temp[value.clientNum]['pm10']:0) + Number(value['pm10']);
-        temp[value.clientNum]['temp'] = ((temp[value.clientNum]['temp'])?temp[value.clientNum]['temp']:0) + Number(value['temp']);
-        temp[value.clientNum]['humid'] = ((temp[value.clientNum]['humid'])?temp[value.clientNum]['humid']:0) + Number(value['humid']);
-        temp[value.clientNum]['count'] ++;
+        dataSet.forEach((value2,index,array)=> {
+          if(temp[this.devices.indexOf(value['device_id'])][value2]){
+            temp[this.devices.indexOf(value['device_id'])][value2] = temp[this.devices.indexOf(value['device_id'])][value2] + Number(value[value2]);
+          }else{
+            temp[this.devices.indexOf(value['device_id'])][value2] = Number(value[value2]);
+          }
+        });
+        temp[this.devices.indexOf(value['device_id'])]['count']++;
       });
 
-      this.devices.forEach((value,index,array)=>{
-        temp[index]['clientNum'] = index;
-      });
       temp.forEach((value,index,array)=>{
-        Object.keys(value).forEach((key)=> {
-          if(key!='count' && key!='clientNum') {
-            temp[index][key] = Math.round((temp[index][key]/temp[index]['count'])*100)/100;
-          }
+        dataSet.forEach((value2,index2,array)=> {
+          temp[index][value2] = Math.round((temp[index][value2]/temp[index]['count'])*100)/100;
         });
       });
       this.avgData = _.cloneDeep(temp);
@@ -169,7 +218,8 @@ export class AveragePageComponent {
   setCharts(){
     this.barChartData = _.cloneDeep(this.barChartDataTemplate);
     this.avgData.forEach((value: Object,index,array)=>{
-      this.barChartData[value['clientNum']].data = [value['pm1'],value['pm25'],value['pm10'],value['humid'],value['temp']];
+      this.barChartData[index].label = value['device_id'];
+      this.barChartData[index].data = [value['pm1'],value['pm25'],value['pm10'],value['humid'],value['temp']];
     });
     this.barChartStandby = false;
     this.barChartStandby = true;

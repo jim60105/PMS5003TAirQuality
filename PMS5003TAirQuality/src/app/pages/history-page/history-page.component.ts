@@ -58,7 +58,7 @@ export class HistoryPageComponent {
   public percentageProperty = ['device_id',0,1,2,3,4,5,6];
   public percentageSortable = ["","","","","","","",""];
   public percentageTitleClass = ['','AQI1','AQI2','AQI3','AQI4','AQI5','AQI6','AQI6'];
-      //列數
+  //列數
   public tableRowLimit:number = 3;
 
   // lineChart
@@ -77,6 +77,12 @@ export class HistoryPageComponent {
       xAxes: [{
         type: 'time',
         distribution: 'linear'
+      }],
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+          min: 0
+        }
       }]
     },
     elements:{
