@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Author: jim60105@gmail.com
-# Version: v18.04.20.0
+# Version: v18.04.20.1
 
 import paho.mqtt.client as mqtt
 import re
@@ -55,22 +55,22 @@ def on_message(client, userdata, msg):
     if 'device_id' not in tempDict:
         return
     else:
-        tempDict['device_id'] = '"' +tempDict['device_id'] + '"'
+        tempDict['device_id'] = tempDict['device_id']
     
     if 'app' not in tempDict or tempDict['app']=='':
         tempDict['app'] = 'NULL'
     else:
-        tempDict['app'] = '"' +tempDict['app'] + '"'
+        tempDict['app'] = tempDict['app']
         
     if 'device' not in tempDict or tempDict['device']=='':
         tempDict['device'] = 'NULL'
     else:
-        tempDict['device'] = '"' +tempDict['device'] + '"'
+        tempDict['device'] = tempDict['device']
     
     if 'time' not in tempDict or datetime.datetime.strptime(tempDict['date'],'%Y-%m-%d')<datetime.datetime(1970, 1, 1):
         tempDict['time'] = now.strftime("%Y-%m-%d %H:%M:%S")
     else:
-        tempDict['time'] = '"' + tempDict['date'] + ' ' +tempDict['time'] + '"'
+        tempDict['time'] = datetime.datetime.strptime(tempDict['date'] + ' ' +tempDict['time'],'%Y-%m-%d %H:%M:%S')
         
     if 's_t0' in tempDict:
         tempDict['temp'] = tempDict['s_t0']
@@ -121,24 +121,23 @@ def on_message(client, userdata, msg):
         tempDict['gps_alt'] = 'NULL'
     
     try:
-        query = ('SELECT * FROM `lassdata` WHERE `device_id` = {device_id} AND `time` = {time}').format(**tempDict)
-        cur.execute(query)
+        query = ('SELECT * FROM `lassdata` WHERE `device_id` = %(device_id)s AND `time` = %(time)s')
+        cur.execute(query,tempDict)
         rows = cur.fetchall()
         conn.commit()
         if len(rows) == 0:
-            # 插入隊列
+            # 插入佇列
             query = ('INSERT INTO `lassdataqueue` '
                 '(`no`, `device_id`, `time`, `pm1`, `pm10`, `pm25`, `temp`, `humid`, `co2`) '
-                'VALUES (NULL, {device_id}, {time}, {s_d2}, {s_d1}, {s_d0}, {temp}, {humid}, {s_g8})').format(**tempDict)
-            cur.execute(query)
+                'VALUES (NULL, %(device_id)s, %(time)s, %(s_d2)s, %(s_d1)s, %(s_d0)s, %(temp)s, %(humid)s, %(s_g8)s)')
+            cur.execute(query,tempDict)
             conn.commit()
-            timediff = 0
             def checkFlush():
                 query = ('SELECT TIMESTAMPDIFF(MINUTE,'
-                    '(SELECT time FROM lassdataqueue WHERE device_id = {device_id} ORDER BY time ASC LIMIT 1),'
-                    '(SELECT time FROM lassdataqueue WHERE device_id = {device_id} ORDER BY time DESC LIMIT 1)'
-                    ') AS timediff;').format(**tempDict)
-                cur.execute(query)
+                    '(SELECT time FROM lassdataqueue WHERE device_id = %(device_id)s ORDER BY time ASC LIMIT 1),'
+                    '(SELECT time FROM lassdataqueue WHERE device_id = %(device_id)s ORDER BY time DESC LIMIT 1)'
+                    ') AS timediff;')
+                cur.execute(query,tempDict)
                 row = cur.fetchone()
                 conn.commit()
                 if row['timediff'] is not None:
@@ -148,14 +147,14 @@ def on_message(client, userdata, msg):
                     return 0
                 
             def doFlush():
-                query = ('SELECT time FROM lassdataqueue WHERE device_id = {device_id} ORDER BY time ASC LIMIT 1;').format(**tempDict)
-                cur.execute(query)
+                query = ('SELECT time FROM lassdataqueue WHERE device_id = %(device_id)s ORDER BY time ASC LIMIT 1;')
+                cur.execute(query,tempDict)
                 row = cur.fetchone()
                 conn.commit()
                 tempDict['startTime'] = row['time']
                 
-                query = ('SELECT AVG(pm1) AS pm1, AVG(pm10) AS pm10, AVG(pm25) AS pm25, AVG(temp) AS temp, AVG(humid) AS humid, AVG(co2) AS co2 FROM lassdataqueue WHERE device_id = {device_id};').format(**tempDict)
-                cur.execute(query)
+                query = ('SELECT AVG(pm1) AS pm1, AVG(pm10) AS pm10, AVG(pm25) AS pm25, AVG(temp) AS temp, AVG(humid) AS humid, AVG(co2) AS co2 FROM lassdataqueue WHERE device_id = %(device_id)s;')
+                cur.execute(query,tempDict)
                 rows = cur.fetchall()
                 conn.commit()
                 
@@ -167,38 +166,39 @@ def on_message(client, userdata, msg):
                 row['device_id'] = tempDict['device_id']
                 row['timediff'] = tempDict['timediff']
                 row['startTime'] = tempDict['startTime']
+                
                         
                 query = ('INSERT INTO lassdata (`no`, `device_id`, `time`, `pm1`, `pm10`, `pm25`, `temp`, `humid`, `co2`) '
-                'VALUES (NULL, {device_id}, (SELECT TIMESTAMPADD(MINUTE, "{timediff}", "{startTime}")), {pm1}, {pm10}, {pm25}, {temp}, {humid}, {co2})').format(**rows[0])
-                cur.execute(query)
+                'VALUES (NULL, %(device_id)s, (SELECT TIMESTAMPADD(MINUTE, %(timediff)s, %(startTime)s)), %(pm1)s, %(pm10)s, %(pm25)s, %(temp)s, %(humid)s, %(co2)s)')
+                cur.execute(query,row)
                 conn.commit()
                 
-                query = ('DELETE FROM lassdataqueue WHERE device_id = {device_id};').format(**tempDict)
-                cur.execute(query)
+                query = ('DELETE FROM lassdataqueue WHERE device_id = %(device_id)s;')
+                cur.execute(query,tempDict)
                 conn.commit()
             # check & flush
             while checkFlush()>10:
                 doFlush()
                 
             # 寫入測站資料    
-            query = ('SELECT `device_id` FROM `lassdevice` WHERE `device_id` = {device_id}').format(**tempDict)
-            cur.execute(query)
+            query = ('SELECT `device_id` FROM `lassdevice` WHERE `device_id` = %(device_id)s')
+            cur.execute(query,tempDict)
             rows = cur.fetchall()
             conn.commit()
             if len(rows) == 0:
                 query = ('INSERT INTO `lassdevice` '
                 '(`device_id`, `app`, `device`, `gps_lat`, `gps_lon`, `gps_alt`, `time`, `pm1`, `pm10`, `pm25`, `temp`, `humid`, `co2`) '
-                'VALUES ({device_id}, {app}, {device}, {gps_lat}, {gps_lon}, {gps_alt}, {time}, {s_d2}, {s_d1}, {s_d0}, {temp}, {humid}, {s_g8})').format(**tempDict)
+                'VALUES (%(device_id)s, %(app)s, %(device)s, %(gps_lat)s, %(gps_lon)s, %(gps_alt)s, %(time)s, %(s_d2)s, %(s_d1)s, %(s_d0)s, %(temp)s, %(humid)s, %(s_g8)s)')
                 # print(query, sep='\n', flush=True)
                 # print(query, sep='\n', flush=True)
             else:
                 # tempDict['no'] = rows[0]['no']
                 query = ('UPDATE `lassdevice` '
-                'SET `app` = {app}, `device` = {device}, `gps_lat` = {gps_lat}, `gps_lon` = {gps_lon}, `gps_alt` = {gps_alt}, `time` = {time}, `pm1` = {s_d2}, `pm10` = {s_d1}, `pm25` = {s_d0}, `temp` = {temp}, `humid` = {humid}, `co2` = {s_g8} '
-                'WHERE `lassdevice`.`device_id` = {device_id}').format(**tempDict)
+                'SET `app` = %(app)s, `device` = %(device)s, `gps_lat` = %(gps_lat)s, `gps_lon` = %(gps_lon)s, `gps_alt` = %(gps_alt)s, `time` = %(time)s, `pm1` = %(s_d2)s, `pm10` = %(s_d1)s, `pm25` = %(s_d0)s, `temp` = %(temp)s, `humid` = %(humid)s, `co2` = %(s_g8)s '
+                'WHERE `lassdevice`.`device_id` = %(device_id)s')
                 # print(query, sep='\n', flush=True)
                 # print(query, sep='\n', flush=True)
-            cur.execute(query)
+            cur.execute(query,tempDict)
             conn.commit()
         tempDict = {}
     except:
