@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # Author: jim60105@gmail.com
-# Version: v18.03.20.0
+# Version: v18.04.20.0
 
 import paho.mqtt.client as mqtt
 import re
 import mysql.connector
 import ast
+import traceback
+import datetime
 
 MQTT_SERVER = "gpssensor.ddns.net"
 MQTT_PORT = 1883
@@ -55,17 +57,17 @@ def on_message(client, userdata, msg):
     else:
         tempDict['device_id'] = '"' +tempDict['device_id'] + '"'
     
-    if 'app' not in tempDict:
+    if 'app' not in tempDict or tempDict['app']=='':
         tempDict['app'] = 'NULL'
     else:
         tempDict['app'] = '"' +tempDict['app'] + '"'
         
-    if 'device' not in tempDict:
+    if 'device' not in tempDict or tempDict['device']=='':
         tempDict['device'] = 'NULL'
     else:
         tempDict['device'] = '"' +tempDict['device'] + '"'
     
-    if 'time' not in tempDict:
+    if 'time' not in tempDict or datetime.datetime.strptime(tempDict['date'],'%Y-%m-%d')<datetime.datetime(1970, 1, 1):
         tempDict['time'] = now.strftime("%Y-%m-%d %H:%M:%S")
     else:
         tempDict['time'] = '"' + tempDict['date'] + ' ' +tempDict['time'] + '"'
@@ -111,11 +113,11 @@ def on_message(client, userdata, msg):
     if 's_g8' not in tempDict:
         tempDict['s_g8'] = 'NULL'
         
-    if 'gps_lat' not in tempDict:
+    if 'gps_lat' not in tempDict or tempDict['gps_lat']=='':
         tempDict['gps_lat'] = 'NULL'
-    if 'gps_lon' not in tempDict:
+    if 'gps_lon' not in tempDict or tempDict['gps_lon']=='':
         tempDict['gps_lon'] = 'NULL'
-    if 'gps_alt' not in tempDict:
+    if 'gps_alt' not in tempDict or tempDict['gps_alt']=='':
         tempDict['gps_alt'] = 'NULL'
     
     try:
@@ -130,7 +132,7 @@ def on_message(client, userdata, msg):
                 'VALUES (NULL, {device_id}, {time}, {s_d2}, {s_d1}, {s_d0}, {temp}, {humid}, {s_g8})').format(**tempDict)
             cur.execute(query)
             conn.commit()
-            
+            timediff = 0
             def checkFlush():
                 query = ('SELECT TIMESTAMPDIFF(MINUTE,'
                     '(SELECT time FROM lassdataqueue WHERE device_id = {device_id} ORDER BY time ASC LIMIT 1),'
@@ -139,50 +141,41 @@ def on_message(client, userdata, msg):
                 cur.execute(query)
                 row = cur.fetchone()
                 conn.commit()
-                return row['timediff']
+                if row['timediff'] is not None:
+                    tempDict['timediff'] = row['timediff'] / 2
+                    return row['timediff']
+                else:
+                    return 0
                 
             def doFlush():
                 query = ('SELECT time FROM lassdataqueue WHERE device_id = {device_id} ORDER BY time ASC LIMIT 1;').format(**tempDict)
                 cur.execute(query)
                 row = cur.fetchone()
                 conn.commit()
-                tempDict['startRow'] = row['time']
+                tempDict['startTime'] = row['time']
                 
-                query = ('SELECT AVG(pm1) AS pm1, AVG(pm10) AS pm10, AVG(pm25) AS pm25, AVG(temp) AS temp, AVG(humid) AS humid, AVG(co2) AS co2 FROM lassdataqueue WHERE device_id = {device_id} AND time BETWEEN "{startRow}" AND (SELECT TIMESTAMPADD(MINUTE, 10, "{startRow}"));').format(**tempDict)
+                query = ('SELECT AVG(pm1) AS pm1, AVG(pm10) AS pm10, AVG(pm25) AS pm25, AVG(temp) AS temp, AVG(humid) AS humid, AVG(co2) AS co2 FROM lassdataqueue WHERE device_id = {device_id};').format(**tempDict)
                 cur.execute(query)
                 rows = cur.fetchall()
                 conn.commit()
                 
                 row = rows[0]
-                row['device_id'] = tempDict['device_id']
-                row['time'] = tempDict['startRow']
             
                 for k,v in row.items():
                     if v == None:
                         row[k] = 'Null'
+                row['device_id'] = tempDict['device_id']
+                row['timediff'] = tempDict['timediff']
+                row['startTime'] = tempDict['startTime']
                         
-                #print(*rows, sep='\n', flush=True)
                 query = ('INSERT INTO lassdata (`no`, `device_id`, `time`, `pm1`, `pm10`, `pm25`, `temp`, `humid`, `co2`) '
-                'VALUES (NULL, {device_id}, (SELECT TIMESTAMPADD(MINUTE, 5, "{time}")), {pm1}, {pm10}, {pm25}, {temp}, {humid}, {co2})').format(**rows[0])
+                'VALUES (NULL, {device_id}, (SELECT TIMESTAMPADD(MINUTE, "{timediff}", "{startTime}")), {pm1}, {pm10}, {pm25}, {temp}, {humid}, {co2})').format(**rows[0])
                 cur.execute(query)
                 conn.commit()
                 
-                query = ('DELETE FROM lassdataqueue WHERE device_id = {device_id} AND time BETWEEN "{startRow}" AND (SELECT TIMESTAMPADD(MINUTE, 10, "{startRow}"));').format(**tempDict)
+                query = ('DELETE FROM lassdataqueue WHERE device_id = {device_id};').format(**tempDict)
                 cur.execute(query)
                 conn.commit()
-                
-                query = ('SELECT TIMESTAMPDIFF(MINUTE,'
-                    '"{startRow}",'
-                    '(SELECT time FROM lassdataqueue WHERE device_id = {device_id} ORDER BY time ASC LIMIT 1)'
-                    ') AS timediff;').format(**tempDict)
-                cur.execute(query)
-                row = cur.fetchone()
-                conn.commit()
-                diff = row['timediff']
-                
-                if diff>10:
-                    doFlush()
-            
             # check & flush
             while checkFlush()>10:
                 doFlush()
@@ -196,15 +189,21 @@ def on_message(client, userdata, msg):
                 query = ('INSERT INTO `lassdevice` '
                 '(`device_id`, `app`, `device`, `gps_lat`, `gps_lon`, `gps_alt`, `time`, `pm1`, `pm10`, `pm25`, `temp`, `humid`, `co2`) '
                 'VALUES ({device_id}, {app}, {device}, {gps_lat}, {gps_lon}, {gps_alt}, {time}, {s_d2}, {s_d1}, {s_d0}, {temp}, {humid}, {s_g8})').format(**tempDict)
+                # print(query, sep='\n', flush=True)
+                # print(query, sep='\n', flush=True)
             else:
                 # tempDict['no'] = rows[0]['no']
                 query = ('UPDATE `lassdevice` '
                 'SET `app` = {app}, `device` = {device}, `gps_lat` = {gps_lat}, `gps_lon` = {gps_lon}, `gps_alt` = {gps_alt}, `time` = {time}, `pm1` = {s_d2}, `pm10` = {s_d1}, `pm25` = {s_d0}, `temp` = {temp}, `humid` = {humid}, `co2` = {s_g8} '
                 'WHERE `lassdevice`.`device_id` = {device_id}').format(**tempDict)
+                # print(query, sep='\n', flush=True)
+                # print(query, sep='\n', flush=True)
             cur.execute(query)
             conn.commit()
         tempDict = {}
     except:
+        traceback.print_exc()
+        # mqtt_client.disconnect()
         return
 
 def on_disconnect(client, userdata,rc=0):
