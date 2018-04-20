@@ -19,7 +19,7 @@ const routes: Routes = <Routes>[
     {path: 'main', component: MainPageComponent},
     {path: 'history', component: HistoryPageComponent},
     {path: 'average', component: AveragePageComponent},
-    //{path: 'compare', component: ComparePageComponent},
+    {path: 'compare', component: ComparePageComponent},
     {path: '', component: MapPageComponent},
     {path: '**', redirectTo:''}
   ]}
@@ -28,7 +28,7 @@ const routes: Routes = <Routes>[
 @NgModule({
   imports: [RouterModule.forRoot(routes,{
     useHash: true,
-    //enableTracing: true, // <-- debugging purposes only
+    enableTracing: true, // <-- debugging purposes only
     preloadingStrategy: SelectivePreloadingStrategy,
   })],
   exports: [RouterModule],

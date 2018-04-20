@@ -9,6 +9,9 @@ import { DaterangepickerComponent } from "../../daterangepicker.component"
 import { Daterangepicker, DaterangepickerConfig } from 'ng2-daterangepicker';
 import { GetClientInfoService } from "../../services/get-client-info.service";
 import { GetDataService } from "../../services/get-data.service";
+import { GetLassDeviceService } from "../../services/get-lassdevice.service";
+import { GetUserDeviceService } from "../../services/get-user-device.service";
+import { Cookie } from 'ng2-cookies';
 @Component({
   selector: 'app-compare-page',
   templateUrl: './compare-page.component.html',
@@ -18,7 +21,10 @@ export class ComparePageComponent{
 
   constructor(private _getClientInfoService:GetClientInfoService,
               private _getDataService:GetDataService,
-              private daterangepickerOptions: DaterangepickerConfig) {}
+              private daterangepickerOptions: DaterangepickerConfig,
+              public _getLassDeviceService:GetLassDeviceService,
+              public _getUserDeviceService:GetUserDeviceService
+  ) {}
 
   public _DaterangepickerComponent = new DaterangepickerComponent();
   private uniqueDateRangepickerComponentArray;
@@ -29,6 +35,11 @@ export class ComparePageComponent{
   public duration:number = 6;
   public client:number = -1;
   public data:Object[] = [];
+  public LASSDeviceList = this._getLassDeviceService.LASSDeviceList;
+  public userDevices:String[] = [];
+  public userDevicesTemp:String[] = [];
+  private displayNearest = true;
+
   //日期選擇器
   public dateRangepickerComponentArray:DaterangepickerComponent[] = [
       new DaterangepickerComponent(moment().subtract(this.duration,'day').startOf('day'),moment()),
@@ -66,6 +77,12 @@ export class ComparePageComponent{
           unit: 'day',
           tooltipFormat: 'DD HH:mm:ss'
         }
+      }],
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+          min: 0
+        }
       }]
     },
     elements:{
@@ -74,7 +91,7 @@ export class ComparePageComponent{
         hitRadius: 4,
         hoverRadius: 4
       }
-    },
+    }
     /*tooltips: {
       titleFontSize: 0,
       titleMarginBottom: 0,
@@ -126,20 +143,72 @@ export class ComparePageComponent{
     this.daterangepickerOptions.settings.maxDate = moment().subtract(this.duration,'day');
     this.daterangepickerOptions.settings.singleDatePicker = true;
 
-    this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
-      this.devices = res;
-      this.setChartsColor();
+    //this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
+    //  this.devices = res;
+    //  this.setChartsColor();
+    //
+    //});
 
+    this.loading = true;
+    //已登入
+
+    this._getLassDeviceService.getLassDeviceWithPromise().then((res)=>{
+      res.sort(this.compareDevice_id);
+      this.LASSDeviceList = res;
     });
+
+    this.userDevices = [];
+    this._getUserDeviceService.getDevices(2,(res)=>{
+      this.displayNearest = (Cookie.get('displayNearest')=='1');
+      this.userDevices = res;
+      this.userDevicesTemp = _.cloneDeep(this.userDevices);
+      this.dateRangepickerComponentArray = [];
+      for(let i in this.userDevices) {
+        this.dateRangepickerComponentArray.push(new DaterangepickerComponent(moment().subtract(this.duration, 'day').startOf('day'), moment()));
+      }
+      this.loading = false;
+      this.checkReady();
+    });
+  }
+
+
+  private compareDevice_id(a,b) {
+    if (a.device_id < b.device_id)
+      return -1;
+    if (a.device_id > b.device_id)
+      return 1;
+    return 0;
+  }
+
+  public deviceChange(i:number,device:String){
+    //noinspection TypeScriptUnresolvedVariable
+    this.userDevices[i] = device;
+
+    let index = this.userDevices.indexOf('請選擇測站');
+    while(index>-1){
+      this.userDevices.splice(index,1);
+      index = this.userDevices.indexOf('請選擇測站');
+    }
   }
 
 //form處理
   public addDateRangepickerComponentArray(){
+
+    this.userDevices.push('請選擇測站');
     this.errDate.push(true);
     this.dateRangepickerComponentArray.push(new DaterangepickerComponent(moment().subtract(this.duration,'day').startOf('day'),moment()));
     this.setLineChartDataTemplate();
     this.checkReady();
   }
+
+  public deleteDateRangepickerComponentArray(index:number) {
+    this.userDevices.splice(index,1);
+    this.errDate.splice(index,1);
+    this.dateRangepickerComponentArray.splice(index,1);
+    this.setLineChartDataTemplate();
+    this.checkReady();
+  }
+
   private selectedDate(value: any, dateInput: any,index: number) {
     //日期選擇改變時觸發getDataHttp
     this.dateRangepickerComponentArray[index].setTimeByDate(value.start,moment(value.start).add(this.duration,'day').toDate());
@@ -159,23 +228,23 @@ export class ComparePageComponent{
   private checkReady(){
     this.overBound = false;
     this.errDate = [];
-    this.uniqueDateRangepickerComponentArray = _.uniqBy(this.dateRangepickerComponentArray,
-        (e)=>{
-          if(e.rangeValue[0]>=this.daterangepickerOptions.settings.maxDate && !e.rangeValue[0]<=this.daterangepickerOptions.settings.minDate) {
-            this.overBound = true;
-            this.errDate.push(false);
-          }else{
-            this.errDate.push(true);
-          }
-          return e.rangeValue[0].toISOString();
-        });
-    if(this.uniqueDateRangepickerComponentArray.length>1  && !this.overBound){
+    this.dateRangepickerComponentArray.forEach((value,index,array)=>{
+      if(value.getTimeByDate()[0]>this.daterangepickerOptions.settings.maxDate || value.getTimeByDate()[0]<this.daterangepickerOptions.settings.minDate) {
+        this.overBound = true;
+        this.errDate.push(false);
+      }else{
+        this.errDate.push(true);
+      }
+    });
+
+    if((this.dateRangepickerComponentArray.length>0 && this.userDevices.length>0) && !this.overBound){
       this.ready = true;
     }else{
       this.ready = false;
     }
   }
 
+  //TODO
   private submit(){
     //console.log(this.uniqueDateRangepickerComponentArray);
     if(this.ready){

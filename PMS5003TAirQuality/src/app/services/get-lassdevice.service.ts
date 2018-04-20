@@ -20,7 +20,7 @@ export class GetLassDeviceService {
   private dbURL = "assets/php/getLASSDevices.php";
 
   public LASSDeviceList:String[] = [];
-private nearestAmount = 3;
+  private nearestAmount = 3;
   public setLASSDeviceList(list?:String[], amount:number = this.nearestAmount){
     this.LASSDeviceList = [];
     this.nearestAmount = amount;

@@ -3,7 +3,20 @@
     -webkit-box-shadow: 0 0 8px red;
 }
 
-
 .input-group {
     margin-bottom: 2px;
+}
+
+.dropdown{
+    min-width: 250px;
+}
+
+.dateRangePicker{
+    max-width: 170px;
+    margin: 0 15px 0 15px;
+}
+
+.row{
+    margin-top: 10px;
+    margin-bottom: 10px;
 }

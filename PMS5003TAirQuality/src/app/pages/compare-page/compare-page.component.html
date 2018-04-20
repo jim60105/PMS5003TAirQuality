@@ -22,44 +22,48 @@
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <form>
             <div class="form-group">
-                <label for="clientChooser">選擇測站</label>
+                <label>設定測站</label>
                 <br>
-                <div class="btn-group" data-toggle="buttons" id="clientChooser" >
-                    <label class="btn btn-default" (click)="client = idx" *ngFor="let c of devices;let idx = index">
-                        <input type="radio" name="client" autocomplete="off"> {{c.name}}
-                    </label>
-                </div>
-            </div>
-            <div *ngIf="client!=-1">
-                <div class="form-group">
-                    <label>設定時長</label>
+                <div *ngFor="let userDevice of userDevices; let i = index">
 
-                    : {{duration+1}} 天
-                    <br>
-                    <mat-slider (change)="changeDuration($event)" min="1" max="31" step="1" value="7" thumb-label="true" style="width: 99%"></mat-slider>
-                    <br>
-                </div>
+                    <div class="row">
+                        <div ngbDropdown class="dropdown col-xs-6 col-sm-3 col-md-2">
 
-                <div class="form-group">
-                    <label>設定起始日期</label>
-                    <div *ngFor="let d of dateRangepickerComponentArray;let idx = index">
-                        <span>數據{{idx}}</span>
-                        <div class="input-group" daterangepicker  [ngClass]="{'red':!errDate[idx], flashing:!errDate[idx]}" (selected)="selectedDate($event, d, idx)" style="max-width: 150px">
-                        <span class="form-control uneditable-input" name="daterange">
-                            {{ d.getTimeByDate()[0] | date:'y-M-d'}}
-                        </span>
-                        <span class="input-group-btn">
-                            <a type="button" class="btn btn-default"><i class="glyphicon glyphicon-calendar"></i></a>
-                        </span>
+                            <button class="btn btn-default" type="button" (click)="deleteDateRangepickerComponentArray(i)">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                            </button>
+                            <button class="btn btn-default dropdown-toggle" type="button" ngbDropdownToggle data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                {{userDevices[i]}}
+                                <span class="caret"></span>
+                            </button>
+                            <ul ngbDropdownMenu class="dropdown-menu">
+                                <li (click)="deviceChange(i,'請選擇測站')"><a href="javascript:void(0);">請選擇測站</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li *ngFor="let device of LASSDeviceList" (click)="deviceChange(i,device.device_id)"><a href="javascript:void(0);">{{device.device_id}}</a></li>
+                            </ul>
                         </div>
-                    </div>
-                    <div class="btn btn-default" (click)="addDateRangepickerComponentArray()">
-                        + Add
+
+                        <span class="input-group col-xs-6 col-sm-4 col-md-4 dateRangePicker" daterangepicker [ngClass]="{'red':!errDate[i], flashing:!errDate[i]}" (selected)="selectedDate($event, dateRangepickerComponentArray[i], i)">
+                            <span class="form-control uneditable-input" name="daterange" style="max-height: 34px">
+                                {{ dateRangepickerComponentArray[i].getTimeByDate()[0] | date:'y-M-d'}}
+                            </span>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </span>
                     </div>
                 </div>
-
-                <input class="btn btn-primary" type="submit" value="Submit" [ngClass]="{'disabled': !ready}" (click)="submit()">
+                <div class="btn btn-default" (click)="addDateRangepickerComponentArray()">
+                    + Add
+                </div>
             </div>
+            <div class="form-group">
+                <label>設定時長</label> : {{duration+1}} 天
+                <br>
+                <mat-slider (change)="changeDuration($event)" min="1" max="31" step="1" value="7" thumb-label="true" style="width: 99%"></mat-slider>
+                <br>
+            </div>
+            <input class="btn btn-primary" type="submit" value="Submit" [ngClass]="{'disabled': !ready}" (click)="submit()">
         </form>
     </div>
     <app-loading [loading]="loading"></app-loading>
