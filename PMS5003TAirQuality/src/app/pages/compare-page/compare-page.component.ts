@@ -11,6 +11,7 @@ import { GetClientInfoService } from "../../services/get-client-info.service";
 import { GetDataService } from "../../services/get-data.service";
 import { GetLassDeviceService } from "../../services/get-lassdevice.service";
 import { GetUserDeviceService } from "../../services/get-user-device.service";
+import { GetLASSDataService } from "../../services/get-lassdata.service";
 import { Cookie } from 'ng2-cookies';
 @Component({
   selector: 'app-compare-page',
@@ -23,12 +24,11 @@ export class ComparePageComponent{
               private _getDataService:GetDataService,
               private daterangepickerOptions: DaterangepickerConfig,
               public _getLassDeviceService:GetLassDeviceService,
-              public _getUserDeviceService:GetUserDeviceService
+              public _getUserDeviceService:GetUserDeviceService,
+              private _getLassDataService:GetLASSDataService
   ) {}
 
-  public _DaterangepickerComponent = new DaterangepickerComponent();
-  private uniqueDateRangepickerComponentArray;
-  public ready = false;//Submit Btn disable
+  public ready = false; //Submit Btn disable
   private overBound = false;
   public errDate:boolean[] = [true,true];
   public devices;
@@ -75,7 +75,7 @@ export class ComparePageComponent{
             day: 'DD'
           },
           unit: 'day',
-          tooltipFormat: 'DD HH:mm:ss'
+          tooltipFormat: '第DD日 HH:mm:ss'
         }
       }],
       yAxes: [{
@@ -153,7 +153,7 @@ export class ComparePageComponent{
     //已登入
 
     this._getLassDeviceService.getLassDeviceWithPromise().then((res)=>{
-      res.sort(this.compareDevice_id);
+      res.sort(compareDevice_id);
       this.LASSDeviceList = res;
     });
 
@@ -168,16 +168,54 @@ export class ComparePageComponent{
       }
       this.loading = false;
       this.checkReady();
+      this.setChartsColor();
     });
+
+    function compareDevice_id(a,b) {
+      if (a.device_id < b.device_id)
+        return -1;
+      if (a.device_id > b.device_id)
+        return 1;
+      return 0;
+    }
   }
 
+  //chart處理
+  private setChartsColor(){
+    //Generate Random Color
+    let color = new RColor;
+    this.colorList = [];
+    for(let i=0;i<this.userDevices.length;i++){
+      this.colorList.push(color.get());
+    }
 
-  private compareDevice_id(a,b) {
-    if (a.device_id < b.device_id)
-      return -1;
-    if (a.device_id > b.device_id)
-      return 1;
-    return 0;
+    this.lineChartColors.length = 0;
+    this.colorList.forEach((value,index,array)=>{
+      this.lineChartColors.push({
+        backgroundColor: `rgba(${value[0]},${value[1]},${value[2]},0.2)`,
+        borderColor: `rgba(${value[0]},${value[1]},${value[2]},0.9)`,
+        pointBackgroundColor: `rgba(${value[0]},${value[1]},${value[2]},0.9)`,
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: `rgba(${value[0]},${value[1]},${value[2]},0.9)`
+      });
+    });
+    this.setLineChartDataTemplate();
+  }
+
+  private setLineChartDataTemplate(){
+    let lineChartDataTemplate:Array<any> = [];
+
+    this.dateRangepickerComponentArray.forEach((value:DaterangepickerComponent, index, array)=> {
+      let base = value.rangeValue[0].format('YYYY-MM-DD');
+      lineChartDataTemplate.push(
+          {data: [], label: base,fill:false}
+      );
+    });
+
+    this.lineChartDataTemplate = _.cloneDeep(lineChartDataTemplate);
+    this.loadedLineChartDataTemplate = true;
+    this.loading = false;
   }
 
   public deviceChange(i:number,device:String){
@@ -237,74 +275,48 @@ export class ComparePageComponent{
       }
     });
 
-    if((this.dateRangepickerComponentArray.length>0 && this.userDevices.length>0) && !this.overBound){
-      this.ready = true;
-    }else{
-      this.ready = false;
-    }
+    this.ready = ((this.dateRangepickerComponentArray.length > 0 && this.userDevices.length > 0) && !this.overBound);
   }
 
-  //TODO
   private submit(){
     //console.log(this.uniqueDateRangepickerComponentArray);
     if(this.ready){
       this.loading = true;
       this.lineChartStandby = false;
-      for(let i =0;i<this.uniqueDateRangepickerComponentArray.length;i++){
-        this.getDataHttp(this.uniqueDateRangepickerComponentArray[i],i);
+      for(let i = 0;i<this.userDevices.length;i++){
+        this.getLASSDataHttp(i);
       }
     }
   }
 
-  //chart處理
-  private setChartsColor(){
-    //Generate Radom Color
-    let color = new RColor;
-    this.colorList = [];
-    for(let i=0;i<this.devices.length;i++){
-      this.colorList.push(color.get());
-    }
-
-    this.lineChartColors.length = 0;
-    this.colorList.forEach((value,index,array)=>{
-      this.lineChartColors.push({
-        backgroundColor: `rgba(${value[0]},${value[1]},${value[2]},0.2)`,
-        borderColor: `rgba(${value[0]},${value[1]},${value[2]},0.9)`,
-        pointBackgroundColor: `rgba(${value[0]},${value[1]},${value[2]},0.9)`,
-        pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: `rgba(${value[0]},${value[1]},${value[2]},0.9)`
-      });
-    });
-    this.setLineChartDataTemplate();
-  }
-
-  private setLineChartDataTemplate(){
-    let lineChartDataTemplate:Array<any> = [];
-
-    this.dateRangepickerComponentArray.forEach((value:DaterangepickerComponent, index, array)=> {
-      let base = value.rangeValue[0].format('YYYY-MM-DD');
-      lineChartDataTemplate.push(
-          {data: [], label: base,fill:false}
-      );
-    });
-
-    this.lineChartDataTemplate = _.cloneDeep(lineChartDataTemplate);
-    this.loadedLineChartDataTemplate = true;
-    this.loading = false;
-  }
+  //獲取空汙資料
+  //public getDataHttp(arr,i){
+  //  let params = new URLSearchParams();
+  //
+  //  params.set('minDate', arr.getSQLString()[0]);
+  //  params.set('maxDate', arr.getSQLString()[1]);
+  //  params.set('client', this.client.toString());
+  //
+  //  this._getDataService.getDataHttpWithPromise(params).then((res)=>{
+  //    this.data[i] = res;
+  //    if(this.data.length==this.uniqueDateRangepickerComponentArray.length){
+  //      let interval = setInterval(() => {
+  //        if(this.loadedLineChartDataTemplate){
+  //          clearInterval(interval);
+  //          this.setCharts();
+  //        }
+  //      }, 400);
+  //    }
+  //  });
+  //}
 
   //獲取空汙資料
-  public getDataHttp(arr,i){
-    let params = new URLSearchParams();
+  public getLASSDataHttp(index:number){
 
-    params.set('minDate', arr.getSQLString()[0]);
-    params.set('maxDate', arr.getSQLString()[1]);
-    params.set('client', this.client.toString());
-
-    this._getDataService.getDataHttpWithPromise(params).then((res)=>{
-      this.data[i] = res;
-      if(this.data.length==this.uniqueDateRangepickerComponentArray.length){
+    this._getLassDataService.setParam([this.userDevices[index]],this.dateRangepickerComponentArray[index].getSQLString()[0],this.dateRangepickerComponentArray[index].getSQLString()[1]);
+    this._getLassDataService.getDataHttpWithPromise().then((res)=>{
+      this.data.push(res);
+      if(this.data.length==this.userDevices.length){
         let interval = setInterval(() => {
           if(this.loadedLineChartDataTemplate){
             clearInterval(interval);
@@ -319,7 +331,7 @@ export class ComparePageComponent{
     let tmp = _.cloneDeep(this.lineChartDataTemplate);
     this.data.forEach((d:Object[], i, array)=> {
       let base = this.dateRangepickerComponentArray[i].rangeValue[0];
-      tmp[i].label = `數據${i}`;
+      tmp[i].label = this.userDevices[i];
       d.forEach((value:Object, index, array)=> {
         let tmp2 = moment.utc(moment(value['time']).valueOf() - base.valueOf());
         tmp[i].data.push({x: tmp2.format('YYYY-MM-DD HH:mm:ss'), y: value[this.dataSet]});

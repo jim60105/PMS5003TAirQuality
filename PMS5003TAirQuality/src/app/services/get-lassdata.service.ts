@@ -14,16 +14,16 @@ export class GetLASSDataService {
   //php位置
   private dbURL = "assets/php/getLASSByTimeById.php";
   //查詢參數
-  public device_idList:string[] = [];
-  public minDate:string = "";
-  public maxDate:string = "";
+  public device_idList:String[] = [];
+  public minDate:String = "";
+  public maxDate:String = "";
   //是否已設定查詢對象
   public isSetParam = false;
   //getParam
   private params:any = new URLSearchParams();
 
   //設定查詢對象
-  public setParam(device:string[] = this.device_idList,minDate:string,maxDate:string){
+  public setParam(device:String[] = this.device_idList,minDate:string,maxDate:string){
     this.data = [];
     this.params = new URLSearchParams();
     this.device_idList = device;
