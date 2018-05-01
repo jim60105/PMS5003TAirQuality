@@ -22,8 +22,15 @@
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <form>
             <div class="form-group">
-                <label>設定測站</label>
-                <br>
+                <div class="row">
+                    <div class="col-xs-6 col-sm-3 col-md-2" style="min-width: 250px">
+                        <label>設定測站</label>
+                    </div>
+
+                    <div class="col-xs-6 col-sm-4 col-md-4" style="padding: 0;">
+                        <label>設定起始時間</label>
+                    </div>
+                </div>
                 <div *ngFor="let userDevice of userDevices; let i = index">
 
                     <div class="row">

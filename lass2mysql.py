@@ -69,13 +69,13 @@ def on_message(client, userdata, msg):
     
     try:
         if 'date' not in tempDict or 'time' not in tempDict:
-            tempDict['time'] = now.strftime("%Y-%m-%d %H:%M:%S")
+            tempDict['time'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         elif datetime.datetime.strptime(tempDict['date'],'%Y-%m-%d')<datetime.datetime(1970, 1, 1):
-            tempDict['time'] = now.strftime("%Y-%m-%d %H:%M:%S")
+            tempDict['time'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         else:
             tempDict['time'] = datetime.datetime.strptime(tempDict['date'] + ' ' +tempDict['time'],'%Y-%m-%d %H:%M:%S')
     except:
-        tempDict['time'] = now.strftime("%Y-%m-%d %H:%M:%S")
+        tempDict['time'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
     if 's_t0' in tempDict:
         tempDict['temp'] = tempDict['s_t0']
