@@ -235,7 +235,7 @@ export class ComparePageComponent{
     this.userDevices.push('請選擇測站');
     this.errDate.push(true);
     this.dateRangepickerComponentArray.push(new DaterangepickerComponent(moment().subtract(this.duration,'day').startOf('day'),moment()));
-    this.setLineChartDataTemplate();
+    this.setChartsColor();
     this.checkReady();
   }
 
@@ -243,7 +243,7 @@ export class ComparePageComponent{
     this.userDevices.splice(index,1);
     this.errDate.splice(index,1);
     this.dateRangepickerComponentArray.splice(index,1);
-    this.setLineChartDataTemplate();
+    this.setChartsColor();
     this.checkReady();
   }
 
@@ -283,6 +283,7 @@ export class ComparePageComponent{
     if(this.ready){
       this.loading = true;
       this.lineChartStandby = false;
+      this.data = [];
       for(let i = 0;i<this.userDevices.length;i++){
         this.getLASSDataHttp(i);
       }
@@ -316,6 +317,7 @@ export class ComparePageComponent{
     this._getLassDataService.setParam([this.userDevices[index]],this.dateRangepickerComponentArray[index].getSQLString()[0],this.dateRangepickerComponentArray[index].getSQLString()[1]);
     this._getLassDataService.getDataHttpWithPromise().then((res)=>{
       this.data.push(res);
+      console.log(this.data.length+","+this.userDevices.length);
       if(this.data.length==this.userDevices.length){
         let interval = setInterval(() => {
           if(this.loadedLineChartDataTemplate){
