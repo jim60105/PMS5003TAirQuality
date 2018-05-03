@@ -313,7 +313,6 @@ export class ComparePageComponent{
 
   //獲取空汙資料
   public getLASSDataHttp(index:number){
-
     this._getLassDataService.setParam([this.userDevices[index]],this.dateRangepickerComponentArray[index].getSQLString()[0],this.dateRangepickerComponentArray[index].getSQLString()[1]);
     this._getLassDataService.getDataHttpWithPromise().then((res)=>{
       this.data.push(res);
@@ -322,6 +321,11 @@ export class ComparePageComponent{
         let interval = setInterval(() => {
           if(this.loadedLineChartDataTemplate){
             clearInterval(interval);
+            let tmpData = _.cloneDeep(this.data);
+            this.data = new Array(tmpData.length);
+            tmpData.forEach((value,index,array)=>{
+              this.data[this.userDevices.indexOf(value[0].device_id)] = value;
+            });
             this.setCharts();
           }
         }, 400);
