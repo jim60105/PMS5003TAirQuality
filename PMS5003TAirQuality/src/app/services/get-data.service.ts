@@ -4,7 +4,7 @@ import '../../../node_modules/rxjs/add/operator/toPromise';
 import { Observable } from 'rxjs/Observable';
 
 import { DATA } from '../../assets/mock-data';
-
+import * as moment from 'moment';
 @Injectable()
 export class GetDataService {
   constructor(private http:Http) {
@@ -13,23 +13,55 @@ export class GetDataService {
   //資料
   public data:Array<any> = [];
   //php位置
-  private dbURL = "assets/php/getDBByTime.php";
+  private dbURL = "assets/php/getDBByTimeById.php";
+  //查詢參數
+  public device_idList:String[] = [];
+  public minDate:String = "";
+  public maxDate:String = "";
+  //是否已設定查詢對象
+  public isSetParam = false;
+  //getParam
+  private params:any = new URLSearchParams();
+
+  //設定查詢對象
+  public setParam(device:String[] = this.device_idList,minDate:string,maxDate:string){
+    this.data = [];
+    this.params = new URLSearchParams();
+    this.device_idList = device;
+    this.params.set('device_id', JSON.stringify(device));
+    this.minDate = moment(minDate).utc().format('YYYY-MM-DD HH:mm:ss');
+    this.params.set('minDate', this.minDate);
+    this.maxDate = moment(maxDate).utc().format('YYYY-MM-DD HH:mm:ss');
+    this.params.set('maxDate', this.maxDate);
+    this.isSetParam = true;
+  }
 
   //獲取空汙資料
-  public getDataHttpWithPromise(params:any = new URLSearchParams()){
-    //noinspection TypeScriptUnresolvedFunction,TypeScriptValidateTypes
-    return this.http.get(this.dbURL, {search: params}).toPromise().then((res:Response) => {
-      let body = res.json();
-      return body || {};
-    }).then((dataIn)=> {
-      //成功取得資料
-      this.data = dataIn;
-      return Promise.resolve(this.data);
-    }).catch((err)=> {
-      //失敗取得資料
-      console.warn("Warn: Cannot get airData.");
-      this.data = DATA;  //Use mock data
-      return Promise.resolve(this.data);
-    });
+  public getDataHttpWithPromise(){
+    if(this.isSetParam) {
+      //noinspection TypeScriptUnresolvedFunction,TypeScriptValidateTypes
+      return this.http.get(this.dbURL, {search: this.params}).toPromise().then((res:Response) => {
+        let body = res.json();
+        return body || {};
+      }).then((dataIn)=> {
+        //成功取得資料
+        ////轉換UTC時間為本地時間
+        //dataIn.forEach((value,index,array)=>{
+        //  //noinspection TypeScriptUnresolvedVariable
+        //  let tt = moment.utc(value.time);
+        //  //noinspection TypeScriptUnresolvedVariable
+        //  array[index].time = tt.local().format('YYYY-MM-DD HH:mm:ss');
+        //});
+        this.data = dataIn;
+        return Promise.resolve(this.data);
+      }).catch((err)=> {
+        //失敗取得資料
+        console.warn("Warn: Cannot get airData.");
+        this.data = DATA;
+        return Promise.resolve(this.data);
+      });
+    }else{
+      console.warn("Please set device_id, minDate, maxDate before getting air data.");
+    }
   }
 }

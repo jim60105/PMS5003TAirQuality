@@ -1,8 +1,10 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 
+import { GetDeviceService } from "../../services/get-device.service";
 import { GetLassDeviceService } from "../../services/get-lassdevice.service";
 import { GetUserDeviceService } from "../../services/get-user-device.service";
 import { SetUserDeviceService } from "../../services/set-user-device.service";
+
 import { Cookie } from 'ng2-cookies';
 //noinspection TypeScriptCheckImport
 import * as _ from "lodash";
@@ -13,14 +15,16 @@ import * as _ from "lodash";
 })
 export class SettingPageComponent {
 
-  constructor(public _getLassDeviceService:GetLassDeviceService,
+  constructor(public _getDeviceService:GetDeviceService,
+              public _getLassDeviceService:GetLassDeviceService,
               public _getUserDeviceService:GetUserDeviceService,
               public _setUserDeviceService:SetUserDeviceService,
               private zone:NgZone) { }
 
   public LASSDeviceList = this._getLassDeviceService.LASSDeviceList;
-  public userDevices:String[] = [];
-  public userDevicesTemp:String[] = [];
+  public deviceList = [];
+  public userDevices:Array<String[]> = [];
+  public userDevicesTemp:Array<String[]> = [];
   private _p:String = '';
   private _p2:String = '';
   private displayNearest = true;
@@ -33,6 +37,11 @@ export class SettingPageComponent {
     }
     //已登入
 
+    this._getDeviceService.getDeviceHttpWithPromise().then((res)=>{
+      res.sort(this.compareDevice_id);
+      this.deviceList = res;
+    });
+
     this._getLassDeviceService.getLassDeviceWithPromise().then((res)=>{
       res.sort(this.compareDevice_id);
       this.LASSDeviceList = res;
@@ -42,7 +51,7 @@ export class SettingPageComponent {
     this._getUserDeviceService.getUserDevicesHttpWithPromise().then((res)=>{
       this.displayNearest = (Cookie.get('displayNearest')=='1');
       this.userDevices = res;
-      this.userDevices.push('請選擇測站');
+      this.userDevices.push(["請選擇測站","text"]);
       this.userDevicesTemp = _.cloneDeep(this.userDevices);
       this.loading = false;
     });
@@ -60,11 +69,19 @@ export class SettingPageComponent {
     this.loading = true;
     //測站設定
     //unique
-    this.userDevices = this.userDevices.filter( (value, index, self) =>{
-      return self.indexOf(value) === index;
-    });
-    //去掉'請選擇測站'選項
-    this.userDevices.splice(this.userDevices.indexOf('請選擇測站'), 1);
+    this.userDevices = _.uniq(this.userDevices);
+    //去掉無效選項
+    if(this.userDevices.map(mapObj => mapObj[0]).indexOf('請選擇測站')){
+      this.userDevices.splice(this.userDevices.map(mapObj => mapObj[0]).indexOf('請選擇測站'), 1);
+    }
+    let test = this.userDevices.map(mapObj => mapObj[0]).indexOf('THU專題測站');
+    if(this.userDevices.map(mapObj => mapObj[0]).indexOf('THU專題測站')>0){
+      this.userDevices.splice(this.userDevices.map(mapObj => mapObj[0]).indexOf('THU專題測站'), 1);
+    }
+    test = this.userDevices.map(mapObj => mapObj[0]).indexOf('LASS專案測站');
+    if(this.userDevices.map(mapObj => mapObj[0]).indexOf('LASS專案測站')>0){
+      this.userDevices.splice(this.userDevices.map(mapObj => mapObj[0]).indexOf('LASS專案測站'), 1);
+    }
 
     //送出
     this._setUserDeviceService.setUserDevicesHttpWithPromise(this.userDevices,this.displayNearest).then((res)=> {
@@ -86,16 +103,13 @@ export class SettingPageComponent {
 
   }
 
-  public deviceChange(i:number,device:String){
+  public deviceChange(i:number,device:String,type:String){
     //noinspection TypeScriptUnresolvedVariable
-    this.userDevices[i] = device;
-
-    let index = this.userDevices.indexOf('請選擇測站');
-    while(index>-1){
-      this.userDevices.splice(index,1);
-      index = this.userDevices.indexOf('請選擇測站');
+    this.userDevices[i] = [device,type];
+    while(_.findIndex(this.userDevices,[0,"請選擇測站"])>0) {
+      this.userDevices.splice(_.findIndex(this.userDevices,[0,"請選擇測站"]), 1);
     }
-    this.userDevices.push('請選擇測站');
+    this.userDevices.push(["請選擇測站","text"]);
   }
 
   private reset(){

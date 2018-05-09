@@ -15,7 +15,7 @@ import { BaseChartDirective } from 'ng2-charts/ng2-charts';
 import { DataTableComponent } from "../../data-table/data-table.component";
 
 import { GetSingleDataService } from "../../services/get-single-data.service";
-import { GetClientInfoService } from "../../services/get-client-info.service";
+import { GetDeviceService } from "../../services/get-device.service";
 import { GetDataService } from "../../services/get-data.service";
 import { GetLassDeviceService } from "../../services/get-lassdevice.service";
 import { GetUserDeviceService } from "../../services/get-user-device.service";
@@ -29,7 +29,7 @@ import { Cookie } from 'ng2-cookies';
 export class HistoryPageComponent {
   //是否顯示表格
   @Input() tableVisible:boolean = true;
-  constructor(private _getClientInfoService:GetClientInfoService,
+  constructor(private _getClientInfoService:GetDeviceService,
               private _getDataService:GetDataService,
               private daterangepickerOptions: DaterangepickerConfig,
               private _getLassDeviceService:GetLassDeviceService,
@@ -131,7 +131,7 @@ export class HistoryPageComponent {
   //}
 
   ngOnInit() {
-    //this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
+    //this._getClientInfoService.getDeviceHttpWithPromise().then((res)=>{
     //  this.devices = res;
     //  //設定列數為client數量
     //  this.tableRowLimit = this.devices.length;

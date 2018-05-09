@@ -16,7 +16,7 @@ export class SetUserDeviceService {
   private dbURL = "assets/php/setUserDevices.php";
 
   //獲取登入資料
-  public setUserDevicesHttpWithPromise(deviceList:String[],displayNearest:Boolean = true){
+  public setUserDevicesHttpWithPromise(deviceList:any,displayNearest:Boolean = true){
     let params:any = new URLSearchParams();
 
     params.set('_e', Cookie.get('_e'));

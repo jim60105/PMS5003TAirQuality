@@ -18,9 +18,10 @@ if($loginSuccess) {
     $isSuccess = $stmt->execute() && $isSuccess;
 
     foreach($device_idList as $device) {
-        $stmt = $db->prepare("INSERT INTO `userdevice` (`no`, `user_no`, `device_id`) VALUES (NULL, :user_no, :device)");
+        $stmt = $db->prepare("INSERT INTO `userdevice` (`no`, `user_no`, `type`, `device_id`) VALUES (NULL, :user_no, :typee, :device)");
         $stmt->bindValue(':user_no', $user_no);
-        $stmt->bindValue(':device', $device);
+        $stmt->bindValue(':device', $device[0]);
+        $stmt->bindValue(':typee', $device[1]);
         $isSuccess = $stmt->execute() && $isSuccess;
     }
 

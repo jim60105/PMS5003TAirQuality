@@ -7,7 +7,7 @@ import * as moment from 'moment';
 import * as _ from "lodash";
 import { DaterangepickerComponent } from "../../daterangepicker.component"
 import { Daterangepicker, DaterangepickerConfig } from 'ng2-daterangepicker';
-import { GetClientInfoService } from "../../services/get-client-info.service";
+import { GetDeviceService } from "../../services/get-device.service";
 import { GetDataService } from "../../services/get-data.service";
 import { GetLassDeviceService } from "../../services/get-lassdevice.service";
 import { GetUserDeviceService } from "../../services/get-user-device.service";
@@ -20,7 +20,7 @@ import { Cookie } from 'ng2-cookies';
 })
 export class ComparePageComponent{
 
-  constructor(private _getClientInfoService:GetClientInfoService,
+  constructor(private _getClientInfoService:GetDeviceService,
               private _getDataService:GetDataService,
               private daterangepickerOptions: DaterangepickerConfig,
               public _getLassDeviceService:GetLassDeviceService,
@@ -143,7 +143,7 @@ export class ComparePageComponent{
     this.daterangepickerOptions.settings.maxDate = moment().subtract(this.duration,'day');
     this.daterangepickerOptions.settings.singleDatePicker = true;
 
-    //this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
+    //this._getClientInfoService.getDeviceHttpWithPromise().then((res)=>{
     //  this.devices = res;
     //  this.setChartsColor();
     //

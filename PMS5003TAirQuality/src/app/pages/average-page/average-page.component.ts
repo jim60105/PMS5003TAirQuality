@@ -9,7 +9,7 @@ import * as _ from "lodash";
 
 import { GetDataService } from "../../services/get-data.service";
 import { GetLASSDataService } from "../../services/get-lassdata.service";
-import { GetClientInfoService } from "../../services/get-client-info.service";
+import { GetDeviceService } from "../../services/get-device.service";
 import { DataTableComponent } from "../../data-table/data-table.component";
 import { GetUserDeviceService } from "../../services/get-user-device.service";
 
@@ -23,7 +23,7 @@ import { Cookie } from 'ng2-cookies';
 export class AveragePageComponent {
   //是否顯示表格
   @Input() tableVisible:boolean = true;
-  constructor(private _getClientInfoService:GetClientInfoService,
+  constructor(private _getClientInfoService:GetDeviceService,
               private _getDataService:GetDataService,
               private daterangepickerOptions: DaterangepickerConfig,
               private _getUserDeviceService:GetUserDeviceService,
@@ -76,7 +76,7 @@ export class AveragePageComponent {
   
   ngOnInit() {
     //獲取devices
-    //this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
+    //this._getClientInfoService.getDeviceHttpWithPromise().then((res)=>{
     //  this.devices = res;
     //  //設定列數為client數量
     //  this.tableRowLimit = this.devices.length;

@@ -19,15 +19,12 @@ export class GetLassDeviceService {
   //php位置
   private dbURL = "assets/php/getLASSDevices.php";
 
-  public LASSDeviceList:String[] = [];
+  public LASSDeviceList:any[] = [];
   private nearestAmount = 3;
-  public setLASSDeviceList(list?:String[], amount:number = this.nearestAmount){
+
+  public setLASSDeviceList(amount:number = this.nearestAmount){
     this.LASSDeviceList = [];
     this.nearestAmount = amount;
-    if(typeof list!=='undefined'){
-      this.LASSDeviceList = list;
-      console.log(JSON.stringify(this.LASSDeviceList));
-    }
 
     if(Cookie.get('displayNearest')=='1' || this.LASSDeviceList.length==0){
       this.getGeolocation();
@@ -98,7 +95,7 @@ export class GetLassDeviceService {
 
     let here = new LatLon(lat, lon);
 
-    this.getLassDeviceWithPromise().then((res)=>{
+    this.getLassDeviceWithPromise().then((res:any[])=>{
       //排除三點狀況
       if(res.length==0) {
         console.error("LASS Devices Empty! Please make sure python script is running.");
@@ -119,13 +116,13 @@ export class GetLassDeviceService {
 
         //從第一個物件開始push到LASSDeviceList
         for(let i=0;i<this.nearestAmount;i++){
-          this.LASSDeviceList.push(res[i].device_id);
+          this.LASSDeviceList.push([res[i].device_id,'LASS']);
           console.log(res[i].distance);
         }
 
         //unique
         this.LASSDeviceList = this.LASSDeviceList.filter( (value, index, self) =>{
-          return self.indexOf(value) === index;
+          return self.map(mapObj => mapObj[0]).indexOf(value[0]) === index;
         });
       }
       console.log(JSON.stringify(this.LASSDeviceList));
@@ -138,7 +135,7 @@ export class GetLassDeviceService {
     return this.http.get(this.dbURL).toPromise().then((res:Response) => {
       let body = res.json();
       return body || {};
-    }).then((dataIn)=> {
+    }).then((dataIn:any[])=> {
       //成功取得資料
       //轉換UTC時間為本地時間
       dataIn.forEach((value,index,array)=>{

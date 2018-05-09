@@ -8,12 +8,11 @@ import { Observable } from 'rxjs/Observable';
 import * as _ from "lodash";
 declare var $:any;
 
-import { GetClientInfoService } from "../../services/get-client-info.service";
+import { GetDeviceService } from "../../services/get-device.service";
 
 import { CalcAQIComponent } from "../../calc-AQI.component";
 import { GetLassDeviceService } from "../../services/get-lassdevice.service";
 import { GetUserDeviceService } from "../../services/get-user-device.service";
-import { GetLASSDataService } from "../../services/get-lassdata.service";
 import { Cookie } from 'ng2-cookies';
 
 @Component({
@@ -25,17 +24,16 @@ export class MapPageComponent {
   //Loading蓋版
   loading = false;
   constructor(private http:Http,
-              private _getClientInfoService:GetClientInfoService,
+              private _getDeviceService:GetDeviceService,
               private _getLassDeviceService:GetLassDeviceService,
-              private _getUserDeviceService:GetUserDeviceService,
-              private _getLassDataService:GetLASSDataService) {}
+              private _getUserDeviceService:GetUserDeviceService) {}
 
   private _calcAQI = new CalcAQIComponent();
   //測站資料
   public devices = [];
   public deviceDetail :Array<any> = [];
   public allDevicesDetails :Array<any> = [];
-  private tempDevices = this.deviceDetail;
+  private tempDevices = this.devices;
   private calcCenterFinish = false;
   private calcAQIFinish = false;
   protected map:any;
@@ -60,12 +58,30 @@ export class MapPageComponent {
     this._getUserDeviceService.getDevices(1,(res)=> {
       this.devices = _.cloneDeep(res);
     });
-    this._getLassDeviceService.getLassDeviceWithPromise().then((res)=>{
-      this.allDevicesDetails = _.cloneDeep(res);
-      this.convertLatLngToNumber(this.allDevicesDetails,()=>{
 
+    //取得所有測站點
+    this.allDevicesDetails = [];
+    let lassReady = false;
+    let THUReady = false;
+    //LASS
+    this._getLassDeviceService.getLassDeviceWithPromise().then((res)=>{
+      this.allDevicesDetails = this.allDevicesDetails.concat(res);
+      lassReady = true;
+      if(lassReady && THUReady) {
+      this.convertLatLngToNumber(this.allDevicesDetails, ()=> {
         this.calcAQI(this.allDevicesDetails);
       });
+      }
+    });
+    //THU
+    this._getDeviceService.getDeviceHttpWithPromise().then((res)=>{
+      this.allDevicesDetails = this.allDevicesDetails.concat(res);
+      THUReady = true;
+      if(lassReady && THUReady) {
+        this.convertLatLngToNumber(this.allDevicesDetails, ()=> {
+          this.calcAQI(this.allDevicesDetails);
+        });
+      }
     });
   }
 
@@ -77,7 +93,7 @@ export class MapPageComponent {
       this.calcCenterFinish = false;
       this.calcAQIFinish = false;
       this.allDevicesDetails.forEach((value,index,array)=>{
-        if(this.devices.indexOf(value.device_id)>=0){
+        if(this.devices.map(mapObj => mapObj[0]).indexOf(value.device_id)>=0){
           //noinspection TypeScriptUnresolvedVariable
           value.open = true;
         }else{
@@ -85,7 +101,7 @@ export class MapPageComponent {
           value.open = false;
         }
       });
-      this.getLassDeviceDetail();
+      this.getDeviceDetail();
     }
 
     if(Cookie.get("_e")!=this.tempEmail){
@@ -98,18 +114,33 @@ export class MapPageComponent {
     }
   }
 
-  private getLassDeviceDetail(){
+  private getDeviceDetail(){
     this.deviceDetail.length = 0;
     this.devices.forEach((value,index,array)=>{
-      this._getLassDeviceService.getLassDeviceById(value,(res)=>{
-        this.deviceDetail.push(res);
-        if(index==this.devices.length-1){
-          this.convertLatLngToNumber(this.deviceDetail,()=>{
-            this.calcCenter();
-            this.calcAQI(this.deviceDetail);
+      switch (value[1]) {
+        case 'LASS':
+          this._getLassDeviceService.getLassDeviceById(value[0], (res)=> {
+            this.deviceDetail.push(res);
+            if (index == this.devices.length - 1) {
+              this.convertLatLngToNumber(this.deviceDetail, ()=> {
+                this.calcCenter();
+                this.calcAQI(this.deviceDetail);
+              });
+            }
           });
-        }
-      });
+          break;
+        case 'THU':
+          this._getDeviceService.getDeviceById(value[0], (res)=>{
+            this.deviceDetail.push(res);
+            if (index == this.devices.length - 1) {
+              this.convertLatLngToNumber(this.deviceDetail, ()=> {
+                this.calcCenter();
+                this.calcAQI(this.deviceDetail);
+              });
+            }
+          });
+          break;
+      }
     });
   }
 
@@ -180,10 +211,10 @@ export class MapPageComponent {
               array[index].airQuality = "普通";
               break;
             case 3:
-              array[index].airQuality = "對敏感族群不健康 ";
+              array[index].airQuality = "對敏感族群不健康";
               break;
             case 4:
-              array[index].airQuality = "對所有族群不健康 ";
+              array[index].airQuality = "對所有族群不健康";
               break;
             case 5:
               array[index].airQuality = "非常不健康";

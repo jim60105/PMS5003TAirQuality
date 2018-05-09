@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { HistoryPageComponent } from '../history-page/history-page.component';
 import { GetSingleDataService } from "../../services/get-single-data.service";
-import { GetClientInfoService } from "../../services/get-client-info.service";
+import { GetDeviceService } from "../../services/get-device.service";
 import { GetSingleLASSDataService } from "../../services/get-single-lassdata.service";
 import { GetLassDeviceService } from "../../services/get-lassdevice.service";
 import { GetUserDeviceService } from "../../services/get-user-device.service";
@@ -19,7 +19,7 @@ import * as moment from 'moment';
 export class MainPageComponent {
     constructor(public _getRealTimeDataService:GetSingleDataService,
                 public _getLASSRealTimeDataService:GetSingleLASSDataService,
-                public _getClientInfoService:GetClientInfoService,
+                public _getClientInfoService:GetDeviceService,
                 public _getUserDeviceService:GetUserDeviceService,
                 public _getLassDeviceService:GetLassDeviceService) { }
 
@@ -27,7 +27,7 @@ export class MainPageComponent {
     //資料
     public realTimeAirData:Array<any> = this._getLASSRealTimeDataService.data;
     private tempRealTimeAirData:Array<any> = _.cloneDeep(this.realTimeAirData);
-    public clientInfo = this._getClientInfoService.clientInfo;
+    public clientInfo = this._getClientInfoService.data;
     //panel的顏色class
     public panelClass:Array<string> = [];
     public LASSDeviceList = this._getLassDeviceService.LASSDeviceList;
@@ -36,7 +36,7 @@ export class MainPageComponent {
     //Loading蓋版
     public loading = true;
     ngOnInit() {
-        //this._getClientInfoService.getClientDataHttpWithPromise().then((res)=>{
+        //this._getClientInfoService.getDeviceHttpWithPromise().then((res)=>{
         //    this.devices = res;
         //    this._getRealTimeDataService.getSingleDataHttpWithPromise().then((res)=>{
         //        this.realTimeAirData = this._getRealTimeDataService.data;

@@ -29,17 +29,14 @@ export class GetUserDeviceService {
     return this.http.post(this.dbURL,params).toPromise().then((res:Response) => {
       let body = res.json();
       return body || {};
-    }).then((dataIn)=> {
+    }).then((dataIn:any)=> {
       //成功取得資料
       this.data = [];
       dataIn.forEach((value)=>{
         //noinspection TypeScriptUnresolvedVariable
-        if(typeof value.device_id==='undefined'){
-          //noinspection TypeScriptValidateTypes
-          Cookie.set('displayNearest',value);
-        }else {
+        if(typeof value.device_id!=='undefined'){
           //noinspection TypeScriptUnresolvedVariable
-          this.data.push(value.device_id);
+          this.data.push([value.device_id,value.type]);
         }
       });
       return Promise.resolve(this.data);
@@ -54,20 +51,27 @@ export class GetUserDeviceService {
     if(Cookie.check("_p")){
       //已登入
       this.getUserDevicesHttpWithPromise().then((res)=>{
-        this._getLassDeviceService.setLASSDeviceList(res,nearestAmount);
+        this.devices = res;
+        if(res.length==0){
+          //尋找最靠近點
+          this._getLassDeviceService.setLASSDeviceList(nearestAmount);
+        }else{
+          Cookie.set('devices',JSON.stringify(res));
+          (callback && typeof(callback) === "function") && callback(this.devices);
+        }
       });
 
     }else {
       //未登入
-      this._getLassDeviceService.setLASSDeviceList([],nearestAmount);
+      this._getLassDeviceService.setLASSDeviceList(nearestAmount);
     }
     let interval = setInterval(() => {
-      this.devices = this._getLassDeviceService.LASSDeviceList;
-      if(this.devices.length!=0) {
-        Cookie.set('devices',JSON.stringify(this.devices));
-        (callback && typeof(callback) === "function") && callback(this.devices);
-        clearTimeout(interval);
-      }
+     this.devices = this._getLassDeviceService.LASSDeviceList;
+     if(this.devices.length!=0) {
+       Cookie.set('devices',JSON.stringify(this.devices));
+       (callback && typeof(callback) === "function") && callback(this.devices);
+       clearTimeout(interval);
+     }
     }, 500);
   }
 }

@@ -42,7 +42,7 @@ import { LoadingComponent } from './loading.component';
 import { PortraitWarningComponent } from './portraitWarning.component';
 import { LoginComponent } from './login/login.component';
 
-import { GetClientInfoService } from "./services/get-client-info.service";
+import { GetDeviceService } from "./services/get-device.service";
 import { GetDataService } from "./services/get-data.service";
 import { GetSingleDataService } from './services/get-single-data.service';
 import { GetLASSDataService } from "./services/get-lassdata.service";
@@ -90,7 +90,7 @@ import { SetUserDeviceService } from "./services/set-user-device.service";
     Daterangepicker,
   ],
   providers: [
-    GetClientInfoService,
+    GetDeviceService,
     GetDataService,
     GetSingleDataService,
     GetLASSDataService,
