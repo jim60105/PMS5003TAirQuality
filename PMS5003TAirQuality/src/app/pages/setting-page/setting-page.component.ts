@@ -106,8 +106,8 @@ export class SettingPageComponent {
   public deviceChange(i:number,device:String,type:String){
     //noinspection TypeScriptUnresolvedVariable
     this.userDevices[i] = [device,type];
-    while(_.findIndex(this.userDevices,[0,"請選擇測站"])>0) {
-      this.userDevices.splice(_.findIndex(this.userDevices,[0,"請選擇測站"]), 1);
+    while(_.findIndex(this.userDevices,[1,"text"])>=0) {
+      this.userDevices.splice(_.findIndex(this.userDevices,[1,"text"]), 1);
     }
     this.userDevices.push(["請選擇測站","text"]);
   }
