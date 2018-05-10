@@ -71,15 +71,15 @@ export class SettingPageComponent {
     //unique
     this.userDevices = _.uniq(this.userDevices);
     //去掉無效選項
-    if(this.userDevices.map(mapObj => mapObj[0]).indexOf('請選擇測站')){
+    if(this.userDevices.map(mapObj => mapObj[0]).indexOf('請選擇測站')>=0){
       this.userDevices.splice(this.userDevices.map(mapObj => mapObj[0]).indexOf('請選擇測站'), 1);
     }
     let test = this.userDevices.map(mapObj => mapObj[0]).indexOf('THU專題測站');
-    if(this.userDevices.map(mapObj => mapObj[0]).indexOf('THU專題測站')>0){
+    if(this.userDevices.map(mapObj => mapObj[0]).indexOf('THU專題測站')>=0){
       this.userDevices.splice(this.userDevices.map(mapObj => mapObj[0]).indexOf('THU專題測站'), 1);
     }
     test = this.userDevices.map(mapObj => mapObj[0]).indexOf('LASS專案測站');
-    if(this.userDevices.map(mapObj => mapObj[0]).indexOf('LASS專案測站')>0){
+    if(this.userDevices.map(mapObj => mapObj[0]).indexOf('LASS專案測站')>=0){
       this.userDevices.splice(this.userDevices.map(mapObj => mapObj[0]).indexOf('LASS專案測站'), 1);
     }
 

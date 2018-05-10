@@ -34,7 +34,8 @@ export class HistoryPageComponent {
               private daterangepickerOptions: DaterangepickerConfig,
               private _getLassDeviceService:GetLassDeviceService,
               private _getUserDeviceService:GetUserDeviceService,
-              private _getLassDataService:GetLASSDataService) {}
+              private _getLassDataService:GetLASSDataService,
+              private _getDeviceService:GetDeviceService) {}
   //日期選擇器
   public _DaterangepickerComponent = new DaterangepickerComponent();
   public rangeValue:Date[] = this._DaterangepickerComponent.getTimeByDate();
@@ -45,6 +46,7 @@ export class HistoryPageComponent {
   //資料
   public data:Object[] = [];
   public devices:any = (Cookie.get('devices'))?JSON.parse(Cookie.get('devices')):[];
+  public device_ids = this.devices.map(mapObj => mapObj[0]);
 
   //Loading蓋版
   public loading = true;
@@ -155,6 +157,7 @@ export class HistoryPageComponent {
       if (Cookie.get('devices')!="" && !_.isEqual(this.devices, JSON.parse(Cookie.get('devices')))) {
         this.loading = true;
         this.devices = _.cloneDeep(JSON.parse(Cookie.get('devices')));
+        this.device_ids = this.devices.map(mapObj => mapObj[0]);
         //設定列數為client數量
         this.tableRowLimit = this.devices.length;
         this.setChartsColor();
@@ -162,6 +165,8 @@ export class HistoryPageComponent {
     }catch(e){
       console.warn("Devices compare error. Error:"+e);
     }
+
+
   }
 
   private selectedDate(value: any, dateInput: any) {
@@ -171,7 +176,7 @@ export class HistoryPageComponent {
     //日期選擇改變時觸發getDataHttp
     this._DaterangepickerComponent.setTimeByDate(this.rangeValue[0],this.rangeValue[1]);
     this.loading = true;
-    this.getLASSDataHttp();
+    this.getDeviceDetail();
   }
 
   private setChartsColor(){
@@ -201,49 +206,68 @@ export class HistoryPageComponent {
 
     this.devices.forEach(function(value, index, array){
       lineChartDataTemplate.push(
-          {data: [], label: value,fill:false}
+          {data: [], label: value[0],fill:false}
       );
     });
 
     this.lineChartDataTemplate = _.cloneDeep(lineChartDataTemplate);
     this.loadedLineChartDataTemplate = true;
-    this.getLASSDataHttp();
+    this.getDeviceDetail();
   }
 
-  //獲取空汙資料
-  //public getDataHttp(){
-  //  this.lineChartStandby = false;
-  //  let params = new URLSearchParams();
-  //
-  //  params.set('minDate', this._DaterangepickerComponent.getSQLString()[0]);
-  //  params.set('maxDate', this._DaterangepickerComponent.getSQLString()[1]);
-  //
-  //  this._getDataService.getDataHttpWithPromise(params).then((res)=>{
-  //    this.data = res;
-  //    if(this.loadedLineChartDataTemplate){
-  //      this.setCharts();
-  //      this.calcPercentageData();
-  //    }
-  //  });
-  //}
-
-  //獲取空汙資料
-  public getLASSDataHttp(){
-    this.lineChartStandby = false;
-    this._getLassDataService.setParam(this.devices,this._DaterangepickerComponent.getSQLString()[0],this._DaterangepickerComponent.getSQLString()[1]);
-    this._getLassDataService.getDataHttpWithPromise().then((res)=>{
-      this.data = res;
-      if(this.loadedLineChartDataTemplate){
-        this.setCharts();
-        this.calcPercentageData();
+  private getDeviceDetail(){
+    this.data.length = 0;
+    let finishFlag = 0;
+    this.devices.forEach((value,index,array)=>{
+      switch (value[1]) {
+        case 'LASS':
+          this._getLassDataService.setParam([value[0]],this._DaterangepickerComponent.getSQLString()[0],this._DaterangepickerComponent.getSQLString()[1]);
+          this._getLassDataService.getDataHttpWithPromise().then((res)=>{
+            this.data = this.data.concat(res);
+            finishFlag++;
+            if (finishFlag == this.devices.length) {
+              if (this.loadedLineChartDataTemplate) {
+                this.setCharts();
+                this.calcPercentageData();
+              }
+            }
+          });
+          break;
+        case 'THU':
+          this._getDataService.setParam([value[0]],this._DaterangepickerComponent.getSQLString()[0],this._DaterangepickerComponent.getSQLString()[1]);
+          this._getDataService.getDataHttpWithPromise().then((res)=>{
+            this.data = this.data.concat(res);
+            finishFlag++;
+            if (finishFlag == this.devices.length) {
+              if(this.loadedLineChartDataTemplate){
+                this.setCharts();
+                this.calcPercentageData();
+              }
+            }
+          });
+          break;
       }
     });
   }
 
+  //獲取空汙資料
+  // public getLASSDataHttp(){
+  //   this.lineChartStandby = false;
+  //   this._getLassDataService.setParam(this.devices,this._DaterangepickerComponent.getSQLString()[0],this._DaterangepickerComponent.getSQLString()[1]);
+  //   this._getLassDataService.getDataHttpWithPromise().then((res)=>{
+  //     this.data = res;
+  //     if(this.loadedLineChartDataTemplate){
+  //       this.setCharts();
+  //       this.calcPercentageData();
+  //     }
+  //   });
+  // }
+
   public setCharts(){
     this.lineChartData = _.cloneDeep(this.lineChartDataTemplate);
+    this.data = _.uniqWith(this.data,_.isEqual);
     this.data.forEach((value: Object, index, array)=>{
-      this.lineChartData[this.devices.indexOf(value['device_id'])].data.push({x:value['time'],y:value[this.dataSet]});
+      this.lineChartData[this.devices.map(mapObj => mapObj[0]).indexOf(value['device_id'])].data.push({x:value['time'],y:value[this.dataSet]});
     });
     this.lineChartStandby = false;
     this.lineChartStandby = true;
@@ -257,7 +281,7 @@ export class HistoryPageComponent {
     let level10 = [55,126,255,355,425,505,605];
     let level:number[]=(this.dataSet=='pm25')?level25:level10;
 
-    this.devices.forEach((value: String, i, array)=>{
+    this.device_ids.forEach((value: String[], i, array)=>{
       percentageCount[i] = [0,0,0,0,0,0,0];
       dataCount[i] = 0;
       this.percentageData[i] = {device_id:value};
@@ -266,34 +290,34 @@ export class HistoryPageComponent {
     this.data.forEach((value: Object, index, array)=>{
       switch (true){
         case (value[this.dataSet]<level[0]):
-          percentageCount[this.devices.indexOf(value['device_id'])][0]++;
+          percentageCount[this.device_ids.indexOf(value['device_id'])][0]++;
           break;
         case (value[this.dataSet]<level[1]):
-          percentageCount[this.devices.indexOf(value['device_id'])][1]++;
+          percentageCount[this.device_ids.indexOf(value['device_id'])][1]++;
           break;
         case (value[this.dataSet]<level[2]):
-          percentageCount[this.devices.indexOf(value['device_id'])][2]++;
+          percentageCount[this.device_ids.indexOf(value['device_id'])][2]++;
           break;
         case (value[this.dataSet]<level[3]):
-          percentageCount[this.devices.indexOf(value['device_id'])][3]++;
+          percentageCount[this.device_ids.indexOf(value['device_id'])][3]++;
           break;
         case (value[this.dataSet]<level[4]):
-          percentageCount[this.devices.indexOf(value['device_id'])][4]++;
+          percentageCount[this.device_ids.indexOf(value['device_id'])][4]++;
           break;
         case (value[this.dataSet]<level[5]):
-          percentageCount[this.devices.indexOf(value['device_id'])][5]++;
+          percentageCount[this.device_ids.indexOf(value['device_id'])][5]++;
           break;
         case (value[this.dataSet]<level[6]):
-          percentageCount[this.devices.indexOf(value['device_id'])][6]++;
+          percentageCount[this.device_ids.indexOf(value['device_id'])][6]++;
           break;
       }
-      dataCount[this.devices.indexOf(value['device_id'])]++;
+      dataCount[this.device_ids.indexOf(value['device_id'])]++;
     });
     percentageCount.forEach((value, index, array)=>{
       for(let i=0;i<7;i++){
         this.percentageData[index][i] = Math.round(percentageCount[index][i]/dataCount[index]*100*100)/100 + '%';
       }
-      //this.percentageData[index][this.devices.indexOf(value['device_id'])] = index;
+      //this.percentageData[index][this.device_ids.indexOf(value['device_id'])] = index;
     });
   }
 

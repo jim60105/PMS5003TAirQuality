@@ -17,8 +17,7 @@ import * as moment from 'moment';
   styleUrls: ['./main-page.component.css']
 })
 export class MainPageComponent {
-  constructor(public _getRealTimeDataService:GetSingleDataService,
-              public _getLASSRealTimeDataService:GetSingleLASSDataService,
+  constructor(public _getLASSRealTimeDataService:GetSingleLASSDataService,
               public _getDeviceService:GetDeviceService,
               public _getUserDeviceService:GetUserDeviceService,
               public _getLassDeviceService:GetLassDeviceService) { }

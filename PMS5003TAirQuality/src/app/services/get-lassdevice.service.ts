@@ -24,10 +24,9 @@ export class GetLassDeviceService {
   private nearestAmount = 3;
 
   public setLASSDeviceList(amount: number = this.nearestAmount, callback: Function) {
-    this.LASSDeviceList = [];
     this.nearestAmount = amount;
 
-    if (Cookie.get('displayNearest') == '1' || this.LASSDeviceList.length == 0) {
+    if (Cookie.get('displayNearest') == '1' || this.LASSDeviceList.length<amount) {
       if (Cookie.check('lat') && Cookie.check('lon')) {
         this.getNearestLassDevice(callback);
       }
@@ -57,6 +56,8 @@ export class GetLassDeviceService {
         this.getNearestLassDevice(callback);
       }
 
+    }else{
+      (callback && typeof(callback) === "function") && callback(this.LASSDeviceList);
     }
   }
 
@@ -92,6 +93,8 @@ export class GetLassDeviceService {
         res.sort((a, b) => {
           return a.distance - b.distance;
         });
+
+        this.LASSDeviceList = [];
 
         //從第一個物件開始push到LASSDeviceList
         for (let i = 0; i < this.nearestAmount; i++) {
