@@ -76,7 +76,7 @@ export class AveragePageComponent {
   
   ngOnInit() {
     //獲取devices
-    //this._getClientInfoService.getDeviceHttpWithPromise().then((res)=>{
+    //this._getDeviceService.getDeviceHttpWithPromise().then((res)=>{
     //  this.devices = res;
     //  //設定列數為client數量
     //  this.tableRowLimit = this.devices.length;

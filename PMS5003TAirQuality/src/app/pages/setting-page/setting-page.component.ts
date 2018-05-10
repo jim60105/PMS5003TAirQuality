@@ -88,7 +88,7 @@ export class SettingPageComponent {
       this.loading = false;
       if (res[0] == 'true') {
         //Success
-        console.log('Set user device successful.');
+        console.log('Set user devices successful.');
         this.zone.run(()=>{window.location.hash = "#";});
       } else if (res[0] == 'insertError') {
         console.error('User devices insert error.');

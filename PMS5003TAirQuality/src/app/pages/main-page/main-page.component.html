@@ -1,9 +1,8 @@
 <div class="a-fadein">
-    <div class="row" *ngIf="realTimeAirData!==undefined">
-        <div class="col-xs-6 col-sm-4" *ngFor="let data of realTimeAirData;let idx = index">
+    <div class="row" *ngIf="deviceDetail!==undefined">
+        <div class="col-xs-6 col-sm-4" *ngFor="let data of deviceDetail;let idx = index">
             <div class="panel" *ngIf="panelClass" [ngClass]="panelClass[idx]">
                 <div class="panel-heading" style="text-align: center">
-                    <p *ngIf="data.clientNum!==undefined && clientInfo!==undefined" style="font-size: 30px;margin: 0px auto;">{{clientInfo[data.clientNum].name}}</p>
                     <p *ngIf="data.device_id!==undefined" style="font-size: 26px;margin: 0px auto;font-weight: bold;">{{data.device_id}}</p>
                     PM1: {{data.pm1||"無數據"}}<br>
                     PM2.5: {{data.pm25||"無數據"}}<br>
@@ -16,6 +15,6 @@
             </div>
         </div>
     </div>
-    <app-history-page [tableVisible]="false"></app-history-page>
+    <!--app-history-page [tableVisible]="false"></app-history-page-->
     <app-loading [loading]="loading"></app-loading>
 </div>

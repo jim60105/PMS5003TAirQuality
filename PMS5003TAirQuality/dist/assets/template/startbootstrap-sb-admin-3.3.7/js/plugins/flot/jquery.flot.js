@@ -91,11 +91,11 @@ Licensed under the MIT license.
 
 		var context = this.context = element.getContext("2d");
 
-		// Determine the screen's ratio of physical to device-independent
+		// Determine the screen's ratio of physical to devices-independent
 		// pixels.  This is the ratio between the canvas width that the browser
 		// advertises and the number of pixels actually present in that space.
 
-		// The iPhone 4, for example, has a device-independent width of 320px,
+		// The iPhone 4, for example, has a devices-independent width of 320px,
 		// but its screen is actually 640px wide.  It therefore has a pixel
 		// ratio of 2, while most normal devices have a ratio of 1.
 

@@ -52,26 +52,25 @@ export class GetUserDeviceService {
       //已登入
       this.getUserDevicesHttpWithPromise().then((res)=>{
         this.devices = res;
-        if(res.length==0){
-          //尋找最靠近點
-          this._getLassDeviceService.setLASSDeviceList(nearestAmount);
-        }else{
+        if(res.length!=0){
           Cookie.set('devices',JSON.stringify(res));
           (callback && typeof(callback) === "function") && callback(this.devices);
+        }else{
+          //尋找最靠近點
+          this._getLassDeviceService.setLASSDeviceList(nearestAmount,(res)=>{
+            this.devices = res;
+            Cookie.set('devices',JSON.stringify(this.devices));
+            (callback && typeof(callback) === "function") && callback(this.devices);
+          });
         }
       });
-
     }else {
       //未登入
-      this._getLassDeviceService.setLASSDeviceList(nearestAmount);
+      this._getLassDeviceService.setLASSDeviceList(nearestAmount,(res)=>{
+        this.devices = res;
+        Cookie.set('devices',JSON.stringify(this.devices));
+        (callback && typeof(callback) === "function") && callback(this.devices);
+      });
     }
-    let interval = setInterval(() => {
-     this.devices = this._getLassDeviceService.LASSDeviceList;
-     if(this.devices.length!=0) {
-       Cookie.set('devices',JSON.stringify(this.devices));
-       (callback && typeof(callback) === "function") && callback(this.devices);
-       clearTimeout(interval);
-     }
-    }, 500);
   }
 }

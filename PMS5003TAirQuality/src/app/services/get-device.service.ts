@@ -40,7 +40,7 @@ export class GetDeviceService {
       return Promise.resolve(dataIn);
     }).catch((err)=> {
       //失敗取得資料
-      console.warn("Warn: cannot get air device.");
+      console.warn("Warn: cannot get air devices.");
       this.data = DEVICE;
       return Promise.resolve([]);
     });

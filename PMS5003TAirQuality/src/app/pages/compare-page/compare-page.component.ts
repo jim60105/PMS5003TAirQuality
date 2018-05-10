@@ -143,7 +143,7 @@ export class ComparePageComponent{
     this.daterangepickerOptions.settings.maxDate = moment().subtract(this.duration,'day');
     this.daterangepickerOptions.settings.singleDatePicker = true;
 
-    //this._getClientInfoService.getDeviceHttpWithPromise().then((res)=>{
+    //this._getDeviceService.getDeviceHttpWithPromise().then((res)=>{
     //  this.devices = res;
     //  this.setChartsColor();
     //

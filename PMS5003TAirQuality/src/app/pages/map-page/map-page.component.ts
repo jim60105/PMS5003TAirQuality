@@ -65,16 +65,22 @@ export class MapPageComponent {
     let THUReady = false;
     //LASS
     this._getLassDeviceService.getLassDeviceWithPromise().then((res)=>{
+      res.forEach((value:any,index,array)=>{
+        value.type = 'LASS';
+      });
       this.allDevicesDetails = this.allDevicesDetails.concat(res);
       lassReady = true;
       if(lassReady && THUReady) {
-      this.convertLatLngToNumber(this.allDevicesDetails, ()=> {
-        this.calcAQI(this.allDevicesDetails);
-      });
+        this.convertLatLngToNumber(this.allDevicesDetails, ()=> {
+          this.calcAQI(this.allDevicesDetails);
+        });
       }
     });
     //THU
     this._getDeviceService.getDeviceHttpWithPromise().then((res)=>{
+      res.forEach((value:any,index,array)=>{
+        value.type = 'THU';
+      });
       this.allDevicesDetails = this.allDevicesDetails.concat(res);
       THUReady = true;
       if(lassReady && THUReady) {
@@ -153,7 +159,7 @@ export class MapPageComponent {
     if (this.map) {
       //this.map.setCenter({lat: markerObj[1], lng: markerObj[2]});
       this.devices = [];
-      this.devices.unshift(markerObj[0]);
+      this.devices.unshift([markerObj[0],markerObj[3]]);
     }
   }
 

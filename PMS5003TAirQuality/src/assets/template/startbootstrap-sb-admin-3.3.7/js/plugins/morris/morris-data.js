@@ -214,7 +214,7 @@ $(function() {
             device: 'iPhone 5',
             geekbench: 1571
         }],
-        xkey: 'device',
+        xkey: 'devices',
         ykeys: ['geekbench'],
         labels: ['Geekbench'],
         barRatio: 0.4,
