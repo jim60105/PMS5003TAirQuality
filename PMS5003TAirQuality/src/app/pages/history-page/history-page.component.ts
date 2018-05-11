@@ -215,39 +215,43 @@ export class HistoryPageComponent {
     this.getDeviceDetail();
   }
 
+  private startFlag = false;
   private getDeviceDetail(){
     this.data.length = 0;
     let finishFlag = 0;
-    this.devices.forEach((value,index,array)=>{
-      switch (value[1]) {
-        case 'LASS':
-          this._getLassDataService.setParam([value[0]],this._DaterangepickerComponent.getSQLString()[0],this._DaterangepickerComponent.getSQLString()[1]);
-          this._getLassDataService.getDataHttpWithPromise().then((res)=>{
-            this.data = this.data.concat(res);
-            finishFlag++;
-            if (finishFlag == this.devices.length) {
-              if (this.loadedLineChartDataTemplate) {
-                this.setCharts();
-                this.calcPercentageData();
+    if(!this.startFlag) {
+      this.startFlag = true;
+      this.devices.forEach((value, index, array) => {
+        switch (value[1]) {
+          case 'LASS':
+            this._getLassDataService.setParam([value[0]], this._DaterangepickerComponent.getSQLString()[0], this._DaterangepickerComponent.getSQLString()[1]);
+            this._getLassDataService.getDataHttpWithPromise().then((res) => {
+              this.data = this.data.concat(res);
+              finishFlag++;
+              if (finishFlag == this.devices.length) {
+                if (this.loadedLineChartDataTemplate) {
+                  this.setCharts();
+                  this.calcPercentageData();
+                }
               }
-            }
-          });
-          break;
-        case 'THU':
-          this._getDataService.setParam([value[0]],this._DaterangepickerComponent.getSQLString()[0],this._DaterangepickerComponent.getSQLString()[1]);
-          this._getDataService.getDataHttpWithPromise().then((res)=>{
-            this.data = this.data.concat(res);
-            finishFlag++;
-            if (finishFlag == this.devices.length) {
-              if(this.loadedLineChartDataTemplate){
-                this.setCharts();
-                this.calcPercentageData();
+            });
+            break;
+          case 'THU':
+            this._getDataService.setParam([value[0]], this._DaterangepickerComponent.getSQLString()[0], this._DaterangepickerComponent.getSQLString()[1]);
+            this._getDataService.getDataHttpWithPromise().then((res) => {
+              this.data = this.data.concat(res);
+              finishFlag++;
+              if (finishFlag == this.devices.length) {
+                if (this.loadedLineChartDataTemplate) {
+                  this.setCharts();
+                  this.calcPercentageData();
+                }
               }
-            }
-          });
-          break;
-      }
-    });
+            });
+            break;
+        }
+      });
+    }
   }
 
   //獲取空汙資料
@@ -265,7 +269,6 @@ export class HistoryPageComponent {
 
   public setCharts(){
     this.lineChartData = _.cloneDeep(this.lineChartDataTemplate);
-    this.data = _.uniqWith(this.data,_.isEqual);
     this.data.forEach((value: Object, index, array)=>{
       this.lineChartData[this.devices.map(mapObj => mapObj[0]).indexOf(value['device_id'])].data.push({x:value['time'],y:value[this.dataSet]});
     });
