@@ -133,13 +133,6 @@ export class HistoryPageComponent {
   //}
 
   ngOnInit() {
-    //this._getDeviceService.getDeviceHttpWithPromise().then((res)=>{
-    //  this.devices = res;
-    //  //設定列數為client數量
-    //  this.tableRowLimit = this.devices.length;
-    //  this.setChartsColor();
-    //});
-
     this.loading = true;
 
     this._getUserDeviceService.getDevices(3,(res)=> {

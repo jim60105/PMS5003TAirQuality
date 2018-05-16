@@ -32,6 +32,7 @@ export class AveragePageComponent {
   public data:Object[] = [];
   public avgData:Object[] = [];
   public devices:any = (Cookie.get('devices'))?JSON.parse(Cookie.get('devices')):[];
+  public device_ids = this.devices.map(mapObj => mapObj[0]);
 
   //日期選擇器
   public _DaterangepickerComponent = new DaterangepickerComponent();
@@ -75,14 +76,6 @@ export class AveragePageComponent {
   //}
   
   ngOnInit() {
-    //獲取devices
-    //this._getDeviceService.getDeviceHttpWithPromise().then((res)=>{
-    //  this.devices = res;
-    //  //設定列數為client數量
-    //  this.tableRowLimit = this.devices.length;
-    //  this.setChartsColor();
-    //});
-
     this.loading = true;
 
     this._getUserDeviceService.getDevices(3,(res)=> {
@@ -95,6 +88,21 @@ export class AveragePageComponent {
     this.daterangepickerOptions.settings = this._DaterangepickerComponent.settings;
   }
 
+  ngDoCheck() {
+    try {
+      if (Cookie.get('devices')!="" && !_.isEqual(this.devices, JSON.parse(Cookie.get('devices')))) {
+        this.loading = true;
+        this.devices = _.cloneDeep(JSON.parse(Cookie.get('devices')));
+        this.device_ids = this.devices.map(mapObj => mapObj[0]);
+        //設定列數為client數量
+        this.tableRowLimit = this.devices.length;
+        this.setChartsColor();
+      }
+    }catch(e){
+      console.warn("Devices compare error. Error:"+e);
+    }
+  }
+
   private selectedDate(value: any, dateInput: any) {
     this.rangeValue[0] = value.start;
     this.rangeValue[1] = value.end;
@@ -102,7 +110,7 @@ export class AveragePageComponent {
     //日期選擇改變時觸發getDataHttp
     this._DaterangepickerComponent.setTimeByDate(this.rangeValue[0],this.rangeValue[1]);
     this.loading = true;
-    this.getLASSDataHttp();
+    this.getDeviceDetail();
   }
 
   private setChartsColor(){
@@ -129,90 +137,88 @@ export class AveragePageComponent {
 
     this.devices.forEach(function(value,index,array){
       barChartDataTemplate.push(
-          {data: [], label: value['name']}
+          {data: [], label: value[0]}
       );
     });
 
     this.barChartDataTemplate = _.cloneDeep(barChartDataTemplate);
     this.loadedBarChartDataTemplate = true;
-    this.getLASSDataHttp();
+    this.getDeviceDetail();
   }
 
-  ////獲取空汙資料
-  //public getDataHttp(){
-  //  this.barChartStandby = false;
-  //  let params = new URLSearchParams();
-  //
-  //  params.set('minDate', this._DaterangepickerComponent.getSQLString()[0]);
-  //  params.set('maxDate', this._DaterangepickerComponent.getSQLString()[1]);
-  //
-  //  this._getDataService.getDataHttpWithPromise(params).then((res)=>{
-  //    this.data = res;
-  //
-  //    //計算平均
-  //    let temp:Object[] = [];
-  //    for(let i=0;i<this.devices.length;i++){
-  //      temp.push({'count': 0});
-  //    }
-  //    res.forEach((value,index,array)=>{
-  //      temp[value.clientNum]['pm1'] = ((temp[value.clientNum]['pm1'])?temp[value.clientNum]['pm1']:0) + Number(value['pm1']);
-  //      temp[value.clientNum]['pm25'] = ((temp[value.clientNum]['pm25'])?temp[value.clientNum]['pm25']:0) + Number(value['pm25']);
-  //      temp[value.clientNum]['pm10'] = ((temp[value.clientNum]['pm10'])?temp[value.clientNum]['pm10']:0) + Number(value['pm10']);
-  //      temp[value.clientNum]['temp'] = ((temp[value.clientNum]['temp'])?temp[value.clientNum]['temp']:0) + Number(value['temp']);
-  //      temp[value.clientNum]['humid'] = ((temp[value.clientNum]['humid'])?temp[value.clientNum]['humid']:0) + Number(value['humid']);
-  //      temp[value.clientNum]['count'] ++;
-  //    });
-  //
-  //    this.devices.forEach((value,index,array)=>{
-  //      temp[index]['clientNum'] = index;
-  //    });
-  //    temp.forEach((value,index,array)=>{
-  //      Object.keys(value).forEach((key)=> {
-  //        if(key!='count' && key!='clientNum') {
-  //          temp[index][key] = Math.round((temp[index][key]/temp[index]['count'])*100)/100;
-  //        }
-  //      });
-  //    });
-  //    this.avgData = _.cloneDeep(temp);
-  //    this.setCharts();
-  //  });
-  //}
+  private startFlag = false;
+  private getDeviceDetail(){
+    this.data.length = 0;
+    let finishFlag = 0;
+    if(!this.startFlag) {
+      this.startFlag = true;
+      this.devices.forEach((value, index, array) => {
+        switch (value[1]) {
+          case 'LASS':
+            this._getLassDataService.setParam([value[0]], this._DaterangepickerComponent.getSQLString()[0], this._DaterangepickerComponent.getSQLString()[1]);
+            this._getLassDataService.getDataHttpWithPromise().then((res) => {
+              this.data = this.data.concat(res);
+              finishFlag++;
+              if (finishFlag == this.devices.length) {
+                if (this.loadedBarChartDataTemplate) {
+                  this.calcAverageData();
+                }
+              }
+            });
+            break;
+          case 'THU':
+            this._getDataService.setParam([value[0]], this._DaterangepickerComponent.getSQLString()[0], this._DaterangepickerComponent.getSQLString()[1]);
+            this._getDataService.getDataHttpWithPromise().then((res) => {
+              this.data = this.data.concat(res);
+              finishFlag++;
+              if (finishFlag == this.devices.length) {
+                if (this.loadedBarChartDataTemplate) {
+                  this.calcAverageData();
+                }
+              }
+            });
+            break;
+        }
+      });
+    }
+  }
 
-  //獲取空汙資料
-  public getLASSDataHttp(){
+  //計算平均
+  public calcAverageData(){
     this.barChartStandby = false;
-    this._getLassDataService.setParam(this.devices,this._DaterangepickerComponent.getSQLString()[0],this._DaterangepickerComponent.getSQLString()[1]);
-    this._getLassDataService.getDataHttpWithPromise().then((res)=>{
-      this.data = res;
-      let dataSet = ['pm1','pm25','pm10','temp','humid'];
-      //計算平均
-      let temp:Object[] = [];
-      for(let i=0;i<this.devices.length;i++){
-        temp.push({
-          'count': 0,
-          'device_id':this.devices[i]
-        });
-      }
-
-      res.forEach((value,index,array)=>{
-        dataSet.forEach((value2,index,array)=> {
-          if(temp[this.devices.indexOf(value['device_id'])][value2]){
-            temp[this.devices.indexOf(value['device_id'])][value2] = temp[this.devices.indexOf(value['device_id'])][value2] + Number(value[value2]);
-          }else{
-            temp[this.devices.indexOf(value['device_id'])][value2] = Number(value[value2]);
-          }
-        });
-        temp[this.devices.indexOf(value['device_id'])]['count']++;
+    let dataSet = ['pm1','pm25','pm10','temp','humid'];
+    //計算平均
+    let temp:Object[] = [];
+    for(let i=0;i<this.device_ids.length;i++){
+      temp.push({
+        'pm1': 0,
+        'pm25': 0,
+        'pm10': 0,
+        'temp': 0,
+        'humid': 0,
+        'count': 0,
+        'device_id':this.device_ids[i]
       });
+    }
 
-      temp.forEach((value,index,array)=>{
-        dataSet.forEach((value2,index2,array)=> {
-          temp[index][value2] = Math.round((temp[index][value2]/temp[index]['count'])*100)/100;
-        });
+    this.data.forEach((value,index,array)=>{
+      dataSet.forEach((value2,index,array)=> {
+        if(temp[this.device_ids.indexOf(value['device_id'])][value2]){
+          temp[this.device_ids.indexOf(value['device_id'])][value2] = temp[this.device_ids.indexOf(value['device_id'])][value2] + Number(value[value2]);
+        }else{
+          temp[this.device_ids.indexOf(value['device_id'])][value2] = Number(value[value2]);
+        }
       });
-      this.avgData = _.cloneDeep(temp);
-      this.setCharts();
+      temp[this.device_ids.indexOf(value['device_id'])]['count']++;
     });
+
+    temp.forEach((value,index,array)=>{
+      dataSet.forEach((value2,index2,array)=> {
+        temp[index][value2] = Math.round((temp[index][value2]/temp[index]['count'])*100)/100;
+      });
+    });
+    this.avgData = _.cloneDeep(temp);
+    this.setCharts();
   }
 
   setCharts(){
@@ -221,7 +227,6 @@ export class AveragePageComponent {
       this.barChartData[index].label = value['device_id'];
       this.barChartData[index].data = [value['pm1'],value['pm25'],value['pm10'],value['humid'],value['temp']];
     });
-    this.barChartStandby = false;
     this.barChartStandby = true;
     this.loading = false;
   }
