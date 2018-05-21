@@ -162,6 +162,7 @@ export class AveragePageComponent {
               if (finishFlag == this.devices.length) {
                 if (this.loadedBarChartDataTemplate) {
                   this.calcAverageData();
+                  this.startFlag = false;
                 }
               }
             });
@@ -174,6 +175,7 @@ export class AveragePageComponent {
               if (finishFlag == this.devices.length) {
                 if (this.loadedBarChartDataTemplate) {
                   this.calcAverageData();
+                  this.startFlag = false;
                 }
               }
             });

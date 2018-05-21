@@ -20,7 +20,7 @@ import { Cookie } from 'ng2-cookies';
 })
 export class ComparePageComponent{
 
-  constructor(private _getClientInfoService:GetDeviceService,
+  constructor(public _getDeviceService:GetDeviceService,
               private _getDataService:GetDataService,
               private daterangepickerOptions: DaterangepickerConfig,
               public _getLassDeviceService:GetLassDeviceService,
@@ -31,14 +31,13 @@ export class ComparePageComponent{
   public ready = false; //Submit Btn disable
   private overBound = false;
   public errDate:boolean[] = [true,true];
-  public devices;
-  public duration:number = 6;
-  public client:number = -1;
   public data:Object[] = [];
+  public deviceList = [];
   public LASSDeviceList = this._getLassDeviceService.LASSDeviceList;
-  public userDevices:String[] = [];
-  public userDevicesTemp:String[] = [];
+  public userDevices:Array<String[]> = [];
+  public userDevice_ids:Array<String> = this.userDevices.map(mapObj => mapObj[0]);
   private displayNearest = true;
+  public duration:number = 6;
 
   //日期選擇器
   public dateRangepickerComponentArray:DaterangepickerComponent[] = [
@@ -143,14 +142,12 @@ export class ComparePageComponent{
     this.daterangepickerOptions.settings.maxDate = moment().subtract(this.duration,'day');
     this.daterangepickerOptions.settings.singleDatePicker = true;
 
-    //this._getDeviceService.getDeviceHttpWithPromise().then((res)=>{
-    //  this.devices = res;
-    //  this.setChartsColor();
-    //
-    //});
-
     this.loading = true;
-    //已登入
+
+    this._getDeviceService.getDeviceHttpWithPromise().then((res)=>{
+      res.sort(compareDevice_id);
+      this.deviceList = res;
+    });
 
     this._getLassDeviceService.getLassDeviceWithPromise().then((res)=>{
       res.sort(compareDevice_id);
@@ -158,12 +155,13 @@ export class ComparePageComponent{
     });
 
     this.userDevices = [];
+    this.userDevice_ids = [];
     this._getUserDeviceService.getDevices(2,(res)=>{
       this.displayNearest = (Cookie.get('displayNearest')=='1');
       this.userDevices = res;
-      this.userDevicesTemp = _.cloneDeep(this.userDevices);
+      this.userDevice_ids = this.userDevices.map(mapObj => mapObj[0]);
       this.dateRangepickerComponentArray = [];
-      for(let i in this.userDevices) {
+      for(let i in this.userDevice_ids) {
         this.dateRangepickerComponentArray.push(new DaterangepickerComponent(moment().subtract(this.duration, 'day').startOf('day'), moment()));
       }
       this.loading = false;
@@ -185,7 +183,7 @@ export class ComparePageComponent{
     //Generate Random Color
     let color = new RColor;
     this.colorList = [];
-    for(let i=0;i<this.userDevices.length;i++){
+    for(let i=0;i<this.userDevice_ids.length;i++){
       this.colorList.push(color.get());
     }
 
@@ -218,21 +216,19 @@ export class ComparePageComponent{
     this.loading = false;
   }
 
-  public deviceChange(i:number,device:String){
+  public deviceChange(i:number,device:String,type:String){
     //noinspection TypeScriptUnresolvedVariable
-    this.userDevices[i] = device;
-
-    let index = this.userDevices.indexOf('請選擇測站');
-    while(index>-1){
-      this.userDevices.splice(index,1);
-      index = this.userDevices.indexOf('請選擇測站');
+    this.userDevices[i] = [device,type];
+    while(_.findIndex(this.userDevices,[1,"text"])>=0) {
+      this.userDevices.splice(_.findIndex(this.userDevices,[1,"text"]), 1);
     }
+    this.userDevice_ids = this.userDevices.map(mapObj => mapObj[0]);
   }
 
 //form處理
   public addDateRangepickerComponentArray(){
 
-    this.userDevices.push('請選擇測站');
+    this.userDevices.push(['請選擇測站','text']);
     this.errDate.push(true);
     this.dateRangepickerComponentArray.push(new DaterangepickerComponent(moment().subtract(this.duration,'day').startOf('day'),moment()));
     this.setChartsColor();
@@ -241,6 +237,7 @@ export class ComparePageComponent{
 
   public deleteDateRangepickerComponentArray(index:number) {
     this.userDevices.splice(index,1);
+    this.userDevice_ids = this.userDevices.map(mapObj => mapObj[0]);
     this.errDate.splice(index,1);
     this.dateRangepickerComponentArray.splice(index,1);
     this.setChartsColor();
@@ -275,7 +272,7 @@ export class ComparePageComponent{
       }
     });
 
-    this.ready = ((this.dateRangepickerComponentArray.length > 0 && this.userDevices.length > 0) && !this.overBound);
+    this.ready = ((this.dateRangepickerComponentArray.length > 0 && this.userDevice_ids.length > 0) && !this.overBound);
   }
 
   private submit(){
@@ -283,62 +280,62 @@ export class ComparePageComponent{
     if(this.ready){
       this.loading = true;
       this.lineChartStandby = false;
-      this.data = new Array(this.userDevices.length);
-      for(let i = 0;i<this.userDevices.length;i++){
-        this.getLASSDataHttp(i);
-      }
+      this.getDeviceDetail();
     }
   }
 
   //獲取空汙資料
-  //public getDataHttp(arr,i){
-  //  let params = new URLSearchParams();
-  //
-  //  params.set('minDate', arr.getSQLString()[0]);
-  //  params.set('maxDate', arr.getSQLString()[1]);
-  //  params.set('client', this.client.toString());
-  //
-  //  this._getDataService.getDataHttpWithPromise(params).then((res)=>{
-  //    this.data[i] = res;
-  //    if(this.data.length==this.uniqueDateRangepickerComponentArray.length){
-  //      let interval = setInterval(() => {
-  //        if(this.loadedLineChartDataTemplate){
-  //          clearInterval(interval);
-  //          this.setCharts();
-  //        }
-  //      }, 400);
-  //    }
-  //  });
-  //}
-
-  //獲取空汙資料
-  public getLASSDataHttp(index:number){
-    this._getLassDataService.setParam([this.userDevices[index]],this.dateRangepickerComponentArray[index].getSQLString()[0],this.dateRangepickerComponentArray[index].getSQLString()[1]);
-    this._getLassDataService.getDataHttpWithPromise().then((res)=>{
-      this.data[index] = res;
-      if(this.data.length==this.userDevices.length){
-        let interval = setInterval(() => {
-          if(this.loadedLineChartDataTemplate){
-            clearInterval(interval);
-            this.setCharts();
-          }
-        }, 400);
-      }
-    });
+  private startFlag = false;
+  private getDeviceDetail(){
+    this.data.length = 0;
+    let finishFlag = 0;
+    if(!this.startFlag) {
+      this.startFlag = true;
+      this.userDevices.forEach((value, index, array) => {
+        switch (value[1]) {
+          case 'LASS':
+            this._getLassDataService.setParam([value[0]], this.dateRangepickerComponentArray[index].getSQLString()[0],this.dateRangepickerComponentArray[index].getSQLString()[1]);
+            this._getLassDataService.getDataHttpWithPromise().then((res) => {
+              this.data = this.data.concat(res);
+              finishFlag++;
+              if (finishFlag == this.userDevices.length) {
+                if (this.loadedLineChartDataTemplate) {
+                  this.setCharts();
+                  this.startFlag = false;
+                }
+              }
+            });
+            break;
+          case 'THU':
+            this._getDataService.setParam([value[0]],  this.dateRangepickerComponentArray[index].getSQLString()[0],this.dateRangepickerComponentArray[index].getSQLString()[1]);
+            this._getDataService.getDataHttpWithPromise().then((res) => {
+              this.data = this.data.concat(res);
+              finishFlag++;
+              if (finishFlag == this.userDevices.length) {
+                if (this.loadedLineChartDataTemplate) {
+                  this.setCharts();
+                  this.startFlag = false;
+                }
+              }
+            });
+            break;
+        }
+      });
+    }
   }
 
   public setCharts(){
     let tmp = _.cloneDeep(this.lineChartDataTemplate);
-    this.data.forEach((d:Object[], i, array)=> {
-      let base = this.dateRangepickerComponentArray[i].rangeValue[0];
-      tmp[i].label = this.userDevices[i];
-      d.forEach((value:Object, index, array)=> {
-        let tmp2 = moment.utc(moment(value['time']).valueOf() - base.valueOf());
-        tmp[i].data.push({x: tmp2.format('YYYY-MM-DD HH:mm:ss'), y: value[this.dataSet]});
-      });
+    let base = [];
+    this.userDevice_ids.forEach((value, index, array)=> {
+      tmp[index].label = value;
+      base.push(this.dateRangepickerComponentArray[index].rangeValue[0]);
+    });
+    this.data.forEach((value:Object[], index, array)=> {
+      let tmp2 = moment.utc(moment(value['time']).valueOf() - base[this.userDevice_ids.indexOf(value['device_id'])].valueOf());
+      tmp[this.userDevice_ids.indexOf(value['device_id'])].data.push({x: tmp2.format('YYYY-MM-DD HH:mm:ss'), y: value[this.dataSet]});
     });
     this.lineChartData = _.cloneDeep(tmp);
-    this.lineChartStandby = false;
     this.lineChartStandby = true;
     this.loading = false;
   }
