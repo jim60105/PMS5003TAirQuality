@@ -29,9 +29,9 @@ export class GetDataService {
     this.params = new URLSearchParams();
     this.device_idList = device;
     this.params.set('device_id', JSON.stringify(device));
-    this.minDate = moment(minDate).utc().format('YYYY-MM-DD HH:mm:ss');
+    this.minDate = moment(minDate).format('YYYY-MM-DD HH:mm:ss');
     this.params.set('minDate', this.minDate);
-    this.maxDate = moment(maxDate).utc().format('YYYY-MM-DD HH:mm:ss');
+    this.maxDate = moment(maxDate).format('YYYY-MM-DD HH:mm:ss');
     this.params.set('maxDate', this.maxDate);
     this.isSetParam = true;
   }
