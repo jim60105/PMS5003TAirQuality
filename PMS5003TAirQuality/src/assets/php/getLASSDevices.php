@@ -2,10 +2,11 @@
 include('setMySQL.php');
 //include('encrypt.php');
 
-//清理過期devices
 $db = new PDO('mysql:host='.$dbhost.';dbname='.$dbname.';port='.$port,$dbuser,$dbpass);
-$stmt = $db->prepare("DELETE FROM `lassdevice` WHERE `time` < DATE_SUB(UTC_TIMESTAMP(), INTERVAL 6 HOUR)");
-$stmt->execute();
+
+//清理過期devices
+//$stmt = $db->prepare("DELETE FROM `lassdevice` WHERE `time` < DATE_SUB(UTC_TIMESTAMP(), INTERVAL 6 HOUR)");
+//$stmt->execute();
 
 $arr = array();
 

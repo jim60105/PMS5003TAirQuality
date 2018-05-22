@@ -144,17 +144,19 @@ export class GetLassDeviceService {
         for (let key in this.data) {
           if (this.data[key]['device_id'] == id) {
             (callback && typeof(callback) === "function") && callback(this.data[key]);
-            break;
+            return;
           }
         }
+        (callback && typeof(callback) === "function") && callback(undefined);
       });
     } else {
       for (let key in this.data) {
         if (this.data[key]['device_id'] == id) {
           (callback && typeof(callback) === "function") && callback(this.data[key]);
-          break;
+          return;
         }
       }
+      (callback && typeof(callback) === "function") && callback(undefined);
     }
   }
 }

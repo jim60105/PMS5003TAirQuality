@@ -225,6 +225,7 @@ export class HistoryPageComponent {
                 if (this.loadedLineChartDataTemplate) {
                   this.setCharts();
                   this.calcPercentageData();
+                  this.startFlag = false;
                 }
               }
             });
@@ -238,6 +239,7 @@ export class HistoryPageComponent {
                 if (this.loadedLineChartDataTemplate) {
                   this.setCharts();
                   this.calcPercentageData();
+                  this.startFlag = false;
                 }
               }
             });

@@ -43,15 +43,15 @@ export class GetDataService {
       return this.http.get(this.dbURL, {search: this.params}).toPromise().then((res:Response) => {
         let body = res.json();
         return body || {};
-      }).then((dataIn)=> {
+      }).then((dataIn:Array<any>)=> {
         //成功取得資料
-        ////轉換UTC時間為本地時間
-        //dataIn.forEach((value,index,array)=>{
+        //轉換UTC時間為本地時間
+        // dataIn.forEach((value,index,array)=>{
         //  //noinspection TypeScriptUnresolvedVariable
         //  let tt = moment.utc(value.time);
         //  //noinspection TypeScriptUnresolvedVariable
         //  array[index].time = tt.local().format('YYYY-MM-DD HH:mm:ss');
-        //});
+        // });
         this.data = dataIn;
         return Promise.resolve(this.data);
       }).catch((err)=> {
