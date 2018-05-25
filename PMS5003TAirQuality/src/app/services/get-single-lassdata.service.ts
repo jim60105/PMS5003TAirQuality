@@ -20,7 +20,7 @@ export class GetSingleLASSDataService {
   //重複獲取資料的定時器
   private getDataInterval: any;
   //php位置
-  private dbURL = "assets/php/getLASSByTimeByIdSingleData.php";
+  private dbURL = "assets/php/getLASSByTimeByIdSingleData";
   //查詢對象
   public device_idList:String[] = [];
   public time:String = "";

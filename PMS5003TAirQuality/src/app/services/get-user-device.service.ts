@@ -17,7 +17,7 @@ export class GetUserDeviceService {
   //資料
   public data:Array<any> = [];
   //php位置
-  private dbURL = "assets/php/getUserDevices.php";
+  private dbURL = "assets/php/getUserDevices";
   private devices:String[];
   //獲取登入資料
   public getUserDevicesHttpWithPromise(){

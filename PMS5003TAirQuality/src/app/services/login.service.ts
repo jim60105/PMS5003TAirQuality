@@ -12,7 +12,7 @@ export class LoginService {
   //資料
   public data:Array<any> = [];
   //php位置
-  private dbURL = "assets/php/login.php";
+  private dbURL = "assets/php/login";
 
   //獲取登入資料
   public loginHttpWithPromise(params:any = new URLSearchParams()){

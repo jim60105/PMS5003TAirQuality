@@ -13,7 +13,7 @@ export class GetDataService {
   //資料
   public data:Array<any> = [];
   //php位置
-  private dbURL = "assets/php/getDBByTimeById.php";
+  private dbURL = "assets/php/getDBByTimeById";
   //查詢參數
   public device_idList:String[] = [];
   public minDate:String = "";

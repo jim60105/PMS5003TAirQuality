@@ -20,7 +20,7 @@ export class GetSingleDataService {
   //重複獲取資料的定時器
   private getDataInterval: any;
   //php位置
-  private dbURL = "assets/php/getDBByTimeSingleData.php";
+  private dbURL = "assets/php/getDBByTimeSingleData";
 
   //生命週期結束時清理掉定時器
   ngOnDestroy() {

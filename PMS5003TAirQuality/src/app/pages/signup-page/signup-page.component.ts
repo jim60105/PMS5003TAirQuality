@@ -23,7 +23,7 @@ export class SignupPageComponent{
   //資料
   public data:Array<any> = [];
   //php位置
-  private dbURL = "assets/php/registration.php";
+  private dbURL = "assets/php/registration";
   private _e = "";
   private _p = "";
   private _p2 = "";

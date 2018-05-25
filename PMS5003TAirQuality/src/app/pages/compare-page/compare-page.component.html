@@ -38,7 +38,7 @@
                                 <span class="caret"></span>
                             </button>
                             <ul ngbDropdownMenu class="dropdown-menu">
-                                <li (click)="deviceChange(i,'請選擇測站','text')"><a href="javascript:void(0);">請選擇測站</a></li>
+                                <li (click)="deviceChange(i,'取消選擇','text')"><a href="javascript:void(0);">請選擇測站</a></li>
                                 <li role="separator" class="divider"></li>
                                 <li (click)="deviceChange(i,'THU專題測站','text')"><a href="javascript:void(0);" style="font-weight: bold">THU專題測站</a></li>
                                 <li *ngFor="let device of deviceList" (click)="deviceChange(i,device.device_id,'THU')"><a href="javascript:void(0);">{{device.device_id}}</a></li>

@@ -13,7 +13,7 @@ export class SetUserDeviceService {
   //資料
   public data:Array<any> = [];
   //php位置
-  private dbURL = "assets/php/setUserDevices.php";
+  private dbURL = "assets/php/setUserDevices";
 
   //獲取登入資料
   public setUserDevicesHttpWithPromise(deviceList:any,displayNearest:Boolean = true){

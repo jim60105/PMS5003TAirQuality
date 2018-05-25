@@ -12,7 +12,7 @@ export class GetLASSDataService {
   //資料
   public data:Array<any> = [];
   //php位置
-  private dbURL = "assets/php/getLASSByTimeById.php";
+  private dbURL = "assets/php/getLASSByTimeById";
   //查詢參數
   public device_idList:String[] = [];
   public minDate:String = "";

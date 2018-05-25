@@ -296,7 +296,7 @@ export class ComparePageComponent{
           case 'LASS':
             this._getLassDataService.setParam([value[0]], this.dateRangepickerComponentArray[index].getSQLString()[0],this.dateRangepickerComponentArray[index].getSQLString()[1]);
             this._getLassDataService.getDataHttpWithPromise().then((res) => {
-              this.data = this.data.concat(res);
+              this.data[index] = res;
               finishFlag++;
               if (finishFlag == this.userDevices.length) {
                 if (this.loadedLineChartDataTemplate) {
@@ -309,7 +309,7 @@ export class ComparePageComponent{
           case 'THU':
             this._getDataService.setParam([value[0]],  this.dateRangepickerComponentArray[index].getSQLString()[0],this.dateRangepickerComponentArray[index].getSQLString()[1]);
             this._getDataService.getDataHttpWithPromise().then((res) => {
-              this.data = this.data.concat(res);
+              this.data[index] = res;
               finishFlag++;
               if (finishFlag == this.userDevices.length) {
                 if (this.loadedLineChartDataTemplate) {
@@ -326,14 +326,15 @@ export class ComparePageComponent{
 
   public setCharts(){
     let tmp = _.cloneDeep(this.lineChartDataTemplate);
-    let base = [];
     this.userDevice_ids.forEach((value, index, array)=> {
       tmp[index].label = value;
-      base.push(this.dateRangepickerComponentArray[index].rangeValue[0]);
     });
     this.data.forEach((value:Object[], index, array)=> {
-      let tmp2 = moment.utc(moment(value['time']).valueOf() - base[this.userDevice_ids.indexOf(value['device_id'])].valueOf());
-      tmp[this.userDevice_ids.indexOf(value['device_id'])].data.push({x: tmp2.format('YYYY-MM-DD HH:mm:ss'), y: value[this.dataSet]});
+      let tmp2;
+      value.forEach((value2,index2,array2)=>{
+        tmp2 = moment.utc(moment(value2['time']).valueOf() - this.dateRangepickerComponentArray[index].rangeValue[0].valueOf());
+        tmp[index].data.push({x: tmp2.format('YYYY-MM-DD HH:mm:ss'), y: value2[this.dataSet]});
+      });
     });
     this.lineChartData = _.cloneDeep(tmp);
     this.lineChartStandby = true;

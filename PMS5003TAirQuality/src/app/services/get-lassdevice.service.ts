@@ -18,7 +18,7 @@ export class GetLassDeviceService {
   //資料
   public data: Array<any> = [];
   //php位置
-  private dbURL = "assets/php/getLASSDevices.php";
+  private dbURL = "assets/php/getLASSDevices";
 
   public LASSDeviceList: any[] = [];
   private nearestAmount = 3;

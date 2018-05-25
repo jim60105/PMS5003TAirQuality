@@ -18,7 +18,7 @@ export class GetDeviceService {
   //資料
   public data:Array<any>;
   //php位置
-  private dbURL = "assets/php/getDBDevice.php";
+  private dbURL = "assets/php/getDBDevice";
 
   //獲取測站資料
   public getDeviceHttpWithPromise(){
