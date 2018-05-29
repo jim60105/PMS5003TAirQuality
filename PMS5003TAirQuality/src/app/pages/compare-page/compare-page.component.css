@@ -20,3 +20,8 @@
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
+hr{
+    margin: 5px 15px -5px;
+    width: calc(100% - 65px);
+}

@@ -52,6 +52,7 @@ import { LoginService } from "./services/login.service";
 import { GetLassDeviceService } from "./services/get-lassdevice.service";
 import { GetUserDeviceService } from "./services/get-user-device.service";
 import { SetUserDeviceService } from "./services/set-user-device.service";
+import { SetUserSettingsService } from "./services/set-user-settings.service";
 
 @NgModule({
   declarations: [
@@ -99,7 +100,8 @@ import { SetUserDeviceService } from "./services/set-user-device.service";
     LoginService,
     GetLassDeviceService,
     GetUserDeviceService,
-    SetUserDeviceService
+    SetUserDeviceService,
+    SetUserSettingsService
   ],
   bootstrap: [AppComponent]
 })

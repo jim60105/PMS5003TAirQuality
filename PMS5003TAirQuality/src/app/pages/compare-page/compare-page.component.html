@@ -32,31 +32,32 @@
                     </div>
                 </div>
                 <div class="row" *ngFor="let userDevice of userDevices; let i = index">
-                        <div ngbDropdown class="dropdown col-xs-6 col-sm-3 col-md-2">
-                            <button class="btn btn-default dropdown-toggle" type="button" ngbDropdownToggle data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                {{userDevices[i][0]}}
-                                <span class="caret"></span>
-                            </button>
-                            <ul ngbDropdownMenu class="dropdown-menu">
-                                <li (click)="deviceChange(i,'取消選擇','text')"><a href="javascript:void(0);">請選擇測站</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li (click)="deviceChange(i,'THU專題測站','text')"><a href="javascript:void(0);" style="font-weight: bold">THU專題測站</a></li>
-                                <li *ngFor="let device of deviceList" (click)="deviceChange(i,device.device_id,'THU')"><a href="javascript:void(0);">{{device.device_id}}</a></li>
+                    <div ngbDropdown class="dropdown col-xs-6 col-sm-3 col-md-2">
+                        <button class="btn btn-default dropdown-toggle" type="button" ngbDropdownToggle data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            {{userDevices[i][0]}}
+                            <span class="caret"></span>
+                        </button>
+                        <ul ngbDropdownMenu class="dropdown-menu">
+                            <li (click)="deviceChange(i,'取消選擇','text')"><a href="javascript:void(0);">請選擇測站</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li (click)="deviceChange(i,'THU專題測站','text')"><a href="javascript:void(0);" style="font-weight: bold">THU專題測站</a></li>
+                            <li *ngFor="let device of deviceList" (click)="deviceChange(i,device.device_id,'THU')"><a href="javascript:void(0);">{{device.device_id}}</a></li>
 
-                                <li role="separator" class="divider"></li>
-                                <li (click)="deviceChange(i,'LASS專案測站','text')"><a href="javascript:void(0);" style="font-weight: bold">LASS專案測站</a></li>
-                                <li *ngFor="let device of LASSDeviceList" (click)="deviceChange(i,device.device_id,'LASS')"><a href="javascript:void(0);">{{device.device_id}}</a></li>
-                            </ul>
-                        </div>
+                            <li role="separator" class="divider"></li>
+                            <li (click)="deviceChange(i,'LASS專案測站','text')"><a href="javascript:void(0);" style="font-weight: bold">LASS專案測站</a></li>
+                            <li *ngFor="let device of LASSDeviceList" (click)="deviceChange(i,device.device_id,'LASS')"><a href="javascript:void(0);">{{device.device_id}}</a></li>
+                        </ul>
+                    </div>
 
-                        <span class="input-group col-xs-6 col-sm-4 col-md-4 dateRangePicker" daterangepicker [ngClass]="{'red':!errDate[i], flashing:!errDate[i]}" (selected)="selectedDate($event, dateRangepickerComponentArray[i], i)">
-                            <span class="form-control uneditable-input" name="daterange" style="max-height: 34px">
-                                {{ dateRangepickerComponentArray[i].getTimeByDate()[0] | date:'y-M-d'}}
-                            </span>
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-default"><i class="glyphicon glyphicon-calendar"></i></button>
-                            </span>
+                    <span class="input-group col-xs-6 col-sm-4 col-md-4 dateRangePicker" daterangepicker [ngClass]="{'red':!errDate[i], flashing:!errDate[i]}" (selected)="selectedDate($event, dateRangepickerComponentArray[i], i)">
+                        <span class="form-control uneditable-input" name="daterange" style="max-height: 34px">
+                            {{ dateRangepickerComponentArray[i].getTimeByDate()[0] | date:'y-M-d'}}
                         </span>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                    </span>
+                    <hr class="col-xs-12">
                 </div>
                 <div class="btn btn-default" (click)="addDateRangepickerComponentArray()">
                     + Add

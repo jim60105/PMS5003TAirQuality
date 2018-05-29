@@ -4,10 +4,14 @@ import { GetDeviceService } from "../../services/get-device.service";
 import { GetLassDeviceService } from "../../services/get-lassdevice.service";
 import { GetUserDeviceService } from "../../services/get-user-device.service";
 import { SetUserDeviceService } from "../../services/set-user-device.service";
+import { SetUserSettingsService } from "../../services/set-user-settings.service";
+import { LoginService } from "../../services/login.service";
 
 import { Cookie } from 'ng2-cookies';
 //noinspection TypeScriptCheckImport
 import * as _ from "lodash";
+import {URLSearchParams} from "@angular/http";
+import {DaterangepickerComponent} from "../../daterangepicker.component";
 @Component({
   selector: 'app-setting-page',
   templateUrl: './setting-page.component.html',
@@ -19,16 +23,20 @@ export class SettingPageComponent {
               public _getLassDeviceService:GetLassDeviceService,
               public _getUserDeviceService:GetUserDeviceService,
               public _setUserDeviceService:SetUserDeviceService,
+              public _setUserSettingsService:SetUserSettingsService,
+              private _loginService: LoginService,
               private zone:NgZone) { }
 
   public LASSDeviceList = this._getLassDeviceService.LASSDeviceList;
   public deviceList = [];
   public userDevices:Array<String[]> = [];
   public userDevicesTemp:Array<String[]> = [];
-  private _p:String = '';
-  private _p2:String = '';
   private displayNearest = true;
   private loading = false;
+  private iftttKey = '';
+  public iftttDevices:Array<any[]> = [];
+  public iftttDevicesTemp:Array<String[]> = [];
+  public AQIString = ['離線','良好','普通','對敏感族群不健康','對所有族群不健康','非常不健康','危害'];
 
   ngOnInit() {
     this.loading = true;
@@ -51,10 +59,10 @@ export class SettingPageComponent {
     this._getUserDeviceService.getUserDevicesHttpWithPromise().then((res)=>{
       this.displayNearest = (Cookie.get('displayNearest')=='1');
       this.userDevices = res;
-      this.userDevices.push(["請選擇測站","text"]);
       this.userDevicesTemp = _.cloneDeep(this.userDevices);
       this.loading = false;
     });
+    this.iftttKey = Cookie.get('iftttKey');
   }
 
   private compareDevice_id(a,b) {
@@ -65,7 +73,19 @@ export class SettingPageComponent {
     return 0;
   }
 
-  public saveSettings(){
+  public deviceChange(i:number,device:String,type:String){
+    //noinspection TypeScriptUnresolvedVariable
+    this.userDevices[i] = [device,type];
+    while(_.findIndex(this.userDevices,[1,"text"])>=0) {
+      this.userDevices.splice(_.findIndex(this.userDevices,[1,"text"]), 1);
+    }
+  }
+
+  public addUserDevice(){
+    this.userDevices.push(["請選擇測站","text"]);
+  }
+
+  public saveDeviceSettings(){
     this.loading = true;
     //測站設定
     //unique
@@ -74,45 +94,76 @@ export class SettingPageComponent {
     if(this.userDevices.map(mapObj => mapObj[0]).indexOf('請選擇測站')>=0){
       this.userDevices.splice(this.userDevices.map(mapObj => mapObj[0]).indexOf('請選擇測站'), 1);
     }
-    let test = this.userDevices.map(mapObj => mapObj[0]).indexOf('THU專題測站');
     if(this.userDevices.map(mapObj => mapObj[0]).indexOf('THU專題測站')>=0){
       this.userDevices.splice(this.userDevices.map(mapObj => mapObj[0]).indexOf('THU專題測站'), 1);
     }
-    test = this.userDevices.map(mapObj => mapObj[0]).indexOf('LASS專案測站');
     if(this.userDevices.map(mapObj => mapObj[0]).indexOf('LASS專案測站')>=0){
       this.userDevices.splice(this.userDevices.map(mapObj => mapObj[0]).indexOf('LASS專案測站'), 1);
     }
 
+    this.userDevicesTemp = _.cloneDeep(this.userDevices);
     //送出
     this._setUserDeviceService.setUserDevicesHttpWithPromise(this.userDevices,this.displayNearest).then((res)=> {
       this.loading = false;
       if (res[0] == 'true') {
         //Success
-        console.log('Set user devices successful.');
-        this.zone.run(()=>{window.location.hash = "#";});
+        console.log('Save user devices successful.');
+        alert('儲存設定OK');
+        //this.zone.run(()=>{window.location.hash = "#";});
       } else if (res[0] == 'insertError') {
         console.error('User devices insert error.');
       } else if (res[0] == 'loginError') {
         console.error('User login error.');
       }
     });
-
-
-
-    //TODO 密碼變更
-
   }
 
-  public deviceChange(i:number,device:String,type:String){
+  public deviceChange2(i:number,device:String,type:String){
     //noinspection TypeScriptUnresolvedVariable
-    this.userDevices[i] = [device,type];
-    while(_.findIndex(this.userDevices,[1,"text"])>=0) {
-      this.userDevices.splice(_.findIndex(this.userDevices,[1,"text"]), 1);
+    this.iftttDevices[i][0] = device;
+    this.iftttDevices[i][1] = type;
+  }
+  public deviceChange2_1(i:number,airType:String){
+    //noinspection TypeScriptUnresolvedVariable
+    this.iftttDevices[i][2] = airType;
+  }
+  public deviceChange2_2(i:number,AQI:number){
+    //noinspection TypeScriptUnresolvedVariable
+    this.iftttDevices[i][3] = AQI;
+  }
+
+  public addIftttDevice(){
+    this.iftttDevices.push(['請選擇測站','text','AQI',6]);
+  }
+
+  public saveIFTTTSettings(){
+    this.loading = true;
+
+    while(_.findIndex(this.iftttDevices,[1,"text"])>=0) {
+      this.iftttDevices.splice(_.findIndex(this.iftttDevices,[1,"text"]), 1);
     }
-    this.userDevices.push(["請選擇測站","text"]);
+
+    this.iftttDevicesTemp = _.cloneDeep(this.iftttDevices);
+    this._setUserSettingsService.setIftttKey(this.iftttKey);
+    this._setUserSettingsService.setUserSettingsHttpWithPromise().then((res)=>{
+      this.loading = false;
+      if (res[0] == 'true') {
+        //Success
+        console.log('Save user devices successful.');
+        Cookie.set('iftttKey',this.iftttKey);
+        alert('儲存設定OK');
+        //this.zone.run(()=>{window.location.hash = "#";});
+      } else if (res[0] == 'updateError') {
+        console.error('User settings update error.');
+      } else if (res[0] == 'loginError') {
+        console.error('User login error.');
+      }
+    });
   }
 
   private reset(){
     this.userDevices = _.cloneDeep(this.userDevicesTemp);
+    this.iftttKey = Cookie.get('iftttKey');
+    this.iftttDevices = _.cloneDeep(this.iftttDevicesTemp);
   }
 }

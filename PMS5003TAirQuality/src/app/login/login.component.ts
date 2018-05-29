@@ -27,32 +27,28 @@ export class LoginComponent{
   }
 
   public isLoginCheck(callback?){
-    this.isLogin = (Cookie.check('_e') && Cookie.check('_p'))?(this.isLogin = true):(this.isLogin = false);
+    this.isLogin = (Cookie.check('_e') && Cookie.check('_p'));
 
     //如果在其他頁進行登入，則跳轉到首頁
-    if(this.isLogin && window.location.hash!='#'){
-      window.location.hash='#';
-    }
+    // if(this.isLogin && window.location.hash!='#'){
+    //   window.location.hash='#';
+    // }
 
     (callback && typeof(callback) === "function") && callback();
   }
 
   public login(){
-    let params = new URLSearchParams();
-    params.set('_e', this._e);
-    params.set('_p', this._p);
+    this._loginService.setParam(this._e,this._p);
+    this._loginService.loginHttpWithPromise().then((res)=>{
 
-    this._loginService.loginHttpWithPromise(params).then((res)=>{
       if(res['_p']!==undefined) {
-        //正常登入
-        Cookie.set('_e', res['_e']);
-        Cookie.set('_p', res['_p']);
         this._p = "";
         this.isLoginCheck(()=>{
           //location.reload();
         });
       }else if(res['_e']!==undefined){
         alert("密碼輸入錯誤!");
+        Cookie.delete('_p');
         this._p = "";
       }else{
         alert("帳號不存在!");
@@ -62,9 +58,8 @@ export class LoginComponent{
         console.warn("Login Error:"+res.toString);
       }
     });
-
-
   }
+
   public logout(){
     this.isLogin = false;
     Cookie.delete('_e');
