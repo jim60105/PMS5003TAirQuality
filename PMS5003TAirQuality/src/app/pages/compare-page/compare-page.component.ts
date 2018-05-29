@@ -183,7 +183,7 @@ export class ComparePageComponent{
     //Generate Random Color
     let color = new RColor;
     this.colorList = [];
-    for(let i=0;i<this.userDevice_ids.length;i++){
+    for(let i=0;i<this.userDevices.length;i++){
       this.colorList.push(color.get());
     }
 
@@ -204,10 +204,9 @@ export class ComparePageComponent{
   private setLineChartDataTemplate(){
     let lineChartDataTemplate:Array<any> = [];
 
-    this.dateRangepickerComponentArray.forEach((value:DaterangepickerComponent, index, array)=> {
-      let base = value.rangeValue[0].format('YYYY-MM-DD');
+    this.userDevices.forEach((value:any[], index, array)=> {
       lineChartDataTemplate.push(
-          {data: [], label: base,fill:false}
+          {data: [], label: '',fill:false}
       );
     });
 
@@ -220,7 +219,7 @@ export class ComparePageComponent{
     //noinspection TypeScriptUnresolvedVariable
     this.userDevices[i] = [device,type];
     while(_.findIndex(this.userDevices,[1,"text"])>=0) {
-      this.userDevices.splice(_.findIndex(this.userDevices,[1,"text"]), 1);
+      this.deleteDateRangepickerComponentArray(_.findIndex(this.userDevices,[1,"text"]));
     }
     this.userDevice_ids = this.userDevices.map(mapObj => mapObj[0]);
   }
