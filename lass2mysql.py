@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Author: jim60105@gmail.com
-# Version: v18.04.20.2
+# Version: v18.05.30.2
 
 import paho.mqtt.client as mqtt
 import re
@@ -8,6 +8,8 @@ import mysql.connector
 import ast
 import traceback
 import datetime
+import requests
+import json as json
 
 MQTT_SERVER = "gpssensor.ddns.net"
 MQTT_PORT = 1883
@@ -137,6 +139,30 @@ def on_message(client, userdata, msg):
                 'VALUES (NULL, %(device_id)s, %(time)s, %(s_d2)s, %(s_d1)s, %(s_d0)s, %(temp)s, %(humid)s, %(s_g8)s)')
             cur.execute(query,tempDict)
             conn.commit()
+                
+            # flush以後檢查iftttDeviceList，並做通知
+            # SELECT `a`.*,`b`.`iftttKey` FROM `useriftttdevice` as `a`,`user` as `b` WHERE `type` = 'LASS' AND `device_id` = 'FT1_005' AND `air_type` = 'AQI' AND `monitor_value` <= 6 AND `a`.`user_no` = `b`.`no`
+            def sendIFTTT(iftttDevice,avgData):
+                try:
+                    # print ('URL: ' + 'https://maker.ifttt.com/trigger/AirAlert/with/key/' + iftttDevice['iftttKey'], sep='\n', flush=True)
+                    r = requests.post('https://maker.ifttt.com/trigger/AirAlert/with/key/' + iftttDevice['iftttKey'], json = {'value1':avgData['device_id'],'value2':iftttDevice['air_type'],'value3':avgData[iftttDevice['air_type']]})
+                    # print ('IFTTT sended.', sep='\n', flush=True)
+                except Exception as e:  # This is the correct syntax
+                    print ('ERR: '+e, sep='\n', flush=True)
+            
+            def checkIFTTTDevice(avgData):
+                query = ('SELECT `a`.*,`b`.`iftttKey` FROM `useriftttdevice` as `a`,`user` as `b` '
+                    'WHERE `type` = "LASS" '
+                    'AND `device_id` = %(device_id)s '
+                    'AND `a`.`user_no` = `b`.`no`')
+                cur.execute(query,avgData)
+                rows = cur.fetchall()
+                conn.commit()
+                for row in rows:
+                    if row['monitor_value'] <= avgData[row['air_type']]:
+                        sendIFTTT(row,avgData)
+                
+            # flush: 每次檢查時間排序頭尾的差距，如果大於10分鐘，則丟一筆平均進資料庫，然後把queue裡的砍掉
             def checkFlush():
                 query = ('SELECT TIMESTAMPDIFF(MINUTE,'
                     '(SELECT time FROM lassdataqueue WHERE device_id = %(device_id)s ORDER BY time ASC LIMIT 1),'
@@ -168,10 +194,10 @@ def on_message(client, userdata, msg):
                 for k,v in row.items():
                     if v == None:
                         row[k] = 'Null'
+                        
                 row['device_id'] = tempDict['device_id']
                 row['timediff'] = tempDict['timediff']
                 row['startTime'] = tempDict['startTime']
-                
                         
                 query = ('INSERT INTO lassdata (`no`, `device_id`, `time`, `pm1`, `pm10`, `pm25`, `temp`, `humid`, `co2`) '
                 'VALUES (NULL, %(device_id)s, (SELECT TIMESTAMPADD(MINUTE, %(timediff)s, %(startTime)s)), %(pm1)s, %(pm10)s, %(pm25)s, %(temp)s, %(humid)s, %(co2)s)')
@@ -181,7 +207,9 @@ def on_message(client, userdata, msg):
                 query = ('DELETE FROM lassdataqueue WHERE device_id = %(device_id)s;')
                 cur.execute(query,tempDict)
                 conn.commit()
-            # check & flush
+                
+                checkIFTTTDevice(row)
+                
             while checkFlush()>10:
                 doFlush()
                 
