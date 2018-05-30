@@ -28,7 +28,7 @@ export class SetUserDeviceService {
     return this.http.post(this.dbURL,params).toPromise().then((res:Response) => {
       let body = res.json();
       return body || {};
-    }).then((dataIn)=> {
+    }).then((dataIn:any)=> {
       //成功取得資料
       this.data = dataIn;
       return Promise.resolve(this.data);

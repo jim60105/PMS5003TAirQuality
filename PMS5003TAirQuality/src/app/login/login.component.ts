@@ -41,12 +41,13 @@ export class LoginComponent{
     this._loginService.setParam(this._e,this._p);
     this._loginService.loginHttpWithPromise().then((res)=>{
 
-      if(res['_p']!==undefined) {
+      if(res[0]['_p']!==undefined) {
         this._p = "";
         this.isLoginCheck(()=>{
           //location.reload();
+
         });
-      }else if(res['_e']!==undefined){
+      }else if(res[0]['_e']!==undefined){
         alert("密碼輸入錯誤!");
         Cookie.delete('_p');
         this._p = "";

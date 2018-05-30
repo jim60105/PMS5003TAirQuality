@@ -31,13 +31,16 @@ export class LoginService {
       this.data = dataIn;
 
       //正常登入
-      if(dataIn['_p']!==undefined) {
-        Cookie.set('_e', dataIn['_e']);
-        Cookie.set('_p', dataIn['_p']);
-        if(!dataIn['iftttKey']) {
+      if(dataIn[0]['_p']!==undefined) {
+        Cookie.set('_e', dataIn[0]['_e']);
+        Cookie.set('_p', dataIn[0]['_p']);
+        if(!dataIn[0]['iftttKey']) {
           Cookie.set('iftttKey', '');
         }else{
-          Cookie.set('iftttKey', dataIn['iftttKey']);
+          Cookie.set('iftttKey', dataIn[0]['iftttKey']);
+        }
+        if(dataIn[1]!==undefined) {
+          Cookie.set('iftttDevice',JSON.stringify(dataIn[1]));
         }
       }
 

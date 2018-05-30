@@ -20,7 +20,6 @@ if ($type == 1) {
 
 function checkLogin($doEcho)
 {
-
     //登入
     $db = new PDO('mysql:host=' . $GLOBALS['dbhost'] . ';dbname=' . $GLOBALS['dbname'], $GLOBALS['dbuser'], $GLOBALS['dbpass']);
     $db->query('set names utf8;');
@@ -40,6 +39,14 @@ function checkLogin($doEcho)
 
             $GLOBALS['loginSuccess'] = true;
             $GLOBALS['displayNearest'] = $row['useNearest'];
+
+            if($doEcho){
+                echo '[';
+                echo json_encode($row);
+                echo ',';
+                echo json_encode(getIFTTT($row['no']));
+                echo ']';
+            }
         } else {
             //密碼錯誤
             $row['_e'] = $row['email'];
@@ -48,9 +55,26 @@ function checkLogin($doEcho)
 
             $GLOBALS['loginSuccess'] = false;
             $GLOBALS['displayNearest'] = 0;
+            if($doEcho){
+                echo '[';
+                echo json_encode($row);
+                echo ']';
+            }
         }
+
     }
 
-    if($doEcho){echo json_encode($row);}
+}
+
+function getIFTTT($no){
+    //登入
+    $db = new PDO('mysql:host=' . $GLOBALS['dbhost'] . ';dbname=' . $GLOBALS['dbname'], $GLOBALS['dbuser'], $GLOBALS['dbpass']);
+    $db->query('set names utf8;');
+    $stmt = $db->prepare("SELECT * FROM useriftttdevice WHERE user_no = :user_no;");
+    $stmt->bindValue(':user_no', $no);
+    $stmt->execute();
+    $row = $stmt->fetchAll();
+
+    return $row;
 }
 ?>

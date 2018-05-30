@@ -13,3 +13,7 @@ ul, li{
 .navbar-nav{
     margin-left: 0px;
 }
+.nav-second-level {
+    padding-left: 1em;
+    font-size: 0.9em;
+}

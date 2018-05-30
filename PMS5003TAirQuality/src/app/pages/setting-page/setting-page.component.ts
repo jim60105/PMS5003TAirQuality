@@ -42,27 +42,34 @@ export class SettingPageComponent {
     this.loading = true;
     if(!Cookie.check("_p")) {
       document.location.hash="#";
+    }else {
+      //已登入
+
+      this._getDeviceService.getDeviceHttpWithPromise().then((res) => {
+        res.sort(this.compareDevice_id);
+        this.deviceList = res;
+      });
+
+      this._getLassDeviceService.getLassDeviceWithPromise().then((res) => {
+        res.sort(this.compareDevice_id);
+        this.LASSDeviceList = res;
+      });
+
+      this.userDevices = [];
+      this._getUserDeviceService.getUserDevicesHttpWithPromise().then((res) => {
+        this.displayNearest = (Cookie.get('displayNearest') == '1');
+        this.userDevices = res;
+        this.userDevicesTemp = _.cloneDeep(this.userDevices);
+        this.loading = false;
+      });
+      this.iftttKey = Cookie.get('iftttKey');
+      this.iftttDevices.length = 0;
+      let iftttDeviceFromCookie:Array<any> = JSON.parse(Cookie.get('iftttDevice'));
+      iftttDeviceFromCookie.forEach((value,index,array)=>{
+        this.iftttDevices.push([value['device_id'],value['type'],value['air_type'],value['monitor_value']]);
+      });
+      this.iftttDevicesTemp = _.cloneDeep(this.iftttDevices);
     }
-    //已登入
-
-    this._getDeviceService.getDeviceHttpWithPromise().then((res)=>{
-      res.sort(this.compareDevice_id);
-      this.deviceList = res;
-    });
-
-    this._getLassDeviceService.getLassDeviceWithPromise().then((res)=>{
-      res.sort(this.compareDevice_id);
-      this.LASSDeviceList = res;
-    });
-
-    this.userDevices = [];
-    this._getUserDeviceService.getUserDevicesHttpWithPromise().then((res)=>{
-      this.displayNearest = (Cookie.get('displayNearest')=='1');
-      this.userDevices = res;
-      this.userDevicesTemp = _.cloneDeep(this.userDevices);
-      this.loading = false;
-    });
-    this.iftttKey = Cookie.get('iftttKey');
   }
 
   private compareDevice_id(a,b) {
@@ -145,14 +152,17 @@ export class SettingPageComponent {
 
     this.iftttDevicesTemp = _.cloneDeep(this.iftttDevices);
     this._setUserSettingsService.setIftttKey(this.iftttKey);
+    this._setUserSettingsService.setIftttDevice(this.iftttDevices);
     this._setUserSettingsService.setUserSettingsHttpWithPromise().then((res)=>{
       this.loading = false;
       if (res[0] == 'true') {
         //Success
         console.log('Save user devices successful.');
         Cookie.set('iftttKey',this.iftttKey);
-        alert('儲存設定OK');
-        //this.zone.run(()=>{window.location.hash = "#";});
+        this._loginService.loginHttpWithPromise().then(()=>{
+          alert('儲存設定OK');
+          //this.zone.run(()=>{window.location.hash = "#";});
+        });
       } else if (res[0] == 'updateError') {
         console.error('User settings update error.');
       } else if (res[0] == 'loginError') {

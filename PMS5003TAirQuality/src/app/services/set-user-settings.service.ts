@@ -15,9 +15,14 @@ export class SetUserSettingsService {
   //php位置
   private dbURL = "assets/php/setUserSettings";
   private iftttKey:string = Cookie.get('iftttKey');
+  private iftttDevices = [];
 
   public setIftttKey(key:string){
     this.iftttKey = key;
+  }
+
+  public setIftttDevice(devices:Array<any>){
+    this.iftttDevices = devices;
   }
 
   //獲取登入資料
@@ -27,6 +32,7 @@ export class SetUserSettingsService {
     params.set('_e', Cookie.get('_e'));
     params.set('_p', Cookie.get('_p'));
     params.set('iftttKey', this.iftttKey);
+    params.set('iftttDevices',JSON.stringify(this.iftttDevices));
 
     //noinspection TypeScriptUnresolvedFunction
     return this.http.post(this.dbURL,params).toPromise().then((res:Response) => {
