@@ -2,10 +2,10 @@
 -- version 4.7.7
 -- https://www.phpmyadmin.net/
 --
--- 主機: 127.0.0.1
--- 產生時間： 2018-03-20 09:31:14
--- 伺服器版本: 10.1.30-MariaDB
--- PHP 版本： 7.1.14
+-- 主機: localhost
+-- 產生時間： 2018 年 05 月 30 日 05:41
+-- 伺服器版本: 10.1.31-MariaDB
+-- PHP 版本： 7.2.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -21,6 +21,8 @@ SET time_zone = "+00:00";
 --
 -- 資料庫： `air`
 --
+CREATE DATABASE IF NOT EXISTS `air` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `air`;
 
 -- --------------------------------------------------------
 
@@ -40,7 +42,34 @@ CREATE TABLE IF NOT EXISTS `airdata` (
   PRIMARY KEY (`no`),
   KEY `time` (`time`),
   KEY `clientNum` (`clientNum`)
-) ENGINE=InnoDB AUTO_INCREMENT=52380 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=74817 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `airdatadevice`
+--
+
+CREATE TABLE IF NOT EXISTS `airdatadevice` (
+  `clientNum` int(11) NOT NULL AUTO_INCREMENT,
+  `device_id` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
+  `app` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `device` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `gps_lat` double DEFAULT NULL,
+  `gps_lon` double DEFAULT NULL,
+  `gps_alt` int(11) DEFAULT NULL,
+  `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `pm1` float DEFAULT NULL,
+  `pm10` float DEFAULT NULL,
+  `pm25` float DEFAULT NULL,
+  `temp` float DEFAULT NULL,
+  `humid` float DEFAULT NULL,
+  `co2` float DEFAULT NULL,
+  `ThingSpeakWriteKey` tinytext COLLATE utf8_unicode_ci,
+  `ThingSpeakReadKey` tinytext COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`clientNum`),
+  KEY `device_id` (`device_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -58,23 +87,7 @@ CREATE TABLE IF NOT EXISTS `airdataqueue` (
   `humid` float DEFAULT NULL,
   `clientNum` int(11) DEFAULT NULL,
   PRIMARY KEY (`no`)
-) ENGINE=InnoDB AUTO_INCREMENT=533539 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- 資料表結構 `clientinfo`
---
-
-CREATE TABLE IF NOT EXISTS `clientinfo` (
-  `no` int(11) NOT NULL AUTO_INCREMENT,
-  `name` text COLLATE utf8_unicode_ci,
-  `lat` double NOT NULL,
-  `lng` double NOT NULL,
-  `ThingSpeakWriteKey` tinytext COLLATE utf8_unicode_ci,
-  `ThingSpeakReadKey` tinytext COLLATE utf8_unicode_ci,
-  PRIMARY KEY (`no`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=755780 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -95,7 +108,7 @@ CREATE TABLE IF NOT EXISTS `lassdata` (
   PRIMARY KEY (`no`),
   KEY `device_id` (`device_id`),
   KEY `time` (`time`)
-) ENGINE=InnoDB AUTO_INCREMENT=1238988 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1591008 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -116,7 +129,7 @@ CREATE TABLE IF NOT EXISTS `lassdataqueue` (
   PRIMARY KEY (`no`),
   KEY `device_id` (`device_id`),
   KEY `time` (`time`)
-) ENGINE=InnoDB AUTO_INCREMENT=8375 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31557410 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -128,9 +141,9 @@ CREATE TABLE IF NOT EXISTS `lassdevice` (
   `device_id` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   `app` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   `device` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `gps_lat` float DEFAULT NULL,
-  `gps_lon` float DEFAULT NULL,
-  `gps_alt` float DEFAULT NULL,
+  `gps_lat` double DEFAULT NULL,
+  `gps_lon` double DEFAULT NULL,
+  `gps_alt` int(11) DEFAULT NULL,
   `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `pm1` float DEFAULT NULL,
   `pm10` float DEFAULT NULL,
@@ -153,8 +166,9 @@ CREATE TABLE IF NOT EXISTS `user` (
   `email` longtext COLLATE utf8_unicode_ci NOT NULL,
   `password` longtext COLLATE utf8_unicode_ci NOT NULL,
   `useNearest` tinyint(1) NOT NULL DEFAULT '0',
+  `iftttKey` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`no`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -165,10 +179,29 @@ CREATE TABLE IF NOT EXISTS `user` (
 CREATE TABLE IF NOT EXISTS `userdevice` (
   `no` int(11) NOT NULL AUTO_INCREMENT,
   `user_no` int(11) NOT NULL,
+  `type` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
   `device_id` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`no`),
   KEY `user_no` (`user_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=176 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `useriftttdevice`
+--
+
+CREATE TABLE IF NOT EXISTS `useriftttdevice` (
+  `no` int(11) NOT NULL AUTO_INCREMENT,
+  `user_no` int(11) NOT NULL,
+  `type` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `device_id` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
+  `air_type` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `monitor_value` int(11) NOT NULL,
+  PRIMARY KEY (`no`),
+  KEY `user_no` (`user_no`),
+  KEY `device_id` (`device_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
