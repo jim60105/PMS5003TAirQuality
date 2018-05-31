@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Author: jim60105@gmail.com
-# Version: v18.05.30.2
+# Version: v18.05.31.0
 
 import paho.mqtt.client as mqtt
 import re
@@ -10,7 +10,7 @@ import traceback
 import datetime
 import requests
 import json as json
-
+            
 MQTT_SERVER = "gpssensor.ddns.net"
 MQTT_PORT = 1883
 MQTT_ALIVE = 60
@@ -128,7 +128,7 @@ def on_message(client, userdata, msg):
         tempDict['gps_alt'] = 'NULL'
     
     try:
-        query = ('SELECT * FROM `lassdata` WHERE `device_id` = %(device_id)s AND `time` = %(time)s')
+        query = ('SELECT * FROM `lassdataqueue` WHERE `device_id` = %(device_id)s AND `time` = %(time)s')
         cur.execute(query,tempDict)
         rows = cur.fetchall()
         conn.commit()
@@ -140,15 +140,58 @@ def on_message(client, userdata, msg):
             cur.execute(query,tempDict)
             conn.commit()
                 
-            # flush以後檢查iftttDeviceList，並做通知
-            # SELECT `a`.*,`b`.`iftttKey` FROM `useriftttdevice` as `a`,`user` as `b` WHERE `type` = 'LASS' AND `device_id` = 'FT1_005' AND `air_type` = 'AQI' AND `monitor_value` <= 6 AND `a`.`user_no` = `b`.`no`
+            def calcAQI(pm25,pm10):
+                temp25 = 0;
+                temp10 = 0;
+
+                # 顏色及數值依照政府標準
+                # https://taqm.epa.gov.tw/taqm/tw/b0201.aspx
+                if pm25<=15.4:                        # green
+                    temp25 = 1
+                elif pm25<=35.4:    # yellow
+                    temp25 = 2
+                elif pm25<=54.4:    # orange
+                    temp25 = 3
+                elif pm25<=150.4:   # red
+                    temp25 = 4
+                elif pm25<=250.4:  # purple
+                    temp25 = 5
+                else:                       # maroon
+                    temp25 = 6
+                
+                if pm10<=54:
+                    temp10 = 1
+                elif pm10<=125:
+                    temp10 = 2
+                elif pm10<=254:
+                    temp10 = 3
+                elif pm10<=354:
+                    temp10 = 4
+                elif pm10<=424:
+                    temp10 = 5
+                else:
+                    temp10 = 6
+                return max(temp10, temp25)
+            # Flush以後檢查iftttDeviceList，並做通知
             def sendIFTTT(iftttDevice,avgData):
+                if iftttDevice['air_type'] == 'AQI':
+                    select = {
+                        0:'(離線)',
+                        1:'良好',
+                        2:'普通',
+                        3:'對敏感族群不健康',
+                        4:'對所有族群不健康',
+                        5:'非常不健康',
+                        6:'危害'
+                    }
+                    avgData['AQI'] = select[avgData['AQI']]
+                    # print (avgData['AQI'], sep='\n', flush=True)
                 try:
                     # print ('URL: ' + 'https://maker.ifttt.com/trigger/AirAlert/with/key/' + iftttDevice['iftttKey'], sep='\n', flush=True)
                     r = requests.post('https://maker.ifttt.com/trigger/AirAlert/with/key/' + iftttDevice['iftttKey'], json = {'value1':avgData['device_id'],'value2':iftttDevice['air_type'],'value3':avgData[iftttDevice['air_type']]})
                     # print ('IFTTT sended.', sep='\n', flush=True)
-                except Exception as e:  # This is the correct syntax
-                    print ('ERR: '+e, sep='\n', flush=True)
+                except requests.exceptions.RequestException as e:  # This is the correct syntax
+                    print ('Post IFTTT error: '+e, sep='\n', flush=True)
             
             def checkIFTTTDevice(avgData):
                 query = ('SELECT `a`.*,`b`.`iftttKey` FROM `useriftttdevice` as `a`,`user` as `b` '
@@ -159,10 +202,13 @@ def on_message(client, userdata, msg):
                 rows = cur.fetchall()
                 conn.commit()
                 for row in rows:
+                    if row['air_type'] == 'AQI':
+                        # print ('calcAQI'+ str(calcAQI(avgData['pm25'],avgData['pm10'])), sep='\n', flush=True)
+                        avgData['AQI'] = calcAQI(avgData['pm25'],avgData['pm10'])
                     if row['monitor_value'] <= avgData[row['air_type']]:
                         sendIFTTT(row,avgData)
-                
-            # flush: 每次檢查時間排序頭尾的差距，如果大於10分鐘，則丟一筆平均進資料庫，然後把queue裡的砍掉
+            
+            # Flush: 每次檢查時間排序頭尾的差距，如果大於10分鐘，則丟一筆平均進資料庫，然後把queue裡的砍掉
             def checkFlush():
                 query = ('SELECT TIMESTAMPDIFF(MINUTE,'
                     '(SELECT time FROM lassdataqueue WHERE device_id = %(device_id)s ORDER BY time ASC LIMIT 1),'

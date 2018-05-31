@@ -160,7 +160,11 @@ export class SettingPageComponent {
         console.log('Save user devices successful.');
         Cookie.set('iftttKey',this.iftttKey);
         this._loginService.loginHttpWithPromise().then(()=>{
-          alert('儲存設定OK');
+          if(res[0]['_p']!==undefined) {
+            alert('儲存設定OK');
+          }else{
+            alert('驗證失敗，請重新登入!');
+          }
           //this.zone.run(()=>{window.location.hash = "#";});
         });
       } else if (res[0] == 'updateError') {
