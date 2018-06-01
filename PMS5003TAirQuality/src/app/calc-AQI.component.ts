@@ -7,7 +7,7 @@ export class CalcAQIComponent{
         //noinspection TypeScriptUnresolvedVariable
         let AQI = this.calc(value.pm25, value.pm10);
 
-        if((moment().valueOf()-moment(value.time).valueOf())>3600000){
+        if((moment().valueOf()-moment(value.time).valueOf())>1000*60*60*24){
           AQI = 0;
         }
 

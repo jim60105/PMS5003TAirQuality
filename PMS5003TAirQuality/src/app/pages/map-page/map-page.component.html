@@ -14,7 +14,8 @@
                 <div class="col-md">
                     <div class="panel floatPanel" [ngClass]="device.class" *ngFor="let device of deviceDetail">
                         <div class="panel-heading" style="text-align: center">
-                            <p *ngIf="device.device_id!==undefined" style="font-size: 26px;margin: 0px auto;font-weight: bold;">{{device.device_id}}</p>
+                            <p *ngIf="device.name!==undefined" style="font-size: 26px;margin: 0px auto;font-weight: bold;">{{device.name}}</p>
+                            <p *ngIf="device.name==undefined" style="font-size: 26px;margin: 0px auto;font-weight: bold;">{{device.device_id}}</p>
                             PM1: {{device.pm1||"無數據"}}<br>
                             PM2.5: {{device.pm25||"無數據"}}<br>
                             PM10: {{device.pm10||"無數據"}}<br>

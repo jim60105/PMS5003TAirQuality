@@ -53,6 +53,9 @@ import { GetLassDeviceService } from "./services/get-lassdevice.service";
 import { GetUserDeviceService } from "./services/get-user-device.service";
 import { SetUserDeviceService } from "./services/set-user-device.service";
 import { SetUserSettingsService } from "./services/set-user-settings.service";
+import { GetHttpTemplateService } from "./services/get-http-template.service";
+import { GetHttpEdimaxService } from "./services/get-http-edimax.service";
+import { GetHttpEpaService } from "./services/get-http-epa.service";
 
 @NgModule({
   declarations: [
@@ -101,7 +104,10 @@ import { SetUserSettingsService } from "./services/set-user-settings.service";
     GetLassDeviceService,
     GetUserDeviceService,
     SetUserDeviceService,
-    SetUserSettingsService
+    SetUserSettingsService,
+    GetHttpTemplateService,
+    GetHttpEdimaxService,
+    GetHttpEpaService
   ],
   bootstrap: [AppComponent]
 })

@@ -163,7 +163,7 @@ export class SettingPageComponent {
           if(res[0]['_p']!==undefined) {
             alert('儲存設定OK');
           }else{
-            alert('驗證失敗，請重新登入!');
+            alert('登入逾時，請重新登入!');
           }
           //this.zone.run(()=>{window.location.hash = "#";});
         });

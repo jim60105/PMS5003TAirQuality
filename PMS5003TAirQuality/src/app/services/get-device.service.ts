@@ -26,7 +26,7 @@ export class GetDeviceService {
     return this.http.get(this.dbURL).toPromise().then((res:Response) => {
       let body = res.json();
       return body || {};
-    }).then((dataIn)=> {
+    }).then((dataIn:any)=> {
       //成功取得資料
       ////轉換UTC時間為本地時間
       //dataIn.forEach((value,index,array)=>{

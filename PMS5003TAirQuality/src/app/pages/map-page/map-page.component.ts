@@ -14,6 +14,7 @@ import { GetDeviceService } from "../../services/get-device.service";
 import { CalcAQIComponent } from "../../calc-AQI.component";
 import { GetLassDeviceService } from "../../services/get-lassdevice.service";
 import { GetUserDeviceService } from "../../services/get-user-device.service";
+import { GetHttpEdimaxService } from "../../services/get-http-edimax.service";
 import { Cookie } from 'ng2-cookies';
 
 @Component({
@@ -27,7 +28,8 @@ export class MapPageComponent {
   constructor(private http:Http,
               private _getDeviceService:GetDeviceService,
               private _getLassDeviceService:GetLassDeviceService,
-              private _getUserDeviceService:GetUserDeviceService) {}
+              private _getUserDeviceService:GetUserDeviceService,
+              private _getHttpEdimaxService:GetHttpEdimaxService) {}
 
   private _calcAQI = new CalcAQIComponent();
   //測站資料
@@ -65,14 +67,16 @@ export class MapPageComponent {
     this.allDevicesDetails = [];
     let lassReady = false;
     let THUReady = false;
+    let edimaxReady = false;
     //LASS
     this._getLassDeviceService.getLassDeviceWithPromise().then((res)=>{
       res.forEach((value:any,index,array)=>{
         value.type = 'LASS';
+        value.name = '[LASS]' + value.device_id;
       });
       this.allDevicesDetails = this.allDevicesDetails.concat(res);
       lassReady = true;
-      if(lassReady && THUReady) {
+      if(lassReady && THUReady && edimaxReady) {
         this.convertLatLngToNumber(this.allDevicesDetails, ()=> {
           this.calcAQI(this.allDevicesDetails);
         });
@@ -82,10 +86,22 @@ export class MapPageComponent {
     this._getDeviceService.getDeviceHttpWithPromise().then((res)=>{
       res.forEach((value:any,index,array)=>{
         value.type = 'THU';
+        value.name = '[THU]' + value.device_id;
       });
       this.allDevicesDetails = this.allDevicesDetails.concat(res);
       THUReady = true;
-      if(lassReady && THUReady) {
+      if(lassReady && THUReady && edimaxReady) {
+        this.convertLatLngToNumber(this.allDevicesDetails, ()=> {
+          this.calcAQI(this.allDevicesDetails);
+        });
+      }
+    });
+
+    //Edimax
+    this._getHttpEdimaxService.getHttpWithPromise().then((res:Array<any>)=>{
+      this.allDevicesDetails = this.allDevicesDetails.concat(res);
+      edimaxReady = true;
+      if(lassReady && THUReady && edimaxReady) {
         this.convertLatLngToNumber(this.allDevicesDetails, ()=> {
           this.calcAQI(this.allDevicesDetails);
         });
@@ -100,15 +116,15 @@ export class MapPageComponent {
       this.mapDisplay = false;
       this.calcCenterFinish = false;
       this.calcAQIFinish = false;
-      this.allDevicesDetails.forEach((value,index,array)=>{
-        if(this.devices.map(mapObj => mapObj[0]).indexOf(value.device_id)>=0){
-          //noinspection TypeScriptUnresolvedVariable
-          value.open = true;
-        }else{
-          //noinspection TypeScriptUnresolvedVariable
-          value.open = false;
-        }
-      });
+      // this.allDevicesDetails.forEach((value,index,array)=>{
+      //   if(this.devices.map(mapObj => mapObj[0]).indexOf(value.device_id)>=0){
+      //     //noinspection TypeScriptUnresolvedVariable
+      //     value.open = true;
+      //   }else{
+      //     //noinspection TypeScriptUnresolvedVariable
+      //     value.open = false;
+      //   }
+      // });
       this.getDeviceDetail();
     }
 
@@ -159,6 +175,21 @@ export class MapPageComponent {
                 });
               }
             });
+            break;
+          case 'Edimax':
+            this.allDevicesDetails.forEach((v,index,array)=>{
+              if(v['device_id']==value[0]){
+                this.deviceDetail.push(v);
+              }
+            });
+            finishFlag++;
+            if (finishFlag == this.devices.length) {
+              this.convertLatLngToNumber(this.deviceDetail, () => {
+                this.calcCenter();
+                this.calcAQI(this.deviceDetail);
+                this.startFlag = false;
+              });
+            }
             break;
         }
       });
