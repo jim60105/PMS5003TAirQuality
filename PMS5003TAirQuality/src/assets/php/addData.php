@@ -33,7 +33,7 @@ if(isset($_GET["clientNum"])){
 
 
 ////check and flush the queue
-while(checkFlush($db,$clientNum)>10){
+while(checkFlush($db,$clientNum)>=10){
     doFlush($db,$clientNum);
 }
 
@@ -53,9 +53,8 @@ function doFlush($db,$clientNum){
     $row = $stmt->fetch();
     $startRow = $row['time'];
 
-    $stmt = $db->prepare("SELECT AVG(pm1) AS pm1, AVG(pm10) AS pm10, AVG(pm25) AS pm25, AVG(temp) AS temp, AVG(humid) AS humid FROM airdataqueue WHERE clientNum = :clientNum AND time BETWEEN :startRow AND (SELECT TIMESTAMPADD(MINUTE, 10, :startRow));");
+    $stmt = $db->prepare("SELECT AVG(pm1) AS pm1, AVG(pm10) AS pm10, AVG(pm25) AS pm25, AVG(temp) AS temp, AVG(humid) AS humid FROM airdataqueue WHERE clientNum = :clientNum;");
     $stmt->bindValue(':clientNum',$clientNum);
-    $stmt->bindValue(':startRow',$startRow);
     $stmt->execute();
     $row = $stmt->fetch();
 
@@ -64,8 +63,6 @@ function doFlush($db,$clientNum){
             $row[$key] = 0;
         }
     }
-
-    updateThingSpeak($db,$row);
 
     $stmt = $db->prepare("INSERT INTO airdata (no, time, pm1, pm10, pm25, temp, humid, clientNum) VALUES (NULL, (SELECT TIMESTAMPADD(MINUTE, 5, :startRow)), :pm1, :pm10, :pm25, :temp, :humid, :clientNum);");
     $stmt->bindValue(':startRow',$startRow);
@@ -77,15 +74,57 @@ function doFlush($db,$clientNum){
     $stmt->bindValue(':clientNum',$clientNum);
     $stmt->execute();
 
-    $stmt = $db->prepare("DELETE FROM airdataqueue WHERE clientNum = :clientNum AND time BETWEEN :startRow AND (SELECT TIMESTAMPADD(MINUTE, 10, :startRow));");
+    checkIFTTTDevice($db,$row,$clientNum);
+    updateThingSpeak($db,$row);
+
+    $stmt = $db->prepare("DELETE FROM `airdataqueue` WHERE `clientNum` = :clientNum;");
     $stmt->bindValue(':clientNum',$clientNum);
-    $stmt->bindValue(':startRow',$startRow);
     $stmt->execute();
+}
+
+function checkIFTTTDevice($db,$avgData,$clientNum){
+    $stmt = $db->prepare("SELECT `a`.*,`b`.`iftttKey`,`c`.`device_id` as `airdatadevice-device_id` FROM `useriftttdevice` as `a`,`user` as `b`, `airdatadevice` as `c` WHERE `c`.`clientNum` = :clientNum AND `a`.`device_id` = `c`.`device_id` AND `a`.`user_no` = `b`.`no` AND `a`.`type` = 'THU'");
+    $stmt->bindValue(':clientNum',$clientNum);
+    $stmt->execute();
+    foreach($stmt as $row){
+        if ($row['air_type'] == 'AQI'){
+            $avgData['AQI'] = calcAQI($avgData['pm25'],$avgData['pm10']);
+        }
+        if ($row['monitor_value'] <= $avgData[$row['air_type']]){
+            sendIFTTT($row,$avgData);
+        }
+    }
+}
+
+function sendIFTTT($iftttDevice,$avgData){
+    if ($iftttDevice['air_type'] == 'AQI') {
+        $AQIString = ['(離線)', '良好', '普通', '對敏感族群不健康', '對所有族群不健康', '非常不健康', '危害'];
+        $avgData['AQI'] = $AQIString[$avgData['AQI']];
+    }
+    $url = "https://maker.ifttt.com/trigger/AirAlert/with/key/" . $iftttDevice['iftttKey'];
+    $param = array('value1' => $iftttDevice['device_id'], 'value2' => $iftttDevice['air_type'], 'value3' => $avgData[$iftttDevice['air_type']]);
+    echo json_encode($param);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_REFERER, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($param));
+
+    $result = curl_exec($ch);
+
+    curl_close($ch);
+//    if ($result < 1) {
+//        error_log("Send IFTTT error: result=" . $result . " url=" . $url . " param = " . $param);
+//    }
+
 }
 
 function updateThingSpeak($db,$row){
     if(isset($_GET["clientNum"])) {
-        $stmt = $db->prepare("SELECT ThingSpeakWriteKey FROM clientinfo WHERE no = :clientNum");
+        $stmt = $db->prepare("SELECT ThingSpeakWriteKey FROM airdatadevice WHERE clientNum = :clientNum");
         $stmt->bindValue(':clientNum', $_GET["clientNum"]);
         $stmt->execute();
         $writeKey = $stmt->fetch();
@@ -114,6 +153,56 @@ function updateThingSpeak($db,$row){
             error_log("UpdateThingSpeak error: result=".$result." url=".$url." writeKey =".$writeKey);
         }
     }
+}
+
+function calcAQI($pm25,$pm10)
+{
+    $temp25 = 0;
+    $temp10 = 0;
+
+    # 顏色及數值依照政府標準
+    # https://taqm.epa.gov.tw/taqm/tw/b0201.aspx
+    switch (true){
+        case ($pm25<=15.4):                        //green
+            $temp25 = 1;
+            break;
+        case ($pm25>=15.5 && $pm25<=35.4):    //yellow
+            $temp25 = 2;
+            break;
+        case ($pm25>=35.5 && $pm25<=54.4):    //orange
+            $temp25 = 3;
+            break;
+        case ($pm25>=54.5 && $pm25<=150.4):   //red
+            $temp25 = 4;
+            break;
+        case ($pm25>=150.5 && $pm25<=250.4):  //purple
+            $temp25 = 5;
+            break;
+        case ($pm25>=250.5):                       //maroon
+            $temp25 = 6;
+            break;
+    }
+    switch (true){
+        case ($pm10<=54):
+            $temp10 = 1;
+            break;
+        case ($pm10>=55 && $pm10<=125):
+            $temp10 = 2;
+            break;
+        case ($pm10>=126 && $pm10<=254):
+            $temp10 = 3;
+            break;
+        case ($pm10>=255 && $pm10<=354):
+            $temp10 = 4;
+            break;
+        case ($pm10>=355 && $pm10<=424):
+            $temp10 = 5;
+            break;
+        case ($pm10>=425):
+            $temp10 = 6;
+            break;
+    }
+    return max($temp10, $temp25);
 }
 ?>
 

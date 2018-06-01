@@ -159,7 +159,7 @@ export class SettingPageComponent {
         //Success
         console.log('Save user devices successful.');
         Cookie.set('iftttKey',this.iftttKey);
-        this._loginService.loginHttpWithPromise().then(()=>{
+        this._loginService.loginHttpWithPromise().then((res)=>{
           if(res[0]['_p']!==undefined) {
             alert('儲存設定OK');
           }else{
