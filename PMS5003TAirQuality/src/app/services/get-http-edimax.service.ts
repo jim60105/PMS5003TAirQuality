@@ -7,7 +7,6 @@ import * as moment from 'moment';
 import { GetHttpTemplateService } from './get-http-template.service';
 @Injectable()
 export class GetHttpEdimaxService extends GetHttpTemplateService{
-
   public data;
   //url位置
   public useProxy = true;
@@ -17,22 +16,27 @@ export class GetHttpEdimaxService extends GetHttpTemplateService{
   public afterRequestSuccess(dataIn:any){
     let data;
     data = dataIn['feeds'];
-    let tt;
     data.forEach((value,index,array)=>{
-      //noinspection TypeScriptUnresolvedVariable
-      tt = moment(value['timestamp']);
-      //noinspection TypeScriptUnresolvedVariable
-      value['time'] = tt.format('YYYY-MM-DD HH:mm:ss');
+      value['time'] = yyyymmdd(new Date(value['timestamp']));
       value['temp'] = value['s_t0'];
       value['humid'] = value['s_h0'];
       value['pm1'] = value['s_d2'];
       value['pm25'] = value['s_d0'];
       value['pm10'] = value['s_d1'];
-      value['device'] = value['odm'];
-      value['app'] = value['type'];
+      value['device'] = value['app'];
       value['type'] = 'Edimax';
-      value['name'] = '[Edimax]' + value['SiteName'];
     });
     return data;
+
+    function yyyymmdd(date):string {
+      return date.getFullYear()+'-'+
+        (date.getMonth()>8 ? '' : '0') + (Number(date.getMonth()) + 1)+'-'+
+        (date.getDate()>9 ? '' : '0') + date.getDate()+' '+
+        (date.getHours()>9 ? '' : '0') + date.getHours()+':'+
+        (date.getMinutes()>9 ? '' : '0') + date.getMinutes()+':'+
+        (date.getSeconds()>9 ? '' : '0') + date.getSeconds();
+    };
   };
+
+
 }

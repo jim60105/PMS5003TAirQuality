@@ -244,9 +244,12 @@ export class MapPageComponent {
     this.bounds.west = lngMin-0.002;
     this.bounds.north = latMin-0.005;
     this.bounds.east = lngMax+0.002;
+    // if (this.map) {
+    //   this.map.fitBounds(this.bounds);
+    // }
     this.calcCenterFinish = true;
-    this.loading = !(this.calcAQIFinish && this.calcCenterFinish);
-    this.mapDisplay = !this.loading;
+    this.mapDisplay = (this.calcAQIFinish && this.calcCenterFinish);
+    this.loading = !this.mapDisplay;
   }
 
   private calcAQI(data:Array<any>){
@@ -256,8 +259,8 @@ export class MapPageComponent {
       });
 
       this.calcAQIFinish = true;
-      this.loading = !(this.calcAQIFinish && this.calcCenterFinish);
-      this.mapDisplay = !this.loading;
+      this.mapDisplay = (this.calcAQIFinish && this.calcCenterFinish);
+      this.loading = !this.mapDisplay;
     });
   }
 }
