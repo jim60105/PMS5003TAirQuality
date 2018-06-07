@@ -26,26 +26,21 @@
               [legend]="lineChartLegend"
               [chartType]="lineChartType"></canvas>
     </div>
-
-      <!--<app-data-table-->
-              <!--*ngIf="tableVisible && (dataSet=='pm25' || dataSet=='pm10')"-->
-              <!--[data]="percentageData"-->
-              <!--[devices]="device_ids"-->
-              <!--[limit]="tableRowLimit"-->
-              <!--[property]="percentageProperty"-->
-              <!--[title]="percentageTitle"-->
-              <!--[sortable]="percentageSortable"-->
-              <!--[titleClass]="percentageTitleClass">-->
-      <!--</app-data-table>-->
+    <app-data-table
+        *ngIf="tableVisible && (dataSet=='pm25' || dataSet=='pm10')"
+        [data]="percentageData"
+        [column]="percentageColumn"
+        [title]="percentageTitle"
+        [titleClass]="percentageTitleClass">
+    </app-data-table>
     </div>
     <div *ngIf="tableVisible">
 
         <hr>
         <h2>數據總覽</h2>
-      <!--<app-data-table-->
-              <!--[data]="data"-->
-              <!--[devices]="device_ids" >-->
-      <!--</app-data-table>-->
+        <app-data-table
+            [data]="data">
+        </app-data-table>
     </div>
     <app-loading [loading]="loading"></app-loading>
     <app-portraitWarn></app-portraitWarn>

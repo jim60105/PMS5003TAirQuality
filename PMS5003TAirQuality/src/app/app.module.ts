@@ -2,7 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { AppRoutingModule } from './app-routing.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -54,6 +53,9 @@ import { GetHttpTemplateService } from "./services/get-http-template.service";
 import { GetHttpEdimaxService } from "./services/get-http-edimax.service";
 import { GetHttpEpaService } from "./services/get-http-epa.service";
 
+//Data table
+import { HotTableModule } from 'ng2-handsontable';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -77,8 +79,7 @@ import { GetHttpEpaService } from "./services/get-http-epa.service";
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpModule,
-	NgbModule.forRoot(),
+	  NgbModule.forRoot(),
     BrowserAnimationsModule,
     MatSliderModule,
 
@@ -89,6 +90,7 @@ import { GetHttpEpaService } from "./services/get-http-epa.service";
 
     ChartsModule,
     Daterangepicker,
+    HotTableModule
   ],
   providers: [
     GetDeviceService,

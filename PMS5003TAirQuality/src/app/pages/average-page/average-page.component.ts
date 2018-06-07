@@ -43,7 +43,15 @@ export class AveragePageComponent {
 
   //表格列數
   public tableRowLimit:number = 3;
-
+  public avgTableColumn =
+    [
+      {data:'device_id',editor: false},
+      {data:'pm1',editor: false},
+      {data:'pm25',editor: false},
+      {data:'pm10',editor: false},
+      {data:'temp',editor: false},
+      {data:'humid',editor: false}
+    ];
   //Loading蓋版
   public loading = true;
 
@@ -189,7 +197,7 @@ export class AveragePageComponent {
   public calcAverageData(){
     this.device_ids = this.devices.map(mapObj => mapObj[0]);
     this.barChartStandby = false;
-    let dataSet = ['pm1','pm25','pm10','temp','humid'];
+    let dataSet = ['pm1','pm25','pm10','temp','humid','co2'];
     //計算平均
     let temp:Object[] = [];
     for(let i=0;i<this.device_ids.length;i++){
@@ -199,21 +207,23 @@ export class AveragePageComponent {
         'pm10': 0,
         'temp': 0,
         'humid': 0,
+        'co2': 0,
         'count': 0,
         'device_id':this.device_ids[i]
       });
     }
 
     this.data.forEach((value,index,array)=>{
-      if(this.device_ids.indexOf(value['device_id'])>0){
+      let i = this.device_ids.indexOf(value['device_id']);
+      if(i>=0){
         dataSet.forEach((value2, index, array) => {
-          if (temp[this.device_ids.indexOf(value['device_id'])][value2]) {
-            temp[this.device_ids.indexOf(value['device_id'])][value2] = temp[this.device_ids.indexOf(value['device_id'])][value2] + Number(value[value2]);
+          if (temp[i][value2]) {
+            temp[i][value2] = temp[i][value2] + Number(value[value2]);
           } else {
-            temp[this.device_ids.indexOf(value['device_id'])][value2] = Number(value[value2]);
+            temp[i][value2] = Number(value[value2]);
           }
         });
-        temp[this.device_ids.indexOf(value['device_id'])]['count']++;
+        temp[i]['count']++;
       }
     });
 

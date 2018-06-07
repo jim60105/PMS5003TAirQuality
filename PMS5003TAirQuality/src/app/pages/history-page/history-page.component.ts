@@ -56,8 +56,17 @@ export class HistoryPageComponent {
 
   //AQI表格
   public percentageData:Object[] = [];
-  public percentageTitle = ['位置','良好 0～50','普通 51～100','對敏感族群不健康 101～150','對所有族群不健康 151～200','非常不健康 201～300','危害 301～400','危害 401～500'];
-  public percentageProperty = ['device_id',0,1,2,3,4,5,6];
+  public percentageTitle = ['位置','良好','普通','對敏感族群不健康','對所有族群不健康','非常不健康','危害','危害'];
+  public percentageColumn = [
+    {data:'device_id'},
+    {data:0},
+    {data:1},
+    {data:2},
+    {data:3},
+    {data:4},
+    {data:5},
+    {data:6}
+  ];
   public percentageSortable = ["","","","","","","",""];
   public percentageTitleClass = ['','AQI1','AQI2','AQI3','AQI4','AQI5','AQI6','AQI6'];
   //列數
@@ -279,12 +288,12 @@ export class HistoryPageComponent {
     let level10 = [55,126,255,355,425,505,605];
     let level:number[]=(this.dataSet=='pm25')?level25:level10;
 
+    this.device_ids = this.devices.map(mapObj => mapObj[0]);
     this.device_ids.forEach((value: String[], i, array)=>{
       percentageCount[i] = [0,0,0,0,0,0,0];
       dataCount[i] = 0;
       this.percentageData[i] = {device_id:value};
     });
-
     this.data.forEach((value: Object, index, array)=>{
       switch (true){
         case (value[this.dataSet]<level[0]):
@@ -312,8 +321,12 @@ export class HistoryPageComponent {
       dataCount[this.device_ids.indexOf(value['device_id'])]++;
     });
     percentageCount.forEach((value, index, array)=>{
-      for(let i=0;i<7;i++){
-        this.percentageData[index][i] = Math.round(percentageCount[index][i]/dataCount[index]*100*100)/100 + '%';
+      for(let i=0;i<percentageCount[0].length;i++){
+        if(dataCount[index]!=0) {
+          this.percentageData[index][i] = Math.round(percentageCount[index][i] / dataCount[index] * 100 * 100) / 100 + ' %';
+        }else{
+          this.percentageData[index][i] = '0 %';
+        }
       }
       //this.percentageData[index][this.device_ids.indexOf(value['device_id'])] = index;
     });
