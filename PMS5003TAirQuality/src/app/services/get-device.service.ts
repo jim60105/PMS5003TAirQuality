@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
-import '../../../node_modules/rxjs/add/operator/toPromise';
-import { Observable } from 'rxjs/Observable';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { DEVICE } from '../../assets/mock-device';
 
@@ -9,10 +7,8 @@ import { DEVICE } from '../../assets/mock-device';
 import * as _ from "lodash";
 @Injectable()
 export class GetDeviceService {
-  constructor(private http:Http) {
-    this.getDeviceHttpWithPromise().then((res)=>{
-      this.data = res;
-    });
+  constructor(private http:HttpClient) {
+    this.getDeviceHttpWithPromise().then((res)=>{});
   }
 
   //資料
@@ -23,10 +19,11 @@ export class GetDeviceService {
   //獲取測站資料
   public getDeviceHttpWithPromise(){
     //noinspection TypeScriptUnresolvedFunction,TypeScriptValidateTypes
-    return this.http.get(this.dbURL).toPromise().then((res:Response) => {
-      let body = res.json();
-      return body || {};
-    }).then((dataIn:any)=> {
+    return this.http.get(this.dbURL, {
+      observe: 'body',
+      reportProgress: true,
+      responseType: 'json'
+    }).toPromise().then((dataIn:any[])=> {
       //成功取得資料
       ////轉換UTC時間為本地時間
       //dataIn.forEach((value,index,array)=>{
@@ -36,8 +33,8 @@ export class GetDeviceService {
       //  array[index].time = tt.local().format('YYYY-MM-DD HH:mm:ss');
       //});
 
-      this.data = _.cloneDeep(dataIn);
-      return Promise.resolve(dataIn);
+      this.data = dataIn;
+      return Promise.resolve(this.data);
     }).catch((err)=> {
       //失敗取得資料
       console.warn("Warn: cannot get air devices.");

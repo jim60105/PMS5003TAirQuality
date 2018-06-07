@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
-import '../../../../node_modules/rxjs/add/operator/toPromise';
-import { Observable } from 'rxjs/Observable';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { Cookie } from 'ng2-cookies';
 
@@ -12,7 +10,7 @@ import { Cookie } from 'ng2-cookies';
 })
 export class SignupPageComponent{
 
-  constructor(private http:Http) { }
+  constructor(private http:HttpClient) { }
 
   ngOnInit() {
     if(Cookie.check("_e")){
@@ -24,14 +22,14 @@ export class SignupPageComponent{
   public data:Array<any> = [];
   //php位置
   private dbURL = "assets/php/registration";
-  private _e = "";
-  private _p = "";
-  private _p2 = "";
+  public _e = "";
+  public _p = "";
+  public _p2 = "";
 
   public signUp(){
-    let params = new URLSearchParams();
-    params.set('_e', this._e);
-    params.set('_p', this._p);
+    let params = new HttpParams();
+    params = params.set('_e', this._e);
+    params = params.set('_p', this._p);
 
     this.signupHttpWithPromise(params).then((res)=>{
       if(res=='true'){
@@ -49,12 +47,13 @@ export class SignupPageComponent{
   }
 
   //獲取登入資料
-  public signupHttpWithPromise(params:any = new URLSearchParams()){
+  public signupHttpWithPromise(params:any = new HttpParams()){
     //noinspection TypeScriptUnresolvedFunction
-    return this.http.post(this.dbURL,params).toPromise().then((res:Response) => {
-      let body = res.text();
-      return body || {};
-    }).then((dataIn)=> {
+    return this.http.post(this.dbURL,params,{
+      observe: 'body',
+      reportProgress:true,
+      responseType: 'json'
+    }).toPromise().then((dataIn:any[])=> {
       //成功取得資料
       return Promise.resolve(dataIn);
     }).catch((err)=> {

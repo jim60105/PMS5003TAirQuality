@@ -2,9 +2,9 @@
 include('setMySQL.php');
 //include('encrypt.php');
 
-$minDate= $_GET["minDate"];
-$maxDate= $_GET["maxDate"];
-$device_idList = json_decode($_GET["device_id"],true);
+$minDate= $_POST['minDate'];
+$maxDate= $_POST['maxDate'];
+$device_idList = json_decode($_POST['device_id'],true);
 
 $arr = array();
 

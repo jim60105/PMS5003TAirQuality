@@ -1,18 +1,15 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
-import '../../../node_modules/rxjs/add/operator/toPromise';
-import { Observable } from 'rxjs/Observable';
-
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { realTimeDATA } from '../../assets/mock-singleData';
 
 @Injectable()
 export class GetSingleDataService {
-  constructor(private http:Http) {
-    this.getSingleDataHttpWithPromise();
-    //重複獲取資料的定時器
-    this.getDataInterval = setInterval(() => {
-      this.getSingleDataHttpWithPromise();
-    }, 35000);
+  constructor(private http:HttpClient) {
+    // this.getSingleDataHttpWithPromise();
+    // //重複獲取資料的定時器
+    // this.getDataInterval = setInterval(() => {
+    //   this.getSingleDataHttpWithPromise();
+    // }, 35000);
   }
 
   //資料
@@ -28,12 +25,14 @@ export class GetSingleDataService {
   }
 
   //獲取終端資料
-  public getSingleDataHttpWithPromise(params:any = new URLSearchParams()){
+  public getSingleDataHttpWithPromise(params:any = new HttpParams()){
     //noinspection TypeScriptUnresolvedFunction,TypeScriptValidateTypes
-    return this.http.get(this.dbURL, {search: params}).toPromise().then((res:Response) => {
-      let body = res.json();
-      return body || {};
-    }).then((dataIn)=> {
+    return this.http.get(this.dbURL, {
+      observe: 'body',
+      reportProgress:true,
+      responseType: 'json',
+      params: params
+    }).toPromise().then((dataIn:any[])=> {
       //成功取得資料
       this.data.length = 0;
       dataIn.forEach((value,index,array)=>{

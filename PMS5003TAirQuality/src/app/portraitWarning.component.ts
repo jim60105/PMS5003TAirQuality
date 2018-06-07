@@ -37,13 +37,13 @@ import { Component, Input } from '@angular/core';
 })
 export class PortraitWarningComponent{
   constructor() { }
-  private display = false;
+  public display = false;
 
   ngOnInit(){
     this.onResize(window);
   }
 
-  private onResize(event) {
+  public onResize(event) {
     if(event.innerWidth<event.innerHeight && event.innerWidth<768){
       this.display = true;
     }else{

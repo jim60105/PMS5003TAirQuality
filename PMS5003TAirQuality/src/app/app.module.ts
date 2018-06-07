@@ -6,6 +6,7 @@ import { HttpModule } from '@angular/http';
 import { AppRoutingModule } from './app-routing.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
 
 import { Routes, RouterModule, Router } from '@angular/router';
 //Datepicker
@@ -20,10 +21,6 @@ import { Safe } from './safe-html.component';
 
 //Charts
 import { ChartsModule } from 'ng2-charts';
-
-//Angular 2 Data Table Bootstrap 4
-//https://www.npmjs.com/package/angular-4-data-table-fix
-import { DataTableModule } from 'angular-4-data-table/src/index';
 
 //Slider
 import { MatSliderModule } from '@angular/material';
@@ -75,6 +72,7 @@ import { GetHttpEpaService } from "./services/get-http-epa.service";
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
     CommonModule,
     FormsModule,
@@ -89,7 +87,6 @@ import { GetHttpEpaService } from "./services/get-http-epa.service";
     }),
     AgmSnazzyInfoWindowModule,
 
-    DataTableModule,
     ChartsModule,
     Daterangepicker,
   ],

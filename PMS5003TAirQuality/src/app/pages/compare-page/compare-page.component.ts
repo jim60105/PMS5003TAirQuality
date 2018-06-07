@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { URLSearchParams } from '@angular/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 declare var RColor:any;
 import * as moment from 'moment';
@@ -156,7 +156,7 @@ export class ComparePageComponent{
 
     this.userDevices = [];
     this.userDevice_ids = [];
-    this._getUserDeviceService.getDevices(2,(res)=>{
+    this._getUserDeviceService.getDevices(3,(res)=>{
       this.displayNearest = (Cookie.get('displayNearest')=='1');
       this.userDevices = res;
       this.userDevice_ids = this.userDevices.map(mapObj => mapObj[0]);
@@ -177,6 +177,8 @@ export class ComparePageComponent{
       return 0;
     }
   }
+
+
 
   //chart處理
   private setChartsColor(){
@@ -243,13 +245,13 @@ export class ComparePageComponent{
     this.checkReady();
   }
 
-  private selectedDate(value: any, dateInput: any,index: number) {
+  public selectedDate(value: any, dateInput: any,index: number) {
     //日期選擇改變時觸發getDataHttp
     this.dateRangepickerComponentArray[index].setTimeByDate(value.start,moment(value.start).add(this.duration,'day').toDate());
     dateInput = this.dateRangepickerComponentArray[index];
     this.checkReady();
   }
-  private changeDuration(event: any){
+  public changeDuration(event: any){
     this.duration = event.value-1;
     for(let d of this.dateRangepickerComponentArray){
       d.setTimeByDate(d.getTimeByDate()[0], moment(d.getTimeByDate()[0]).add(this.duration, 'day').endOf('day').toDate());
@@ -274,7 +276,7 @@ export class ComparePageComponent{
     this.ready = ((this.dateRangepickerComponentArray.length > 0 && this.userDevice_ids.length > 0) && !this.overBound);
   }
 
-  private submit(){
+  public submit(){
     //console.log(this.uniqueDateRangepickerComponentArray);
     if(this.ready){
       this.loading = true;

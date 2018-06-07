@@ -1,5 +1,5 @@
 import { Component, ViewChild, Input } from '@angular/core';
-import { URLSearchParams } from '@angular/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 declare var RColor:any;
 //noinspection TypeScriptCheckImport
@@ -162,7 +162,7 @@ export class HistoryPageComponent {
 
   }
 
-  private selectedDate(value: any, dateInput: any) {
+  public selectedDate(value: any, dateInput: any) {
     this.rangeValue[0] = value.start;
     this.rangeValue[1] = value.end;
     dateInput = this.rangeValue;

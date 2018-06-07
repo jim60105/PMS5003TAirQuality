@@ -10,7 +10,6 @@ import { SettingPageComponent } from './pages/setting-page/setting-page.componen
 
 import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 
-import { SelectivePreloadingStrategy } from './selective-preloading-strategy';
 
 const routes: Routes = <Routes>[
   {path: '', children: [
@@ -29,12 +28,8 @@ const routes: Routes = <Routes>[
   imports: [RouterModule.forRoot(routes,{
     useHash: true,
     enableTracing: false, // <-- debugging purposes only
-    preloadingStrategy: SelectivePreloadingStrategy,
   })],
-  exports: [RouterModule],
-  providers: [
-    SelectivePreloadingStrategy
-  ]
+  exports: [RouterModule]
 
 })
 export class AppRoutingModule { }

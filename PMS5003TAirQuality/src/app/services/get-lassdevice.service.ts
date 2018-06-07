@@ -1,8 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http, Response, RequestOptions, URLSearchParams} from '@angular/http';
-import '../../../node_modules/rxjs/add/operator/toPromise';
-import {Observable} from 'rxjs/Observable';
-
+import { HttpClient, HttpParams } from '@angular/common/http';
 import * as LatLon from 'geodesy/latlon-vincenty';
 
 import * as moment from 'moment';
@@ -12,7 +9,7 @@ import * as _ from "lodash";
 
 @Injectable()
 export class GetLassDeviceService {
-  constructor(private http: Http) {
+  constructor(private http: HttpClient) {
   }
 
   //資料
@@ -27,8 +24,12 @@ export class GetLassDeviceService {
     this.nearestAmount = amount;
 
     if (Cookie.get('displayNearest') == '1' || this.LASSDeviceList.length<amount) {
+      let tempFunc:Function;
       if (Cookie.check('lat') && Cookie.check('lon')) {
         this.getNearestLassDevice(callback);
+        tempFunc = ()=>{};
+      }else{
+        tempFunc = callback;
       }
 
       if (navigator.geolocation) {
@@ -36,13 +37,13 @@ export class GetLassDeviceService {
           Cookie.set('lat', String(position.coords.latitude));
           Cookie.set('lon', String(position.coords.longitude));
           console.log(position.coords.latitude + "," + position.coords.longitude);
-          this.getNearestLassDevice(callback);
+          this.getNearestLassDevice(tempFunc);
         }, (err) => {
           console.warn('ERROR getting location(' + err.code + '): ' + err.message);
           if (!Cookie.check('lat') || !Cookie.check('lon')) {
             this.setLocToTHU();
           }
-          this.getNearestLassDevice(callback);
+          this.getNearestLassDevice(tempFunc);
         }, {
           enableHighAccuracy: false,
           maximumAge: 60000,
@@ -53,7 +54,7 @@ export class GetLassDeviceService {
         if (!Cookie.check('lat') && !Cookie.check('lon')) {
           this.setLocToTHU();
         }
-        this.getNearestLassDevice(callback);
+        this.getNearestLassDevice();
       }
 
     }else{
@@ -69,7 +70,7 @@ export class GetLassDeviceService {
   }
 
   //Calc Nearest points
-  public getNearestLassDevice(callback: Function) {
+  public getNearestLassDevice(callback?: Function) {
     let lat: Number = Number(Cookie.get("lat"));
     let lon: Number = Number(Cookie.get("lon"));
 
@@ -115,10 +116,11 @@ export class GetLassDeviceService {
   //獲取LASS測站資料
   public getLassDeviceWithPromise() {
     //noinspection TypeScriptUnresolvedFunction,TypeScriptValidateTypes
-    return this.http.get(this.dbURL).toPromise().then((res: Response) => {
-      let body = res.json();
-      return body || {};
-    }).then((dataIn: any[]) => {
+    return this.http.post(this.dbURL,null, {
+      observe: 'body',
+      reportProgress:true,
+      responseType: 'json'
+    }).toPromise().then((dataIn:any[]) => {
       //成功取得資料
       //轉換UTC時間為本地時間
       dataIn.forEach((value, index, array) => {
@@ -129,7 +131,7 @@ export class GetLassDeviceService {
       });
 
       this.data = _.cloneDeep(dataIn);
-      return Promise.resolve(dataIn);
+      return Promise.resolve(this.data);
     }).catch((err) => {
       //失敗取得資料
       console.warn("Warn: Cannot get Lass Devices.");

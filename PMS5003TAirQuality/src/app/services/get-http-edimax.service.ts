@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
-import '../../../node_modules/rxjs/add/operator/toPromise';
-import { Observable } from 'rxjs/Observable';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 import * as moment from 'moment';
 import { GetHttpTemplateService } from './get-http-template.service';
@@ -13,7 +11,7 @@ export class GetHttpEdimaxService extends GetHttpTemplateService{
   public url = "https://pm25.lass-net.org/data/last-all-airbox.json";
   //是否已設定查詢對象
   public isSetParam = true;
-  public afterRequestSuccess(dataIn:any){
+  public afterRequestSuccess(dataIn:any[]){
     let data;
     data = dataIn['feeds'];
     data.forEach((value,index,array)=>{
@@ -26,7 +24,7 @@ export class GetHttpEdimaxService extends GetHttpTemplateService{
       value['device'] = value['app'];
       value['type'] = 'Edimax';
     });
-    return data;
+    return Promise.resolve(data);
 
     function yyyymmdd(date):string {
       return date.getFullYear()+'-'+
@@ -35,7 +33,7 @@ export class GetHttpEdimaxService extends GetHttpTemplateService{
         (date.getHours()>9 ? '' : '0') + date.getHours()+':'+
         (date.getMinutes()>9 ? '' : '0') + date.getMinutes()+':'+
         (date.getSeconds()>9 ? '' : '0') + date.getSeconds();
-    };
+    }
   };
 
 

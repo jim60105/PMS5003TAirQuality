@@ -1,5 +1,5 @@
 import { Component, ViewChild, AfterViewInit, Input } from '@angular/core';
-import { URLSearchParams } from '@angular/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { DaterangepickerComponent } from "../../daterangepicker.component"
 import { Daterangepicker, DaterangepickerConfig } from 'ng2-daterangepicker';
@@ -103,7 +103,7 @@ export class AveragePageComponent {
     }
   }
 
-  private selectedDate(value: any, dateInput: any) {
+  public selectedDate(value: any, dateInput: any) {
     this.rangeValue[0] = value.start;
     this.rangeValue[1] = value.end;
     dateInput = this.rangeValue;
@@ -187,6 +187,7 @@ export class AveragePageComponent {
 
   //計算平均
   public calcAverageData(){
+    this.device_ids = this.devices.map(mapObj => mapObj[0]);
     this.barChartStandby = false;
     let dataSet = ['pm1','pm25','pm10','temp','humid'];
     //計算平均
@@ -204,14 +205,16 @@ export class AveragePageComponent {
     }
 
     this.data.forEach((value,index,array)=>{
-      dataSet.forEach((value2,index,array)=> {
-        if(temp[this.device_ids.indexOf(value['device_id'])][value2]){
-          temp[this.device_ids.indexOf(value['device_id'])][value2] = temp[this.device_ids.indexOf(value['device_id'])][value2] + Number(value[value2]);
-        }else{
-          temp[this.device_ids.indexOf(value['device_id'])][value2] = Number(value[value2]);
-        }
-      });
-      temp[this.device_ids.indexOf(value['device_id'])]['count']++;
+      if(this.device_ids.indexOf(value['device_id'])>0){
+        dataSet.forEach((value2, index, array) => {
+          if (temp[this.device_ids.indexOf(value['device_id'])][value2]) {
+            temp[this.device_ids.indexOf(value['device_id'])][value2] = temp[this.device_ids.indexOf(value['device_id'])][value2] + Number(value[value2]);
+          } else {
+            temp[this.device_ids.indexOf(value['device_id'])][value2] = Number(value[value2]);
+          }
+        });
+        temp[this.device_ids.indexOf(value['device_id'])]['count']++;
+      }
     });
 
     temp.forEach((value,index,array)=>{

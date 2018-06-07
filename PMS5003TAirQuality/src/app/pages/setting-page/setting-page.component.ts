@@ -31,13 +31,15 @@ export class SettingPageComponent {
   public deviceList = [];
   public userDevices:Array<String[]> = [];
   public userDevicesTemp:Array<String[]> = [];
-  private displayNearest = true;
-  private loading = false;
-  private iftttKey = '';
+  public displayNearest = true;
+  public loading = false;
+  public iftttKey = '';
   public iftttDevices:Array<any[]> = [];
   public iftttDevicesTemp:Array<String[]> = [];
   public AQIString = ['離線','良好','普通','對敏感族群不健康','對所有族群不健康','非常不健康','危害'];
 
+  public _p = "";
+  public _p2 = "";
   ngOnInit() {
     this.loading = true;
     if(!Cookie.check("_p")) {
@@ -175,7 +177,7 @@ export class SettingPageComponent {
     });
   }
 
-  private reset(){
+  public reset(){
     this.userDevices = _.cloneDeep(this.userDevicesTemp);
     this.iftttKey = Cookie.get('iftttKey');
     this.iftttDevices = _.cloneDeep(this.iftttDevicesTemp);

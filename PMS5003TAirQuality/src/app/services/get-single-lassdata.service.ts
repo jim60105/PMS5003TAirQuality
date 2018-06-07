@@ -1,18 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
-import '../../../node_modules/rxjs/add/operator/toPromise';
-import { Observable } from 'rxjs/Observable';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import * as moment from 'moment';
 
 @Injectable()
 export class GetSingleLASSDataService {
-  constructor(private http:Http) {
+  constructor(private http:HttpClient) {
     //重複獲取資料的定時器
-    this.getDataInterval = setInterval(() => {
-      if(this.isSetParam) {
-        this.getSingleDataHttpWithPromise();
-      }
-    }, 61000);
+    // this.getDataInterval = setInterval(() => {
+    //   if(this.isSetParam) {
+    //     this.getSingleDataHttpWithPromise();
+    //   }
+    // }, 61000);
   }
 
   //資料
@@ -28,7 +26,7 @@ export class GetSingleLASSDataService {
   public isSetParam = false;
   public isSetTime = false;
   //getParam
-  private params:any = new URLSearchParams();
+  private params:any = new HttpParams();
 
   //生命週期結束時清理掉定時器
   ngOnDestroy() {
@@ -42,11 +40,11 @@ export class GetSingleLASSDataService {
     this.data = [];
     this.device_idList = device;
     let device_idJSON = JSON.stringify(device);
-    this.params = new URLSearchParams();
-    this.params.set('device_id', device_idJSON);
+    this.params = new HttpParams();
+    this.params = this.params.set('device_id', device_idJSON);
     if(typeof time !== 'undefined'){
       this.time = time;
-      this.params.set('time', time);
+      this.params = this.params.set('time', time);
       this.isSetTime = true;
     }else{
       this.time = "";
@@ -59,10 +57,12 @@ export class GetSingleLASSDataService {
   public getSingleDataHttpWithPromise(){
     if(this.isSetParam) {
       //noinspection TypeScriptUnresolvedFunction,TypeScriptValidateTypes
-      return this.http.get(this.dbURL, {search: this.params}).toPromise().then((res:Response) => {
-        let body = res.json();
-        return body || {};
-      }).then((dataIn)=> {
+      return this.http.get(this.dbURL, {
+        observe: 'body',
+        reportProgress:true,
+        responseType: 'json',
+        params: this.params
+      }).toPromise().then((dataIn:any[])=> {
         //成功取得資料
         //轉換UTC時間為本地時間
         dataIn.forEach((value,index,array)=>{

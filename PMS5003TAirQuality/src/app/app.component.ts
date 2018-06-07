@@ -7,7 +7,7 @@ import { Routes, RouterModule, Router } from '@angular/router';
   //styleUrls: ['./app.component.css']
 })
 export class AppComponent{
-  constructor(private router: Router){}
+  constructor(public router: Router){}
   isCollapsed = true;
   navbarClass = ["","","",""];
   private tempLoc = window.location.hash;

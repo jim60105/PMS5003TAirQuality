@@ -1,32 +1,29 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
-import '../../../node_modules/rxjs/add/operator/toPromise';
-import { Observable } from 'rxjs/Observable';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import {Cookie} from "ng2-cookies";
-
-
 @Injectable()
 export class LoginService {
-  constructor(private http:Http) {
+  constructor(private http:HttpClient) {
   }
 
   //資料
   public data:Array<any> = [];
   //php位置
   private dbURL = "assets/php/login";
-  private params = new URLSearchParams();
+  private params = new HttpParams();
   public setParam(_e:string,_p:string){
-    this.params.set('_e', _e);
-    this.params.set('_p', _p);
+    this.params = this.params.set('_e', _e);
+    this.params = this.params.set('_p', _p);
   }
 
   //獲取登入資料
   public loginHttpWithPromise(){
     //noinspection TypeScriptUnresolvedFunction
-    return this.http.post(this.dbURL,this.params).toPromise().then((res:Response) => {
-      let body = res.json();
-      return body || {};
-    }).then((dataIn:any)=> {
+    return this.http.post(this.dbURL,this.params,{
+      observe: 'body',
+      reportProgress:true,
+      responseType: 'json'
+    }).toPromise().then((dataIn:any[])=> {
       //成功取得資料
       this.data = dataIn;
 

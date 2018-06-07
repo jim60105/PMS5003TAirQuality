@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
-import '../../../node_modules/rxjs/add/operator/toPromise';
-import { Observable } from 'rxjs/Observable';
+import { HttpClient, HttpParams } from '@angular/common/http';
+
+
 
 import * as moment from 'moment';
 import { GetHttpTemplateService } from './get-http-template.service';
@@ -15,7 +15,7 @@ export class GetHttpEpaService extends GetHttpTemplateService{
   //設定查詢對象
   public setParam(){ };
 
-  public afterRequestSuccess(dataIn:Object){
+  public afterRequestSuccess(dataIn:any[]){
       this.data = dataIn['feeds'];
       this.data.forEach((value,index,array)=>{
         value['time'] = value['date']+' '+value['time'];

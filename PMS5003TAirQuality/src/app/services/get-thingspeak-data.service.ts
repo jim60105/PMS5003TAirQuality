@@ -1,28 +1,26 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
-import '../../../node_modules/rxjs/add/operator/toPromise';
-import { Observable } from 'rxjs/Observable';
-import { Cookie } from 'ng2-cookies';
-
+import { HttpClient, HttpParams } from '@angular/common/http';
 import * as moment from 'moment';
 @Injectable()
 export class GetThingspeakDataService {
-  constructor(private http:Http) {
+  constructor(private http:HttpClient) {
   }
 
   //資料
   public data:Array<any> = [];
 
   //獲取空汙資料
-  public getDataHttpWithPromise(channelID:number, params:any = new URLSearchParams()){
+  public getDataHttpWithPromise(channelID:number, params:any = new HttpParams()){
 
     //url位置
     let url = `http://api.thingspeak.com/channels/${channelID}/feeds.json`;
     //noinspection TypeScriptUnresolvedFunction,TypeScriptValidateTypes
-    return this.http.get(url, {search: params}).toPromise().then((res:Response) => {
-      let body = res.json();
-      return body || {};
-    }).then((dataIn)=> {
+    return this.http.get(url, {
+      observe: 'body',
+      reportProgress:true,
+      responseType: 'json',
+      params: params
+    }).toPromise().then((dataIn:any[])=> {
       //成功取得資料
       this.data = dataIn;
       return Promise.resolve(this.data);

@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
-import '../../../node_modules/rxjs/add/operator/toPromise';
-import { Observable } from 'rxjs/Observable';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { DATA } from '../../assets/mock-data';
 import * as moment from 'moment';
 @Injectable()
 export class GetDataService {
-  constructor(private http:Http) {
+  constructor(private http:HttpClient) {
   }
 
   //資料
@@ -21,18 +19,18 @@ export class GetDataService {
   //是否已設定查詢對象
   public isSetParam = false;
   //getParam
-  private params:any = new URLSearchParams();
+  private params:any = new HttpParams();
 
   //設定查詢對象
   public setParam(device:String[] = this.device_idList,minDate:string,maxDate:string){
     this.data = [];
-    this.params = new URLSearchParams();
+    this.params = new HttpParams();
     this.device_idList = device;
-    this.params.set('device_id', JSON.stringify(device));
+    this.params = this.params.set('device_id', JSON.stringify(device));
     this.minDate = moment(minDate).format('YYYY-MM-DD HH:mm:ss');
-    this.params.set('minDate', this.minDate);
+    this.params = this.params.set('minDate', this.minDate);
     this.maxDate = moment(maxDate).format('YYYY-MM-DD HH:mm:ss');
-    this.params.set('maxDate', this.maxDate);
+    this.params = this.params.set('maxDate', this.maxDate);
     this.isSetParam = true;
   }
 
@@ -40,10 +38,12 @@ export class GetDataService {
   public getDataHttpWithPromise(){
     if(this.isSetParam) {
       //noinspection TypeScriptUnresolvedFunction,TypeScriptValidateTypes
-      return this.http.get(this.dbURL, {search: this.params}).toPromise().then((res:Response) => {
-        let body = res.json();
-        return body || {};
-      }).then((dataIn:Array<any>)=> {
+      return this.http.get(this.dbURL, {
+        observe: 'body',
+        reportProgress:true,
+        responseType: 'json',
+        params: this.params
+      }).toPromise().then((dataIn:any[])=> {
         //成功取得資料
         //轉換UTC時間為本地時間
         // dataIn.forEach((value,index,array)=>{

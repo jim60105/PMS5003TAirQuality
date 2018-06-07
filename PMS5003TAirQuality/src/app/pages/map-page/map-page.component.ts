@@ -1,8 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { LatLngLiteral, LatLngBoundsLiteral, LatLngBounds } from "@agm/core/map-types";
-import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
-import 'rxjs/add/operator/map';
-import { Observable } from 'rxjs/Observable';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 //noinspection TypeScriptCheckImport
 import * as _ from "lodash";
@@ -25,7 +23,7 @@ import { Cookie } from 'ng2-cookies';
 export class MapPageComponent {
   //Loading蓋版
   loading = false;
-  constructor(private http:Http,
+  constructor(private http:HttpClient,
               private _getDeviceService:GetDeviceService,
               private _getLassDeviceService:GetLassDeviceService,
               private _getUserDeviceService:GetUserDeviceService,
@@ -44,17 +42,17 @@ export class MapPageComponent {
   //panel的顏色class
   public AQI:Array<string> = ["disabled","AQI1","AQI2","AQI3 a-ring","AQI4 a-ring","AQI5 a-ring","AQI6 a-ring"];
   //AQIIconUrl
-  private icon:string[] = [
-    "assets/pic/AQI0.png",
-    "assets/pic/AQI1.png",
-    "assets/pic/AQI2.png",
-    "assets/pic/AQI3.png",
-    "assets/pic/AQI4.png",
-    "assets/pic/AQI5.png",
-    "assets/pic/AQI6.png"
-  ];
+  // private icon:string[] = [
+  //   "assets/pic/AQI0.png",
+  //   "assets/pic/AQI1.png",
+  //   "assets/pic/AQI2.png",
+  //   "assets/pic/AQI3.png",
+  //   "assets/pic/AQI4.png",
+  //   "assets/pic/AQI5.png",
+  //   "assets/pic/AQI6.png"
+  // ];
   private tempEmail = Cookie.get("_e");
-  private mapDisplay = false;
+  public mapDisplay = false;
 
   ngOnInit() {
     this.loading = true;

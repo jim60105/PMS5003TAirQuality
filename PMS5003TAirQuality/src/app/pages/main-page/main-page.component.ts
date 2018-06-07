@@ -25,7 +25,7 @@ export class MainPageComponent {
   //資料
   public devices = JSON.parse(Cookie.get('devices'));
   private tempDevices = [];
-  private deviceDetail = [];
+  public deviceDetail = [];
   //panel的顏色class
   // public panelClass:Array<string> = [];
   public LASSDeviceList = this._getLassDeviceService.LASSDeviceList;
