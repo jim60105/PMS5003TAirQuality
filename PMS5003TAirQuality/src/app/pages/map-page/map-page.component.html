@@ -2,11 +2,11 @@
     <div *ngIf="mapDisplay">
         <agm-map [clickableIcons]="false" (mapReady)="mapReady($event)">
             <agm-marker *ngFor="let data of allDevicesDetails" [latitude]="data.gps_lat" [longitude]="data.gps_lon" [iconUrl]="data.icon" (markerClick)='markerClicked([data.device_id,data.gps_lat,data.gps_lon,data.type])' (usePanning)='true'>
-                <!--agm-snazzy-info-window [isOpen]="false" [showCloseButton]="false" [closeOnMapClick]="true" [maxWidth]="300">
-                    <ng-template>
-                        {{data.device_id}}
-                    </ng-template>
-                </agm-snazzy-info-window-->
+                <!--<agm-snazzy-info-window [isOpen]="data.open" [showCloseButton]="false" [closeOnMapClick]="true" [maxWidth]="300">-->
+                    <!--<ng-template>-->
+                        <!--{{data.name}}-->
+                    <!--</ng-template>-->
+                <!--</agm-snazzy-info-window>-->
             </agm-marker>
         </agm-map>
         <div id="panelContainer">

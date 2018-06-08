@@ -128,6 +128,8 @@ export class GetLassDeviceService {
         let tt = moment.utc(value.time);
         //noinspection TypeScriptUnresolvedVariable
         array[index].time = tt.local().format('YYYY-MM-DD HH:mm:ss');
+
+        value['name'] = '[LASS]' + value['device_id'];
       });
 
       this.data = _.cloneDeep(dataIn);

@@ -70,7 +70,7 @@ export class MapPageComponent {
     this._getLassDeviceService.getLassDeviceWithPromise().then((res)=>{
       res.forEach((value:any,index,array)=>{
         value.type = 'LASS';
-        value.name = '[LASS]' + value.device_id;
+        // value.name = '[LASS]' + value.device_id;
       });
       this.allDevicesDetails = this.allDevicesDetails.concat(res);
       lassReady = true;
@@ -114,10 +114,15 @@ export class MapPageComponent {
       this.mapDisplay = false;
       this.calcCenterFinish = false;
       this.calcAQIFinish = false;
+      let device_ids = this.devices.map(mapObj => mapObj[0]);
       // this.allDevicesDetails.forEach((value,index,array)=>{
-      //   if(this.devices.map(mapObj => mapObj[0]).indexOf(value.device_id)>=0){
+      //   if(device_ids.indexOf(value.device_id)>=0){
       //     //noinspection TypeScriptUnresolvedVariable
-      //     value.open = true;
+      //     if(value['type']==this.devices[device_ids.indexOf(value.device_id)][1]) {
+      //       value.open = true;
+      //     }else{
+      //       value.open = false;
+      //     }
       //   }else{
       //     //noinspection TypeScriptUnresolvedVariable
       //     value.open = false;

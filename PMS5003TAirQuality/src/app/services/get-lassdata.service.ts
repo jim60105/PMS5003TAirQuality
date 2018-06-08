@@ -48,6 +48,7 @@ export class GetLASSDataService {
           let tt = moment.utc(value.time);
           //noinspection TypeScriptUnresolvedVariable
           array[index].time = tt.local().format('YYYY-MM-DD HH:mm:ss');
+
         });
         this.data = dataIn;
         return Promise.resolve(this.data);

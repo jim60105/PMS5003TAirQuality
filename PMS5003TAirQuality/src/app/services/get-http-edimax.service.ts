@@ -23,6 +23,7 @@ export class GetHttpEdimaxService extends GetHttpTemplateService{
       value['pm10'] = value['s_d1'];
       value['device'] = value['app'];
       value['type'] = 'Edimax';
+      value['name'] = '[Edimax]'+value['SiteName'];
     });
     return Promise.resolve(data);
 
