@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Author: jim60105@gmail.com
-# Version: v18.05.31.0
+# Version: v18.06.08.0
 
 import paho.mqtt.client as mqtt
 import re
@@ -76,6 +76,9 @@ def on_message(client, userdata, msg):
             tempDict['time'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         else:
             tempDict['time'] = datetime.datetime.strptime(tempDict['date'] + ' ' +tempDict['time'],'%Y-%m-%d %H:%M:%S')
+            
+        if re.match('^FT2', tempDict['device_id']) is not None: 
+            tempDict['time'] = tempDict['time'] + datetime.timedelta(days=1)
     except:
         tempDict['time'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
