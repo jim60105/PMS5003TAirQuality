@@ -22,8 +22,7 @@ export class GetLassDeviceService {
 
   public setLASSDeviceList(amount: number = this.nearestAmount, callback: Function) {
     this.nearestAmount = amount;
-
-    if (Cookie.get('displayNearest') == '1' || this.LASSDeviceList.length<amount) {
+    if (Cookie.get('displayNearest') == '1') {
       let tempFunc:Function;
       if (Cookie.check('lat') && Cookie.check('lon')) {
         this.getNearestLassDevice(callback);
@@ -58,7 +57,7 @@ export class GetLassDeviceService {
       }
 
     }else{
-      (callback && typeof(callback) === "function") && callback(this.LASSDeviceList);
+      (callback && typeof(callback) === "function") && callback([]);
     }
   }
 
