@@ -37,6 +37,7 @@ export class MapPageComponent {
   private tempDevices = this.devices;
   private calcCenterFinish = false;
   private calcAQIFinish = false;
+  private initFinish = false;
   protected map:any;
   public bounds:LatLngBoundsLiteral = {north:24.1824695,south:24.1824695,east:120.6025716,west:120.6025716};
   //panel的顏色class
@@ -75,9 +76,7 @@ export class MapPageComponent {
       this.allDevicesDetails = this.allDevicesDetails.concat(res);
       lassReady = true;
       if(lassReady && THUReady && edimaxReady) {
-        this.convertLatLngToNumber(this.allDevicesDetails, ()=> {
-          this.calcAQI(this.allDevicesDetails);
-        });
+        this.finish(this.allDevicesDetails);
       }
     });
     //THU
@@ -89,9 +88,7 @@ export class MapPageComponent {
       this.allDevicesDetails = this.allDevicesDetails.concat(res);
       THUReady = true;
       if(lassReady && THUReady && edimaxReady) {
-        this.convertLatLngToNumber(this.allDevicesDetails, ()=> {
-          this.calcAQI(this.allDevicesDetails);
-        });
+        this.finish(this.allDevicesDetails);
       }
     });
 
@@ -100,45 +97,37 @@ export class MapPageComponent {
       this.allDevicesDetails = this.allDevicesDetails.concat(res);
       edimaxReady = true;
       if(lassReady && THUReady && edimaxReady) {
-        this.convertLatLngToNumber(this.allDevicesDetails, ()=> {
-          this.calcAQI(this.allDevicesDetails);
-        });
+        this.finish(this.allDevicesDetails);
       }
     });
   }
 
   ngDoCheck() {
-    if(!_.isEqual(this.devices,this.tempDevices)) {
+    if(Cookie.get("_e")!=this.tempEmail){
+      this.tempEmail = Cookie.get("_e");
+      this._getUserDeviceService.getDevices(1,(res)=> {
+        this.devices = _.cloneDeep(res);
+      });
+    }
+
+    if(!_.isEqual(this.devices,this.tempDevices) && this.initFinish) {
       this.tempDevices = _.cloneDeep(this.devices);
       this.loading = true;
       this.mapDisplay = false;
       this.calcCenterFinish = false;
       this.calcAQIFinish = false;
-      let device_ids = this.devices.map(mapObj => mapObj[0]);
-      // this.allDevicesDetails.forEach((value,index,array)=>{
-      //   if(device_ids.indexOf(value.device_id)>=0){
-      //     //noinspection TypeScriptUnresolvedVariable
-      //     if(value['type']==this.devices[device_ids.indexOf(value.device_id)][1]) {
-      //       value.open = true;
-      //     }else{
-      //       value.open = false;
-      //     }
-      //   }else{
-      //     //noinspection TypeScriptUnresolvedVariable
-      //     value.open = false;
-      //   }
-      // });
       this.getDeviceDetail();
     }
+  }
 
-    if(Cookie.get("_e")!=this.tempEmail){
-      this.tempEmail = Cookie.get("_e");
-
-      this.loading = true;
-      this._getUserDeviceService.getDevices(1,(res)=> {
-        this.devices = _.cloneDeep(res);
-      });
-    }
+  private finish(array){
+    this.loading = true;
+    this.convertLatLngToNumber(array, () => {
+      this.calcCenter();
+      this.calcAQI(array);
+      this.toggleMsgWindowOpen();
+      this.startFlag = false;
+    });
   }
 
   private startFlag = false;
@@ -156,11 +145,7 @@ export class MapPageComponent {
               }
               finishFlag++;
               if (finishFlag == this.devices.length) {
-                this.convertLatLngToNumber(this.deviceDetail, () => {
-                  this.calcCenter();
-                  this.calcAQI(this.deviceDetail);
-                  this.startFlag = false;
-                });
+                this.finish(this.deviceDetail);
               }
             });
             break;
@@ -171,11 +156,7 @@ export class MapPageComponent {
               }
               finishFlag++;
               if (finishFlag == this.devices.length) {
-                this.convertLatLngToNumber(this.deviceDetail, () => {
-                  this.calcCenter();
-                  this.calcAQI(this.deviceDetail);
-                  this.startFlag = false;
-                });
+                this.finish(this.deviceDetail);
               }
             });
             break;
@@ -187,17 +168,18 @@ export class MapPageComponent {
             });
             finishFlag++;
             if (finishFlag == this.devices.length) {
-              this.convertLatLngToNumber(this.deviceDetail, () => {
-                this.calcCenter();
-                this.calcAQI(this.deviceDetail);
-                this.startFlag = false;
-              });
+              this.finish(this.deviceDetail);
             }
+            break;
+          default:
+            finishFlag++;
+            console.error('Error type device: ' + value.device_id+', type: '+value.type);
             break;
         }
       });
     }
   }
+
 
   protected mapReady(map) {
     this.map = map;
@@ -251,7 +233,7 @@ export class MapPageComponent {
     //   this.map.fitBounds(this.bounds);
     // }
     this.calcCenterFinish = true;
-    this.mapDisplay = (this.calcAQIFinish && this.calcCenterFinish);
+    this.mapDisplay = (this.calcAQIFinish && this.calcCenterFinish && this.windowsOpenFinish);
     this.loading = !this.mapDisplay;
   }
 
@@ -262,9 +244,26 @@ export class MapPageComponent {
       });
 
       this.calcAQIFinish = true;
-      this.mapDisplay = (this.calcAQIFinish && this.calcCenterFinish);
+      this.mapDisplay = (this.calcAQIFinish && this.calcCenterFinish && this.windowsOpenFinish);
       this.loading = !this.mapDisplay;
     });
+  }
+
+  private windowsOpenFinish = false;
+  private toggleMsgWindowOpen(callback?:Function){
+    let device_ids = this.devices.map(mapObj => mapObj[0]);
+    this.allDevicesDetails.forEach((value,index,array)=>{
+      if(device_ids.indexOf(value.device_id)>=0){
+        value.open = (value.type == this.devices[device_ids.indexOf(value.device_id)][1]);
+      }else{
+        //noinspection TypeScriptUnresolvedVariable
+        value.open = false;
+      }
+    });
+    (callback && typeof(callback) === "function") && callback();
+    this.windowsOpenFinish = true;
+    this.initFinish =  this.mapDisplay = (this.calcAQIFinish && this.calcCenterFinish && this.windowsOpenFinish);
+    this.loading = !this.mapDisplay;
   }
 }
 
