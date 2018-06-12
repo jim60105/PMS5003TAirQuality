@@ -3,7 +3,8 @@
         <div class="col-xs-6 col-sm-4" *ngFor="let data of deviceDetail;let idx = index">
             <div class="panel" *ngIf="data.class" [ngClass]="data.class">
                 <div class="panel-heading" style="text-align: center">
-                    <p *ngIf="data.device_id!==undefined" style="font-size: 26px;margin: 0px auto;font-weight: bold;">{{data.device_id}}</p>
+                    <p *ngIf="data.name!==undefined" style="font-size: 26px;margin: 0px auto;font-weight: bold;">{{data.name}}</p>
+                    <p *ngIf="data.name==undefined" style="font-size: 26px;margin: 0px auto;font-weight: bold;">{{data.device_id}}</p>
                     PM1: {{data.pm1||"無數據"}}<br>
                     PM2.5: {{data.pm25||"無數據"}}<br>
                     PM10: {{data.pm10||"無數據"}}<br>

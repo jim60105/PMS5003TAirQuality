@@ -42,16 +42,6 @@ export class MapPageComponent {
   public bounds:LatLngBoundsLiteral = {north:24.1824695,south:24.1824695,east:120.6025716,west:120.6025716};
   //panel的顏色class
   public AQI:Array<string> = ["disabled","AQI1","AQI2","AQI3 a-ring","AQI4 a-ring","AQI5 a-ring","AQI6 a-ring"];
-  //AQIIconUrl
-  // private icon:string[] = [
-  //   "assets/pic/AQI0.png",
-  //   "assets/pic/AQI1.png",
-  //   "assets/pic/AQI2.png",
-  //   "assets/pic/AQI3.png",
-  //   "assets/pic/AQI4.png",
-  //   "assets/pic/AQI5.png",
-  //   "assets/pic/AQI6.png"
-  // ];
   private tempEmail = Cookie.get("_e");
   public mapDisplay = false;
 
@@ -102,6 +92,16 @@ export class MapPageComponent {
     });
   }
 
+  private finish(array){
+    this.loading = true;
+    this.convertLatLngToNumber(array, () => {
+      this.calcCenter();
+      this.calcAQI(array);
+      this.toggleMsgWindowOpen();
+      this.startFlag = false;
+    });
+  }
+
   ngDoCheck() {
     if(Cookie.get("_e")!=this.tempEmail){
       this.tempEmail = Cookie.get("_e");
@@ -120,27 +120,22 @@ export class MapPageComponent {
     }
   }
 
-  private finish(array){
-    this.loading = true;
-    this.convertLatLngToNumber(array, () => {
-      this.calcCenter();
-      this.calcAQI(array);
-      this.toggleMsgWindowOpen();
-      this.startFlag = false;
-    });
-  }
-
   private startFlag = false;
   private getDeviceDetail(){
-    this.deviceDetail.length = 0;
-    let finishFlag = 0;
     if(!this.startFlag) {
       this.startFlag = true;
+      this.deviceDetail.length = 0;
+      let finishFlag = 0;
       this.devices.forEach((value, index, array) => {
         switch (value[1]) {
           case 'LASS':
             this._getLassDeviceService.getLassDeviceById(value[0], (res) => {
               if (typeof res !== "undefined") {
+                value[2] = (typeof value[2]==="undefined")?"":value[2];
+
+                this.tempDevices = _.cloneDeep(this.devices);
+                res.device_id = (value[2]!=="")?value[2]:res.device_id;
+                res.name = `[LASS]${res.device_id}`;
                 this.deviceDetail.push(res);
               }
               finishFlag++;
@@ -152,6 +147,11 @@ export class MapPageComponent {
           case 'THU':
             this._getDeviceService.getDeviceById(value[0], (res) => {
               if (typeof res !== "undefined") {
+                value[2] = (typeof value[2]==="undefined")?"":value[2];
+
+                this.tempDevices = _.cloneDeep(this.devices);
+                res.device_id = (value[2]!=="")?value[2]:res.device_id;
+                res.name = `[THU]${res.device_id}`;
                 this.deviceDetail.push(res);
               }
               finishFlag++;
@@ -226,9 +226,9 @@ export class MapPageComponent {
       });
     }
     this.bounds.south = latMax+0.005;
-    this.bounds.west = lngMin-0.002;
+    this.bounds.west = lngMin-0.015;
     this.bounds.north = latMin-0.005;
-    this.bounds.east = lngMax+0.002;
+    this.bounds.east = lngMax+0.015;
     // if (this.map) {
     //   this.map.fitBounds(this.bounds);
     // }
@@ -252,9 +252,14 @@ export class MapPageComponent {
   private windowsOpenFinish = false;
   private toggleMsgWindowOpen(callback?:Function){
     let device_ids = this.devices.map(mapObj => mapObj[0]);
+    let nicknames = this.devices.map(mapObj => mapObj[2]);
     this.allDevicesDetails.forEach((value,index,array)=>{
-      if(device_ids.indexOf(value.device_id)>=0){
+      if(value.device_id==""){
+        value.open = false;
+      }else if(device_ids.indexOf(value.device_id)>=0){
         value.open = (value.type == this.devices[device_ids.indexOf(value.device_id)][1]);
+      }else if(nicknames.indexOf(value.device_id)>=0) {
+        value.open = (value.type == this.devices[nicknames.indexOf(value.device_id)][1]);
       }else{
         //noinspection TypeScriptUnresolvedVariable
         value.open = false;

@@ -207,8 +207,10 @@ export class ComparePageComponent{
     let lineChartDataTemplate:Array<any> = [];
 
     this.userDevices.forEach((value:any[], index, array)=> {
+      value[2] = (typeof value[2]==="undefined")?"":value[2];
+
       lineChartDataTemplate.push(
-          {data: [], label: '',fill:false}
+        {data: [], label: (value[2]!=="")?`[${value[1]}]${value[2]}`:`[${value[1]}]${value[0]}`,fill:false}
       );
     });
 
@@ -219,7 +221,7 @@ export class ComparePageComponent{
 
   public deviceChange(i:number,device:String,type:String){
     //noinspection TypeScriptUnresolvedVariable
-    this.userDevices[i] = [device,type];
+    this.userDevices[i] = [device,type,""];
     while(_.findIndex(this.userDevices,[1,"text"])>=0) {
       this.deleteDateRangepickerComponentArray(_.findIndex(this.userDevices,[1,"text"]));
     }
@@ -229,7 +231,7 @@ export class ComparePageComponent{
 //form處理
   public addDateRangepickerComponentArray(){
 
-    this.userDevices.push(['請選擇測站','text']);
+    this.userDevices.push(['請選擇測站','text',""]);
     this.errDate.push(true);
     this.dateRangepickerComponentArray.push(new DaterangepickerComponent(moment().subtract(this.duration,'day').startOf('day'),moment()));
     this.setChartsColor();
@@ -328,7 +330,7 @@ export class ComparePageComponent{
   public setCharts(){
     let tmp = _.cloneDeep(this.lineChartDataTemplate);
     this.userDevice_ids.forEach((value, index, array)=> {
-      tmp[index].label = value;
+      tmp[index].label = '['+this.userDevices[index][1]+']'+((this.userDevices[index][2]=="")?value:this.userDevices[index][2]);
     });
     this.data.forEach((value:Object[], index, array)=> {
       let tmp2;

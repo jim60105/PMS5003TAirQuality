@@ -33,7 +33,7 @@ export class AveragePageComponent {
   public avgData:Object[] = [];
   public devices:any = (Cookie.get('devices'))?JSON.parse(Cookie.get('devices')):[];
   public device_ids = this.devices.map(mapObj => mapObj[0]);
-
+  public nicknames = this.devices.map(mapObj => mapObj[2]);
   //日期選擇器
   public _DaterangepickerComponent = new DaterangepickerComponent();
   public rangeValue:Date[]= this._DaterangepickerComponent.getTimeByDate();
@@ -201,6 +201,8 @@ export class AveragePageComponent {
     //計算平均
     let temp:Object[] = [];
     for(let i=0;i<this.device_ids.length;i++){
+      this.devices[i][2] = (typeof this.devices[i][2]==="undefined")?"":this.devices[i][2];
+
       temp.push({
         'pm1': 0,
         'pm25': 0,
@@ -209,9 +211,10 @@ export class AveragePageComponent {
         'humid': 0,
         'co2': 0,
         'count': 0,
-        'device_id':this.device_ids[i]
+        'device_id':'['+this.devices[i][1]+']'+((this.devices[i][2]=="")?this.device_ids[i]:this.devices[i][2])
       });
     }
+    Cookie.set('devices',JSON.stringify(this.devices));
 
     this.data.forEach((value,index,array)=>{
       let i = this.device_ids.indexOf(value['device_id']);

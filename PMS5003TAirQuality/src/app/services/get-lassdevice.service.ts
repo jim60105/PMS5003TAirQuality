@@ -6,7 +6,6 @@ import * as moment from 'moment';
 import {Cookie} from 'ng2-cookies';
 //noinspection TypeScriptCheckImport
 import * as _ from "lodash";
-
 @Injectable()
 export class GetLassDeviceService {
   constructor(private http: HttpClient) {

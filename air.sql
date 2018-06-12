@@ -2,10 +2,10 @@
 -- version 4.7.7
 -- https://www.phpmyadmin.net/
 --
--- 主機: localhost
--- 產生時間： 2018 年 05 月 30 日 05:41
--- 伺服器版本: 10.1.31-MariaDB
--- PHP 版本： 7.2.2
+-- 主機: 127.0.0.1
+-- 產生時間： 2018-06-12 11:39:19
+-- 伺服器版本: 10.1.30-MariaDB
+-- PHP 版本： 7.1.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -21,7 +21,7 @@ SET time_zone = "+00:00";
 --
 -- 資料庫： `air`
 --
-CREATE DATABASE IF NOT EXISTS `air` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS `air` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 USE `air`;
 
 -- --------------------------------------------------------
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS `airdata` (
   PRIMARY KEY (`no`),
   KEY `time` (`time`),
   KEY `clientNum` (`clientNum`)
-) ENGINE=InnoDB AUTO_INCREMENT=74817 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=73456 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -71,6 +71,15 @@ CREATE TABLE IF NOT EXISTS `airdatadevice` (
   KEY `device_id` (`device_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- 資料表的匯出資料 `airdatadevice`
+--
+
+INSERT INTO `airdatadevice` (`clientNum`, `device_id`, `app`, `device`, `gps_lat`, `gps_lon`, `gps_alt`, `time`, `pm1`, `pm10`, `pm25`, `temp`, `humid`, `co2`, `ThingSpeakWriteKey`, `ThingSpeakReadKey`) VALUES
+(0, '東海別墅', 'PM25', 'Ameba', 24.181598, 120.589623, 256, '2018-05-22 10:44:15', 30, 56, 46, 27, 63.2, NULL, '6DJSX5DL75TROZXE', 'DESPDR96061TRMZM'),
+(1, '大智慧科技大樓(ST)', 'PM25', 'Ameba', 24.181009, 120.5970353, 215, '2018-05-22 10:43:32', 26, 51, 42, 29, 56.3, NULL, 'FZX92BB5QS7N7LTR', ''),
+(2, '西屯福科', 'PM25', 'Ameba', 24.1836697, 120.6193887, 134, '2018-06-01 10:20:45', 10, 10, 10, 10, 10, NULL, 'BMABO2PN6JSI6OJA', '35WV5CFISE6X8QNT');
+
 -- --------------------------------------------------------
 
 --
@@ -87,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `airdataqueue` (
   `humid` float DEFAULT NULL,
   `clientNum` int(11) DEFAULT NULL,
   PRIMARY KEY (`no`)
-) ENGINE=InnoDB AUTO_INCREMENT=755780 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=533538 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -108,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `lassdata` (
   PRIMARY KEY (`no`),
   KEY `device_id` (`device_id`),
   KEY `time` (`time`)
-) ENGINE=InnoDB AUTO_INCREMENT=1591008 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=203013 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -129,7 +138,7 @@ CREATE TABLE IF NOT EXISTS `lassdataqueue` (
   PRIMARY KEY (`no`),
   KEY `device_id` (`device_id`),
   KEY `time` (`time`)
-) ENGINE=InnoDB AUTO_INCREMENT=31557410 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=799015 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -168,7 +177,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `useNearest` tinyint(1) NOT NULL DEFAULT '0',
   `iftttKey` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`no`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -181,9 +190,10 @@ CREATE TABLE IF NOT EXISTS `userdevice` (
   `user_no` int(11) NOT NULL,
   `type` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
   `device_id` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
+  `nickname` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`no`),
   KEY `user_no` (`user_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=176 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 

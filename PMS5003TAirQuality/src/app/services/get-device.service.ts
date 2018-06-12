@@ -5,17 +5,20 @@ import { DEVICE } from '../../assets/mock-device';
 
 //noinspection TypeScriptCheckImport
 import * as _ from "lodash";
+import {GetUserDeviceService} from "./get-user-device.service";
 @Injectable()
 export class GetDeviceService {
-  constructor(private http:HttpClient) {
-    this.getDeviceHttpWithPromise().then((res)=>{});
+  constructor(private http:HttpClient,
+              private _getUserDeviceService:GetUserDeviceService) {
   }
 
   //資料
   public data:Array<any>;
+  private getDataFinish = false;
   //php位置
   private dbURL = "assets/php/getDBDevice";
-
+  private userDevice = [];
+  private getUserDeviceFinish = false;
   //獲取測站資料
   public getDeviceHttpWithPromise(){
     //noinspection TypeScriptUnresolvedFunction,TypeScriptValidateTypes
@@ -34,6 +37,7 @@ export class GetDeviceService {
       //});
 
       this.data = dataIn;
+      this.getDataFinish = true;
       return Promise.resolve(this.data);
     }).catch((err)=> {
       //失敗取得資料
@@ -44,22 +48,26 @@ export class GetDeviceService {
   }
 
   public getDeviceById(id:String, callback?:Function){
-    if(this.data.length==0){
-      this.getDeviceHttpWithPromise().then((res)=>{
-        for (let key in this.data) {
-          if (this.data[key]['device_id'] == id) {
-            (callback && typeof(callback) === "function") && callback(this.data[key]);
-            break;
-          }
-        }
+    if(!this.getDataFinish){
+      this.getDeviceHttpWithPromise().then(()=>{
+        this.getDeviceById(id,callback);
       });
-    }else{
-      for (let key in this.data) {
-        if (this.data[key]['device_id'] == id) {
-          (callback && typeof(callback) === "function") && callback(this.data[key]);
-          break;
-        }
-      }
+      return;
     }
+    if(!this.getUserDeviceFinish){
+      this._getUserDeviceService.getDevices(1,(res)=> {
+        this.userDevice = _.cloneDeep(res);
+        this.getUserDeviceFinish = true;
+
+        this.getDeviceById(id,callback);
+      });
+      return;
+    }
+    this.data.some((value,index,array)=>{
+      if (value['device_id'] == id) {
+        (callback && typeof(callback) === "function") && callback(value);
+        return true;
+      }
+    });
   }
 }

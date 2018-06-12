@@ -34,7 +34,7 @@
                 <div class="row" *ngFor="let userDevice of userDevices; let i = index">
                     <div ngbDropdown class="dropdown col-xs-6 col-sm-3 col-md-2">
                         <button class="btn btn-default dropdown-toggle" type="button" ngbDropdownToggle data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            {{userDevices[i][0]}}
+                            {{((userDevices[i][2]!=="")?userDevices[i][2]:userDevices[i][0])}}
                             <span class="caret"></span>
                         </button>
                         <ul ngbDropdownMenu class="dropdown-menu">

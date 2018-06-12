@@ -61,10 +61,10 @@ export class MainPageComponent {
 
   private startFlag = false;
   private getDeviceDetail(){
-    this.deviceDetail.length = 0;
-    let finishFlag = 0;
     if(!this.startFlag) {
       this.startFlag = true;
+      this.deviceDetail.length = 0;
+      let finishFlag = 0;
       this.devices.forEach((value, index, array) => {
         switch (value[1]) {
           case 'LASS':
@@ -74,7 +74,7 @@ export class MainPageComponent {
               }
               finishFlag++;
               if (finishFlag == this.devices.length) {
-                this.calcAQI(this.deviceDetail);
+                this.finish(this.deviceDetail);
                 this.startFlag = false;
               }
             });
@@ -86,10 +86,14 @@ export class MainPageComponent {
               }
               finishFlag++;
               if (finishFlag == this.devices.length) {
-                this.calcAQI(this.deviceDetail);
+                this.finish(this.deviceDetail);
                 this.startFlag = false;
               }
             });
+            break;
+          default:
+            this.deviceDetail.push({});
+            finishFlag++;
             break;
         }
       });
@@ -97,7 +101,12 @@ export class MainPageComponent {
   }
 
   //計算AQI顏色
-  private calcAQI(data:Array<any>){
+  private finish(data:Array<any>){
+    this.devices.forEach((value, index, array) => {
+      value[2] = (typeof value[2]==="undefined")?"":value[2];
+      this.deviceDetail[index].device_id = (value[2]!=="")?value[2]:this.deviceDetail[index].device_id;
+      this.deviceDetail[index].name = `[LASS]${this.deviceDetail[index].device_id}`;
+    });
     this._calcAQI.calcAQI(data,(res)=>{
       this.loading = false;
     });

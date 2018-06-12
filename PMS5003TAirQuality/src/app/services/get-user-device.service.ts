@@ -37,7 +37,10 @@ export class GetUserDeviceService {
         //noinspection TypeScriptUnresolvedVariable
         if(typeof value.device_id!=='undefined'){
           //noinspection TypeScriptUnresolvedVariable
-          this.data.push([value.device_id,value.type]);
+          if(value.nickname==null || typeof value.nickname==='undefined'){
+            value.nickname = "";
+          }
+          this.data.push([value.device_id,value.type,value.nickname]);
         }
       });
       return Promise.resolve(this.data);

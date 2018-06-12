@@ -207,10 +207,12 @@ export class HistoryPageComponent {
     let lineChartDataTemplate:Array<any> = [];
 
     this.devices.forEach(function(value, index, array){
+      value[2] = (typeof value[2]==="undefined")?"":value[2];
       lineChartDataTemplate.push(
-          {data: [], label: value[0],fill:false}
+          {data: [], label: (value[2]!=="")?`[${value[1]}]${value[2]}`:`[${value[1]}]${value[0]}`,fill:false}
       );
     });
+    Cookie.set('devices',JSON.stringify(this.devices));
 
     this.lineChartDataTemplate = _.cloneDeep(lineChartDataTemplate);
     this.loadedLineChartDataTemplate = true;
@@ -219,10 +221,10 @@ export class HistoryPageComponent {
 
   private startFlag = false;
   private getDeviceDetail(){
-    this.data.length = 0;
-    let finishFlag = 0;
     if(!this.startFlag) {
       this.startFlag = true;
+      this.data.length = 0;
+      let finishFlag = 0;
       this.devices.forEach((value, index, array) => {
         switch (value[1]) {
           case 'LASS':
@@ -257,19 +259,6 @@ export class HistoryPageComponent {
       });
     }
   }
-
-  //獲取空汙資料
-  // public getLASSDataHttp(){
-  //   this.lineChartStandby = false;
-  //   this._getLassDataService.setParam(this.devices,this._DaterangepickerComponent.getSQLString()[0],this._DaterangepickerComponent.getSQLString()[1]);
-  //   this._getLassDataService.getDataHttpWithPromise().then((res)=>{
-  //     this.data = res;
-  //     if(this.loadedLineChartDataTemplate){
-  //       this.setCharts();
-  //       this.calcPercentageData();
-  //     }
-  //   });
-  // }
 
   public setCharts(){
     this.lineChartData = _.cloneDeep(this.lineChartDataTemplate);
