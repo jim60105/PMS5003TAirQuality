@@ -15,7 +15,7 @@
 
       <form role="form">
 
-        <div class="form-group">
+        <div class="form-group" [ngClass]="{'has-error': _e.match('@')==null}">
           <label>電子郵件</label>
           <div class="input-group">
             <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>

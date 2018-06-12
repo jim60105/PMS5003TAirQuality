@@ -27,6 +27,7 @@ export class SignupPageComponent{
   public _p2 = "";
 
   public signUp(){
+
     let params = new HttpParams();
     params = params.set('_e', this._e);
     params = params.set('_p', this._p);
@@ -40,6 +41,9 @@ export class SignupPageComponent{
       }else if(res=='email'){
         alert("帳號已存在");
         this._e = this._p = this._p2 = "";
+      }else if(res=='false'){
+        alert("請重新檢查輸入資料!!");
+        this._p = this._p2 = "";
       }else{
         console.warn("signUp Error:"+res.toString);
       }
@@ -52,8 +56,8 @@ export class SignupPageComponent{
     return this.http.post(this.dbURL,params,{
       observe: 'body',
       reportProgress:true,
-      responseType: 'json'
-    }).toPromise().then((dataIn:any[])=> {
+      responseType: 'text'
+    }).toPromise().then((dataIn:string)=> {
       //成功取得資料
       return Promise.resolve(dataIn);
     }).catch((err)=> {
