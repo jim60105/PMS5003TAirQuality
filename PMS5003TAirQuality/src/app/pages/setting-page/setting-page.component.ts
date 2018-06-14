@@ -36,7 +36,7 @@ export class SettingPageComponent {
   public iftttKey = '';
   public iftttDevices:Array<any[]> = [];
   public iftttDevicesTemp:Array<String[]> = [];
-  public AQIString = ['離線','良好','普通','對敏感族群不健康','對所有族群不健康','非常不健康','危害'];
+  public AQIString = ['良好','普通','對敏感族群不健康','對所有族群不健康','非常不健康','危害'];
 
   public _p = "";
   public _p2 = "";

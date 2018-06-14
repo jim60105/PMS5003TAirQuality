@@ -22,7 +22,15 @@
 
 
         <div class="form-group">
-          <label>網站顯示測站</label>
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <label>網站顯示測站</label>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <label>自訂名稱</label>
+            </div>
+          </div>
+
           <div *ngFor="let userDevice of userDevices; let i = index" class="row" >
 
             <div ngbDropdown class="dropdown" class="col-sm-12 col-md-6">
@@ -41,7 +49,7 @@
                 <li *ngFor="let device of LASSDeviceList" (click)="deviceChange(i,device.device_id,'LASS')"><a href="javascript:void(0);">{{device.device_id}}</a></li>
               </ul>
             </div>
-            <div class="col-sm-12 col-md-6">
+            <div class="col-sm-12 col-md-6" style="max-width: 334px">
               <input type="text" class="form-control" placeholder="恢復預設請留白" style="min-width: 70px;margin: 5px 0" [(ngModel)]="userDevice[2]" [name]="'nickname'+i">
             </div>
             <hr/>
@@ -120,11 +128,11 @@
             </div>
             <div *ngIf="iftttDevice[2]=='AQI'" ngbDropdown class="dropdown col-xs-4 col-sm-2">
               <button class="btn btn-default dropdown-toggle" type="button" ngbDropdownToggle data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                {{AQIString[iftttDevice[3]]}}
+                {{AQIString[iftttDevice[3]-1]}}
                 <span class="caret"></span>
               </button>
               <ul ngbDropdownMenu class="dropdown-menu">
-                <li *ngFor="let ss of AQIString; let i2 = index" (click)="deviceChange2_2(i,i2)"><a href="javascript:void(0);">{{ss}}</a></li>
+                <li *ngFor="let ss of AQIString; let i2 = index" (click)="deviceChange2_2(i,i2+1)"><a href="javascript:void(0);">{{ss}}</a></li>
               </ul>
             </div>
 
