@@ -102,10 +102,12 @@ export class MainPageComponent {
 
   //計算AQI顏色
   private finish(data:Array<any>){
-    this.devices.forEach((value, index, array) => {
+    let deviceDetailIdList = this.deviceDetail.map(mapObj => mapObj['device_id']);
+    this.devices.forEach((value, i, array) => {
+      let index = deviceDetailIdList.indexOf(value[0]);
       value[2] = (typeof value[2]==="undefined")?"":value[2];
       this.deviceDetail[index].device_id = (value[2]!=="")?value[2]:this.deviceDetail[index].device_id;
-      this.deviceDetail[index].name = `[LASS]${this.deviceDetail[index].device_id}`;
+      this.deviceDetail[index].name = `[${value[1]}]${this.deviceDetail[index].device_id}`;
     });
     this._calcAQI.calcAQI(data,(res)=>{
       this.loading = false;
