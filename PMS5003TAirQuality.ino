@@ -40,18 +40,15 @@ char pass[] = "000000000";    // your network password (use for WPA, or use as k
 int keyIndex = 0;            // your network key Index number (needed only for WEP)
 
 //終端編號
-int clientNum = 0;
+int clientNum = 1;
 
 //server設定
-int status = WL_IDLE_STATUS;
-char server[] = "140.128.102.200";    // server address
-int port = 80;                    // server port, use 80 for defult
+bool enableSend2Server = true;
+char server[] = "air.asakihime.com";    // server address
+int port = 81;                    // server port, use 80 for defult
 
 //間隔時間
 int delayTime = 60000;              // interval for every http request (ms)
-
-//送出計數
-int count = 0;
 
 //Fake GPS
 char gps_lat[] = "24.181598";   // device's gps latitude
@@ -59,17 +56,21 @@ char gps_lon[] = "120.589623"; // device's gps longitude
 char gps_alt[] = "256";  // device's altitude above the sea level
 
 //LASS MQTT
+bool enableMQTT = false;
 char mqttServer[] = "gpssensor.ddns.net";      // the MQTT server of LASS
 char clientId[17] = "THU_000";                    // client id for MQTT
 char outTopic[20] = "LASS/Test/PM25/live"; // MQTT publish topic
 //******************************************************************************************
 
+//送出校時計數
+int count = 0;
+
 WiFiClient client, client2;
 PubSubClient mqttClient(client2);
-
 WiFiUDP Udp;
-const char ntpServer[] = "pool.ntp.org";
+int status = WL_IDLE_STATUS;
 
+const char ntpServer[] = "pool.ntp.org";
 const int NTP_PACKET_SIZE = 48; // NTP time stamp is in the first 48 bytes of the message
 const byte nptSendPacket[ NTP_PACKET_SIZE] = {
   0xE3, 0x00, 0x06, 0xEC, 0x00, 0x00, 0x00, 0x00,  0x00, 0x00, 0x00, 0x00, 0x31, 0x4E, 0x31, 0x34,
@@ -348,11 +349,11 @@ void setup() {
   PMS5003Serial.begin(9600); // PMS 3003 UART has baud rate 9600
 
   retrieveNtpTime();
-  initializeMQTT();
+  if(enableMQTT){initializeMQTT();}
 }
 
 void loop() { // run over and over
-    Serial.println("v18.03.21.0");
+    Serial.println("v18.11.19.1");
     //斷線重連
     if(WiFi.status()!= WL_CONNECTED) {
       connectToWifi();
@@ -380,12 +381,16 @@ void loop() { // run over and over
       
     //組合資料
     String jsonStr = (String)"pm1="+PMS5003Value.pm1+"&pm10="+PMS5003Value.pm10+"&pm25="+PMS5003Value.pm25+"&temp="+PMS5003Value.temp+"&humid="+PMS5003Value.humid+"&clientNum="+clientNum;
+
+    if(enableSend2Server){
+      connect2server(jsonStr);
+    }
+
+    if(enableMQTT){
+      sendMQTT(PMS5003Value);
+      mqttClient.loop();
+    }
     
-    connect2server(jsonStr);
-      
-    sendMQTT(PMS5003Value);
-    mqttClient.loop();
-  
     Serial.println("Disconnecting from server...");
     client.stop();
     Serial.print("Interval ");
