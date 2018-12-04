@@ -76,9 +76,9 @@ CREATE TABLE IF NOT EXISTS `airdatadevice` (
 --
 
 INSERT INTO `airdatadevice` (`clientNum`, `device_id`, `app`, `device`, `gps_lat`, `gps_lon`, `gps_alt`, `time`, `pm1`, `pm10`, `pm25`, `temp`, `humid`, `co2`, `ThingSpeakWriteKey`, `ThingSpeakReadKey`) VALUES
-(0, '東海別墅', 'PM25', 'Ameba', 24.181598, 120.589623, 256, '2018-05-22 10:44:15', 30, 56, 46, 27, 63.2, NULL, '6DJSX5DL75TROZXE', 'DESPDR96061TRMZM'),
-(1, '大智慧科技大樓(ST)', 'PM25', 'Ameba', 24.181009, 120.5970353, 215, '2018-05-22 10:43:32', 26, 51, 42, 29, 56.3, NULL, 'FZX92BB5QS7N7LTR', ''),
-(2, '西屯福科', 'PM25', 'Ameba', 24.1836697, 120.6193887, 134, '2018-06-01 10:20:45', 10, 10, 10, 10, 10, NULL, 'BMABO2PN6JSI6OJA', '35WV5CFISE6X8QNT');
+(0, '東海別墅', 'PM25', 'Ameba', 24.181598, 120.589623, 256, '2018-12-04 03:22:20', 4, 7, 7, 22.9, 66.9, NULL, '6DJSX5DL75TROZXE', 'DESPDR96061TRMZM'),
+(1, '東海別墅_indoor', 'PM25', 'Ameba', 24.18167, 120.58945, 256, '2018-11-21 13:33:58', 4, 5, 5, 22.9, 72, NULL, 'FZX92BB5QS7N7LTR', ''),
+(2, '西屯福科', 'PM25', 'Ameba', 24.1836697, 120.6193887, 134, '2018-06-17 15:03:14', 4, 7, 7, 26.2, 72, NULL, 'BMABO2PN6JSI6OJA', '35WV5CFISE6X8QNT');
 
 -- --------------------------------------------------------
 
