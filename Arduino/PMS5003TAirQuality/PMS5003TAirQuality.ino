@@ -25,19 +25,21 @@ https://github.com/x99wang/pm25/blob/master/pmtest.ino
 #include <SoftwareSerial.h>
 #include <PubSubClient.h>
 #include <WiFiUdp.h>
-//#if defined(BOARD_RTL8195A)
-//SoftwareSerial mySerial(0, 1); // RX, TX
-//#elif defined(BOARD_RTL8710)
+extern "C" {
+#include "wifi_conf.h"
+}
+
 SoftwareSerial PMS5003Serial(17, 5); // RX, TX
-//#else
-//SoftwareSerial mySerial(0, 1); // RX, TX
-//#endif
 
 //******************************************************************************************
 //WIFI設定
 char ssid[] = "jim60105"; //  your network SSID (name)
 char pass[] = "000000000";    // your network password (use for WPA, or use as key for WEP)
 int keyIndex = 0;            // your network key Index number (needed only for WEP)
+
+//設定Mac位置
+//因為RTL-00 MAC addresses預設全都一樣
+String mac = "b8d76300feef";
 
 //終端編號
 int clientNum = 1;
@@ -155,6 +157,32 @@ struct SensorValuesBar getPMS5003(){
   return result;
 }
 
+//設定MAC位置
+void setMacAddress(){
+  char macChar[13];
+  strcpy (macChar, mac.c_str());
+  int res = wifi_set_mac_address(macChar);
+  
+  if(res == RTW_SUCCESS){
+    Serial.print("MAC address set to: ");  
+    byte tmp[6];
+    WiFi.macAddress(tmp);
+    Serial.print(tmp[0],HEX);
+    Serial.print(":");
+    Serial.print(tmp[1],HEX);
+    Serial.print(":");
+    Serial.print(tmp[2],HEX);
+    Serial.print(":");
+    Serial.print(tmp[3],HEX);
+    Serial.print(":");
+    Serial.print(tmp[4],HEX);
+    Serial.print(":");
+    Serial.println(tmp[5],HEX);
+  }else{
+    Serial.println("Set MAC address failed!");
+  }
+}
+
 void connectToWifi() {
   // attempt to connect to Wifi network:
   while (status != WL_CONNECTED) {
@@ -187,7 +215,6 @@ void connectToWifi() {
   // local port to listen for UDP packets
   Udp.begin(2390);
 }
-
 
 // send an NTP request to the time server at the given address
 void retrieveNtpTime() {
@@ -253,12 +280,6 @@ void getCurrentTime(unsigned long epoch, int *year, int *month, int *day, int *h
 }
 
 void initializeMQTT() {
-  //byte mac[6];
-
-  //WiFi.macAddress(mac);
-  //RTL-00 MAC addresses are all the same.
-  //sprintf(clientId, "THU_%02X%02X%02X%02X", mac[2], mac[3], mac[4], mac[5]);
-
   Serial.print("MQTT client id:");
   Serial.println(clientId);
   Serial.print("MQTT topic:");
@@ -304,11 +325,10 @@ void sendMQTT(SensorValuesBar PMS5003Value) {
     mqttClient.publish((char*)companionchannel, payload.c_str());
     mqttClient.disconnect();
   }
-
 }
 
 String serverStr = String(server);
-void connect2server(String jsonStr) {
+void send2server(String jsonStr) {
   //送出資料到伺服器
   Serial.println("\nStarting connection to server...");
   // if you get a connection, report back via serial:
@@ -330,7 +350,6 @@ void setup() {
   while (!Serial) {
     ;
   }
-  
   status = WiFi.status();
   // check for the presence of the shield:
   if (status == WL_NO_SHIELD) {
@@ -342,20 +361,25 @@ void setup() {
   if (fv != "1.1.0") {
     Serial.println("Please upgrade the firmware");
   }
+
+  //設定MAC位置
+  setMacAddress();
+  
   if(status != WL_CONNECTED) {
     connectToWifi();
   }
   
-  PMS5003Serial.begin(9600); // PMS 3003 UART has baud rate 9600
+  PMS5003Serial.begin(9600); // PMS 5003 UART has baud rate 9600
 
   retrieveNtpTime();
   if(enableMQTT){initializeMQTT();}
 }
 
 void loop() { // run over and over
-    Serial.println("v18.11.19.1");
+    Serial.println("v18.12.22.0");
     //斷線重連
     if(WiFi.status()!= WL_CONNECTED) {
+      setMacAddress();
       connectToWifi();
       retrieveNtpTime();
     }
@@ -383,7 +407,7 @@ void loop() { // run over and over
     String jsonStr = (String)"pm1="+PMS5003Value.pm1+"&pm10="+PMS5003Value.pm10+"&pm25="+PMS5003Value.pm25+"&temp="+PMS5003Value.temp+"&humid="+PMS5003Value.humid+"&clientNum="+clientNum;
 
     if(enableSend2Server){
-      connect2server(jsonStr);
+      send2server(jsonStr);
     }
 
     if(enableMQTT){
