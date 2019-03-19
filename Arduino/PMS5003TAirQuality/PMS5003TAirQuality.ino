@@ -39,29 +39,29 @@ int keyIndex = 0;            // your network key Index number (needed only for W
 
 //設定Mac位置
 //因為RTL-00 MAC addresses預設全都一樣
-String mac = "b8d76300feef";
+String mac = "b8d76300feee";
 
 //終端編號
 int clientNum = 1;
 
 //server設定
 bool enableSend2Server = true;
-char server[] = "air.asakihime.com";    // server address
-int port = 81;                    // server port, use 80 for defult
+char server[] = "air.maki0419.com";    // server address
+int port = 80;                    // server port, use 80 for defult
 
 //間隔時間
 int delayTime = 60000;              // interval for every http request (ms)
 
 //Fake GPS
 char gps_lat[] = "24.181598";   // device's gps latitude
-char gps_lon[] = "120.589623"; // device's gps longitude
-char gps_alt[] = "256";  // device's altitude above the sea level
+char gps_lon[] = "120.5890"; // device's gps longitude
+char gps_alt[] = "265";  // device's altitude above the sea level
 
 //LASS MQTT
-bool enableMQTT = false;
+bool enableMQTT = true;
 char mqttServer[] = "gpssensor.ddns.net";      // the MQTT server of LASS
-char clientId[17] = "THU_000";                    // client id for MQTT
-char outTopic[20] = "LASS/Test/PM25/live"; // MQTT publish topic
+char clientId[17] = "THU_001";                    // client id for MQTT
+char outTopic[20] = "LASS/Test/PM25"; // MQTT publish topic
 //******************************************************************************************
 
 //送出校時計數
@@ -305,7 +305,8 @@ void sendMQTT(SensorValuesBar PMS5003Value) {
 
   if (mqttClient.connected()) {
     payload = "|ver_format=3|Fake_GPS=1|app=PM25|ver_app=live|device_id="+String(clientId)+"|tick="+millis()+"|date="+year+"-"+month+"-"+day+"|time="+hour+":"+minute+":"+second
-      +"|device=Ameba|s_d0="+PMS5003Value.pm25
+//      +"|device=Ameba|s_d0="+PMS5003Value.pm25
+      +"|device=Ameba|s_d0="+20
       +"|s_d1="+PMS5003Value.pm10
       +"|s_d2="+PMS5003Value.pm1
       +"|s_h0="+PMS5003Value.humid
@@ -320,7 +321,7 @@ void sendMQTT(SensorValuesBar PMS5003Value) {
     strcat(companionchannel,outTopic);
     strcat(companionchannel,"/");
     strcat(companionchannel,clientId);
-   
+    
     mqttClient.publish((char*)outTopic, payload.c_str());
     mqttClient.publish((char*)companionchannel, payload.c_str());
     mqttClient.disconnect();
@@ -376,7 +377,7 @@ void setup() {
 }
 
 void loop() { // run over and over
-    Serial.println("v18.12.22.0");
+    Serial.println("v19.03.18.0");
     //斷線重連
     if(WiFi.status()!= WL_CONNECTED) {
       setMacAddress();

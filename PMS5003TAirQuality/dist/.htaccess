@@ -8,7 +8,7 @@ RewriteRule ^.*$ https://air.maki0419.com%{REQUEST_URI} [R=301]
 ##RewriteRule !^(.*)\.(.*)$ %{REQUEST_URI} [NC,L]
 ##Uncomment below and comment upper to show error page
 ##RewriteBase /
-##RewriteRule !^(.*)errorPage\.php$ https://asakihime.jim60105.com/errorPage.php [R=302,L]
+##RewriteRule !^(.*)errorPage\.php$ https://error.maki0419.com/ [R=302,L]
 
 ## EXPIRES CACHING ##
 <IfModule mod_expires.c>
@@ -18,9 +18,11 @@ ExpiresByType image/jpeg "access 1 month"
 ExpiresByType image/gif "access 1 month"
 ExpiresByType image/png "access 1 month"
 ExpiresByType text/css "access 1 week"
+ExpiresByType text/html "access 1 minute"
+ExpiresByType application/json "access 1 minute"
 ExpiresByType application/javascript "access 1 week"
 ExpiresByType image/x-icon "access 1 month"
-ExpiresDefault "access 1 week"
+ExpiresDefault "access 1 minute"
 </IfModule>
 ## EXPIRES CACHING ##
 
