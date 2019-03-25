@@ -16,6 +16,9 @@ conn = mysql.connector.connect(
          database='air')
  
 cur = conn.cursor(dictionary=True)
+query = ('USE air')
+cur.execute(query)
+conn.commit()
 
 query = ('DELETE FROM lassdata WHERE `time` < (NOW() - INTERVAL 2 WEEK)')
 cur.execute(query)
