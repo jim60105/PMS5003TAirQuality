@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Author: jim60105@gmail.com
-# Version: v18.12.04.0
+# Version: v19.03.25.0
 
 import paho.mqtt.client as mqtt
 import mysql.connector
@@ -17,11 +17,11 @@ conn = mysql.connector.connect(
  
 cur = conn.cursor(dictionary=True)
 
-query = ('DELETE FROM lassdata WHERE `time` < (NOW() - INTERVAL 2 WEEKS)')
+query = ('DELETE FROM lassdata WHERE `time` < (NOW() - INTERVAL 2 WEEK)')
 cur.execute(query)
 conn.commit()
 
-query = ('DELETE FROM lassdataqueue WHERE `time` < (NOW() - INTERVAL 2 WEEKS)')
+query = ('DELETE FROM lassdataqueue WHERE `time` < (NOW() - INTERVAL 2 WEEK)')
 cur.execute(query)
 conn.commit()
 
